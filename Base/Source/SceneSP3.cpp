@@ -353,6 +353,14 @@ void SceneSP3::UpdateSceneControls()
 	}
 }
 
+void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius, float AtmosphereRadius, float hTile, float vTile)
+{
+	 modelStack.PushMatrix();
+	 modelStack.Translate(0, 1800, -0);
+	 RenderMesh(meshList[GEO_SKYPLANE], false);
+	 modelStack.PopMatrix();
+} 
+
 void SceneSP3::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -380,9 +388,6 @@ void SceneSP3::Render()
 
 	//============================ MAIN RENDER PASS ===========================
 	RenderPassMain();
-
-	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
-
 }
 
 void SceneSP3::RenderPassMain()
@@ -424,6 +429,8 @@ void SceneSP3::RenderWorld()
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_TERRAIN], false);
 	modelStack.PopMatrix();
+
+	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 }
 
 void SceneSP3::RenderPassGPass()
