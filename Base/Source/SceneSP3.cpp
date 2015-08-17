@@ -326,12 +326,17 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
 	meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky1.tga"); 
+
+	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("GEO_WALL","Objects//wall.obj");
+	meshList[GEO_WALL]->textureArray[0] = LoadTGA("Image//wall.tga");
 }
 
 void SceneSP3::initVariables()
 {
 	Math::InitRNG();
 	m_bLightEnabled = true;
+
+	LoadFromTextFileOBJ("Variables/LoadOBJ.txt");
 }
 /* STILL DEBUGGING THIS FEATURE PLS DONT TOUCH */
 void SceneSP3::UpdatePlayerStatus(const unsigned char key)
@@ -388,71 +393,83 @@ void SceneSP3::UpdateSceneControls()
 		m_bLightEnabled = false;
 	}
 }
+CObj* SceneSP3::FetchOBJ()
+{
+	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+		if(!go->getActive())
+		{
+			go->setActive(true);
+			return go;
+		}
+	}
+	for(unsigned i = 0; i < 10; ++i)
+	{
+		CObj *go = new CObj();
+		myObjList.push_back(go);
+	}
+	CObj *go = myObjList.back();
+	go->setActive(true);
+	return go;
+}
 
 bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 {
 	ifstream myfile (mapString);
 
 	Vector3 Pos;
-	Vector3 Normal;
 	Vector3 Scale;
 	int geotype;
 	bool active;
-	CObj * obj;
+	
 	if (myfile.is_open())
 	{
-		while ( myfile >> Pos.x >> Pos.y  >> Pos.z >> Normal.x >> Normal.y >> Normal.z >> Scale.x >> Scale.y >> Scale.z >> geotype >> active)
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >> geotype >> active)
 		{
+
+			CObj * obj = FetchOBJ();
+			obj->setActive(active);
+			obj->setPosition(Pos);
+
+			obj->setScale(Scale);
 			switch(geotype)
 			{
 			case GEO_WALL:
 				{
-					obj->setActive(active);
 					obj->setGeoType(GEO_WALL);
-					obj->setPosition(Pos);
-					obj->setScale(Scale);
 					break;
 				}
 			case GEO_DOOR:
 				{
-					obj->setActive(active);
 					obj->setGeoType(GEO_DOOR);
-					obj->setPosition(Pos);
-					obj->setScale(Scale);
 					break;
 				}
 			case GEO_BENCH:
 				{
-					obj->setActive(active);
 					obj->setGeoType(GEO_BENCH);
-					obj->setPosition(Pos);
-					obj->setScale(Scale);
 					break;
 				}
 			case GEO_TABLE:
 				{
-					obj->setActive(active);
 					obj->setGeoType(GEO_TABLE);
-					obj->setPosition(Pos);
-					obj->setScale(Scale);
 					break;
 				}
 			case GEO_TOILET:
 				{
-					obj->setActive(active);
 					obj->setGeoType(GEO_TOILET);
-					obj->setPosition(Pos);
-					obj->setScale(Scale);
+					
 					break;
 				}
 			}
+			
 		}
 		myfile.close();
-		cout << "Level Loaded: SUCCESS!" << endl;
+		cout << "Objs Loaded: SUCCESS!" << endl;
 		return true;
 	}
 
-	else cout << "Level Loaded: FAILED!"; 
+	else cout << "Objs Loaded: FAILED!"; 
 	return false;
 }
 
@@ -518,10 +535,9 @@ void SceneSP3::RenderPassMain()
 
 	//RenderMesh(meshList[GEO_LIGHT_DEPTH_QUAD],false);
 
-	std::ostringstream ss;
-	ss.precision(5);
-	ss << "FPS: " << m_fFps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5, 0.9, 57);
+	
+
+	
 
 	std::ostringstream playerpos;
 	playerpos.precision(5);
@@ -532,6 +548,12 @@ void SceneSP3::RenderPassMain()
 	playerposY.precision(5);
 	playerposY << "Pos_Y: " << thePlayer->GetPosition().y;
 	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 0, 0), 2.5, 0.9, 47);
+
+	std::ostringstream ss;
+	ss.precision(5);
+	ss << "FPS: " << m_fFps;
+
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5f, 0.9f, 57.f);
 
 }
 
@@ -550,9 +572,28 @@ void SceneSP3::RenderWorld()
 	RenderMesh(meshList[GEO_TERRAIN], false);
 	modelStack.PopMatrix();
 
-	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
-}
+	RenderObjList();
 
+	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
+
+	
+}
+void SceneSP3::RenderObjList()
+{
+	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+
+		if(go->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
+			RenderMesh(meshList[go->getGeoType()],m_bLightEnabled);
+			modelStack.PopMatrix();
+		}
+	}
+}
 void SceneSP3::RenderPassGPass()
 {
 	m_renderPass = RENDER_PASS_PRE;
@@ -687,7 +728,11 @@ void SceneSP3::Exit()
 		if(meshList[i])
 			delete meshList[i];
 	}
-
+	for(int i = 0; i < myObjList.size(); ++i)
+	{
+		if(myObjList[i] != NULL)
+			delete myObjList[i];
+	}
 
 	//if (music)
 	//	music->drop(); // release music stream.

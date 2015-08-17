@@ -118,7 +118,7 @@ class SceneSP3 : public Scene
 		GEO_RING,
 		GEO_CONE,
 		GEO_TEXT,
-		GEO_WALL, // 8
+		GEO_WALL, // 7
 		GEO_DOOR, // 9
 		GEO_BENCH, // 10
 		GEO_TABLE, // 11
@@ -157,13 +157,14 @@ public:
 	
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
-
+	CObj* FetchOBJ();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
+	void RenderObjList();
 
 	//Shadow things
 	void RenderPassGPass();
