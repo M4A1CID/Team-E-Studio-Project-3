@@ -462,7 +462,7 @@ void SceneSP3::RenderPassGPass()
 	RenderWorld();
 }
 
-void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
+void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -499,6 +499,7 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
 	{	
 		glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
 	}
+	glUniform1i(m_uiParameters[U_FOG_ENABLE], enableFog);
 	for(unsigned i = 0; i < Mesh::MAX_TEXTURES; ++i)
 	{
 		if(mesh->textureArray[i] > 0)
