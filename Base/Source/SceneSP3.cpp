@@ -359,7 +359,7 @@ void SceneSP3::CharacterCrouch()
 
 void SceneSP3::Update(double dt)
 {
-	//thePlayer->UpdatePosition(dt, camera);
+	thePlayer->UpdatePosition(dt, camera);
 	camera.Update(dt);	
 	UpdateSceneControls();
 
@@ -521,6 +521,17 @@ void SceneSP3::RenderPassMain()
 	ss.precision(5);
 	ss << "FPS: " << m_fFps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5, 0.9, 57);
+
+	std::ostringstream playerpos;
+	playerpos.precision(5);
+	playerpos << "Pos_X: " << thePlayer->GetPosition().x;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 0, 0), 2.5, 0.9, 52);
+
+	std::ostringstream playerposY;
+	playerposY.precision(5);
+	playerposY << "Pos_Y: " << thePlayer->GetPosition().y;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 0, 0), 2.5, 0.9, 47);
+
 }
 
 void SceneSP3::RenderWorld()
