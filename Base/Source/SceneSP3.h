@@ -15,8 +15,10 @@
 #include "DepthFBO.h"
 #include "Wall.h"
 #include "Obj.h"
+#include "Player.h"
 #include <vector>
 #include <fstream>
+
 
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
@@ -147,6 +149,8 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
+	void initPlayer();			//initialize player class info here. this is done to make the code more organized
+
 	void initUniforms();
 	void initVariables();
 	void initMeshlist();
@@ -157,7 +161,7 @@ public:
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMesh(Mesh *mesh, bool enableLight);
+	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
 
@@ -166,6 +170,7 @@ public:
 	void RenderPassMain();
 	void RenderWorld();
 
+	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);
 	void UpdateSceneControls();
 
@@ -229,6 +234,8 @@ private:
 	//Handle to the minimap
 	CMinimap* m_cMinimap;
 
+	//Handle to the player class
+	CPlayer* thePlayer;
 
 	ISoundEngine* engine;
 	ISound* music ;

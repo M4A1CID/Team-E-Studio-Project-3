@@ -30,6 +30,7 @@
     <ClCompile Include="Source\Obj.cpp" />
     <ClCompile Include="Source\Particle.cpp" />
     <ClCompile Include="Source\Physics.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SceneShadow.cpp" />
     <ClCompile Include="Source\SceneSP3.cpp" />
     <ClCompile Include="Source\shader.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="Source\Obj.h" />
     <ClInclude Include="Source\Particle.h" />
     <ClInclude Include="Source\Physics.h" />
+    <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneShadow.h" />
     <ClInclude Include="Source\SceneSP3.h" />

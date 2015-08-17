@@ -12,6 +12,7 @@
 
 SceneSP3::SceneSP3()
 	: m_cMinimap(NULL)
+	, thePlayer(NULL)
 {
 
 }
@@ -23,14 +24,28 @@ SceneSP3::~SceneSP3()
 		delete m_cMinimap;
 		m_cMinimap = NULL;
 	}
+	if(thePlayer)
+	{
+		delete thePlayer;
+		thePlayer = NULL;
+	}
 }
-
+void SceneSP3::initPlayer()
+{
+	//initialize the player class
+	thePlayer = new CPlayer();
+	
+	//the parameters are as follows: active, position, scale
+	//scale is 5 for now.
+	thePlayer->Init(true, Vector3(0, 20, 10), Vector3 (5, 5, 5));
+}
 void SceneSP3::Init()
 {
 	
 	initUniforms(); // Init the standard Uniforms
 	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0));
 
+	initPlayer();
 	initMeshlist();
 	initVariables();
 
@@ -318,7 +333,11 @@ void SceneSP3::initVariables()
 	Math::InitRNG();
 	m_bLightEnabled = true;
 }
-
+/* STILL DEBUGGING THIS FEATURE PLS DONT TOUCH */
+void SceneSP3::UpdatePlayerStatus(const unsigned char key)
+{
+	thePlayer->UpdateCameraStatus(key, camera);
+}
 void SceneSP3::UpdateCameraStatus(const unsigned char key)
 {
 	camera.UpdateStatus(key);
@@ -340,8 +359,11 @@ void SceneSP3::CharacterCrouch()
 
 void SceneSP3::Update(double dt)
 {
+	//thePlayer->UpdatePosition(dt, camera);
 	camera.Update(dt);	
 	UpdateSceneControls();
+
+	m_fFps = (float)(1.f / dt);
 }
 
 void SceneSP3::UpdateSceneControls()
@@ -494,6 +516,11 @@ void SceneSP3::RenderPassMain()
 	//Render GEO_LIGHT_DEPTH_QUAD
 
 	//RenderMesh(meshList[GEO_LIGHT_DEPTH_QUAD],false);
+
+	std::ostringstream ss;
+	ss.precision(5);
+	ss << "FPS: " << m_fFps;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5, 0.9, 57);
 }
 
 void SceneSP3::RenderWorld()
@@ -543,7 +570,7 @@ void SceneSP3::RenderPassGPass()
 	RenderWorld();
 }
 
-void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
+void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -580,6 +607,7 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
 	{	
 		glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
 	}
+	glUniform1i(m_uiParameters[U_FOG_ENABLE], enableFog);
 	for(unsigned i = 0; i < Mesh::MAX_TEXTURES; ++i)
 	{
 		if(mesh->textureArray[i] > 0)
@@ -597,6 +625,46 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 
 	mesh->Render();
+}
+
+void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+{
+	if(!mesh || mesh->textureID <= 0)
+		return;
+
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
+	glUniform1i(m_uiParameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_uiParameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_uiParameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_uiParameters[U_COLOR_TEXTURE], 0);
+	for(unsigned i = 0; i < text.length(); ++i)
+	{
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(i * 1.0f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_uiParameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_uiParameters[U_TEXT_ENABLED], 0);
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
 }
 
 void SceneSP3::Exit()
