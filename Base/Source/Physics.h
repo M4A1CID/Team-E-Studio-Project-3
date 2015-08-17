@@ -1,10 +1,18 @@
 #pragma once
-
+#include "Vector3.h"
 class CPhysics
 {
+public:
 	CPhysics(void);
 	~CPhysics(void);
 
-private:
+	// Get the gravity
+	Vector3 getGravity(void); 
+	// Set the gravity
+	void setGravity(Vector3); 
 
+
+
+private:
+	Vector3 m_Gravity;
 };
