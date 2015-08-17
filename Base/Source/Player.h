@@ -25,6 +25,8 @@ public:
 	void UpdatePosition(double dt, Camera3 camera);
 
 	//to add in the collision detection here
+
+
 private:
 	Vector3 pos;
 	Vector3 scale;	//for collision purposes

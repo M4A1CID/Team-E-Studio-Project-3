@@ -1,10 +1,12 @@
 #include "Player.h"
 
+static float offsetY = 20.f;
 
 CPlayer::CPlayer(void)
 {
 	active = false;
 	pos.SetZero();
+	scale.SetZero();
 }
 
 CPlayer::~CPlayer(void)
@@ -48,5 +50,5 @@ void CPlayer::UpdateCameraStatus( const unsigned char key, Camera3 camera)
 void CPlayer::UpdatePosition(double dt, Camera3 camera)
 {
 	camera.Update(dt);
-	//CPlayer::SetPosition(Vector3(camera.position.x, camera.position.y, camera.position.z));
+	pos.Set(camera.position.x * dt, camera.position.y * dt + offsetY, camera.position.z * dt);
 }
