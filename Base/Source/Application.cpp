@@ -66,6 +66,10 @@ bool Application::GetKeyboardUpdate()
 	{
 		scene->UpdateCameraStatus(32);
 	}
+	if(IsKeyPressed(VK_SHIFT))
+	{
+		scene->UpdateCameraStatus(VK_SHIFT);
+	}
 
 	/*if(IsKeyPressed('R'))
 	{

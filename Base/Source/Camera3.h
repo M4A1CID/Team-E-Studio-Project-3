@@ -67,6 +67,8 @@ private:
 	bool m_bCrouching;
 	bool m_bProne;
 
+	bool m_bRun;	//check if player is running
+
 	float GRAVITY;
 	float JumpVel;
 	float JUMPMAXSPEED, JUMPACCEL;

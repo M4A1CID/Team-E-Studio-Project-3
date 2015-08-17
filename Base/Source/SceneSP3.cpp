@@ -38,7 +38,7 @@ void SceneSP3::initPlayer()
 	
 	//the parameters are as follows: active, position, scale
 	//scale is 5 for now.
-	thePlayer->Init(true, Vector3(0, 20, 10), Vector3 (5, 5, 5));
+	thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5));
 }
 void SceneSP3::Init()
 {
@@ -85,8 +85,6 @@ void SceneSP3::initUniforms()
 	m_uiParameters[U_LIGHT_DEPTH_MVP_GPASS] = glGetUniformLocation(m_gPassShaderID, "lightDepthMVP");
 	m_uiParameters[U_LIGHT_DEPTH_MVP] = glGetUniformLocation(m_programID,"lightDepthMVP");
 	m_uiParameters[U_SHADOW_MAP] = glGetUniformLocation(m_programID, "shadowMap");
-	
-	
 	
 	// Get a handle for our uniform
 	m_uiParameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -357,11 +355,12 @@ void SceneSP3::initVariables()
 
 	LoadFromTextFileOBJ("Variables/LoadOBJ.txt");
 }
-/* STILL DEBUGGING THIS FEATURE PLS DONT TOUCH */
+
 void SceneSP3::UpdatePlayerStatus(const unsigned char key)
 {
 	thePlayer->UpdateCameraStatus(key, camera);
 }
+
 void SceneSP3::UpdateCameraStatus(const unsigned char key)
 {
 	camera.UpdateStatus(key);
@@ -552,17 +551,17 @@ void SceneSP3::RenderPassMain()
 	
 
 	std::ostringstream playerpos;
-	playerpos.precision(5);
-	playerpos << "Pos_X: " << thePlayer->GetPosition().x;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 0, 0), 2.5, 0.9, 52);
+	playerpos.precision(3);
+	playerpos << "Pos_X: " << camera.position.x;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 0, 0), 2.5, 0.9, 54);
 
 	std::ostringstream playerposY;
-	playerposY.precision(5);
-	playerposY << "Pos_Y: " << thePlayer->GetPosition().y;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 0, 0), 2.5, 0.9, 47);
+	playerposY.precision(3);
+	playerposY << "Pos_Y: " << camera.position.y;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 0, 0), 2.5, 0.9, 51);
 
 	std::ostringstream ss;
-	ss.precision(5);
+	ss.precision(3);
 	ss << "FPS: " << m_fFps;
 
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5f, 0.9f, 57.f);

@@ -31,7 +31,6 @@ void Camera3::Walk(const double dt)
 	else if(dt<0)
 		MoveBackward(abs(dt));
 }
-
 /*===============================================================
 	Strafe left or right. You can add in a deadzone here
 ==============================================================*/
@@ -338,6 +337,7 @@ void Camera3::UpdateStatus(const unsigned char key)
 }
 void Camera3::Update(double dt)
 {
+	
 	if(myKeys[32] == true)
 	{
 		Jump(dt);
@@ -369,7 +369,6 @@ void Camera3::Update(double dt)
 		MoveRight(dt);
 		myKeys['d'] = false;
 	}
-	
 	
 	if(Application::m_sdCamera_yaw != 0)
 		Yaw(dt);
