@@ -1,5 +1,7 @@
 #pragma once
 #include "Vector3.h"
+#include "Obj.h"
+
 class CPhysics
 {
 public:
