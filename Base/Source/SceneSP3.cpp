@@ -460,6 +460,7 @@ void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetR
 {
 	 modelStack.PushMatrix();
 	 modelStack.Translate(0, 1800, -0);
+	 modelStack.Translate(5,5,5);
 	 RenderMesh(meshList[GEO_SKYPLANE], false);
 	 modelStack.PopMatrix();
 } 
