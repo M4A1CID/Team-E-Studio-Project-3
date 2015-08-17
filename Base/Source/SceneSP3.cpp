@@ -326,7 +326,7 @@ void SceneSP3::UpdateCameraStatus(const unsigned char key)
 
 void SceneSP3::CharacterCrouch()
 {
-		if(Application::IsKeyPressed(VK_CONTROL) && camera.position.y != 4)
+		/*if(Application::IsKeyPressed(VK_CONTROL) && camera.position.y != 4)
 		{
 			camera.position.y -= 0.5;
 			camera.target.y -= 0.5;
@@ -335,7 +335,7 @@ void SceneSP3::CharacterCrouch()
 		{
 			camera.position.y = 6;
 			camera.target.y = 6;
-		}
+		}*/
 }
 
 void SceneSP3::Update(double dt)

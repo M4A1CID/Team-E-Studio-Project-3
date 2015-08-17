@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3.h"
+#include "Strategy.h"
 
 class CEnemy
 {
@@ -7,8 +8,54 @@ public:
 	CEnemy(void);
 	virtual ~CEnemy(void);
 
+	//Set the position of this Enemy
+	void setPosition(Vector3);
+	void setPosition(float,float,float);
+	void setPosition_X(float);
+	void setPosition_Y(float);
+	void setPosition_Z(float);
 
+	//Get the position of this Enemy
+	Vector3 getPosition(void);
+	
+	// Set the scale of this Enemy
+	void setScale(Vector3);
+	void setScale(float,float,float);
+	void setScale_X(float);
+	void setScale_Y(float);
+	void setScale_Z(float);
+	// Get the scale of this Enemy
+	Vector3 getScale(void);
+
+	// Set the active of this Enemy
+	void setActive(bool);
+	// Get the active of this Enemy
+	bool getActive(void);
+
+	// Set the geoType of this Enemy
+	void setGeoType(int);
+	// Get the geoType of this Enemy
+	int getGeoType(void);
+
+	// Set the destination of this Enemy
+	void setDestination(Vector3);
+	void setDestination(float,float,float);
+	void setDestination_X(float);
+	void setDestination_Y(float);
+	void setDestination_Z(float);
+
+	// Get the destination of this Enemy
+	Vector3 getDestination(void);
+
+	//Update the enemy
+	virtual void Update() = 0;
 private:
-	Vector3 pos;
-	bool active;
+	Vector3 Pos;			// Enemy's position
+	Vector3 Scale;			// Enemy's scale
+	Vector3 destination;	// Enemy's Destination
+	bool active;			// Enemy's active
+	int geoType;			// Enemy's Geometric type
+
+	CStrategy* theStrategy;	// Enemy's strategy
+
 };
