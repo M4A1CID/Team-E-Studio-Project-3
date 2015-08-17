@@ -1,4 +1,5 @@
 0	0	0	10	10	1	7	1
+0	50	0	10	10	10	12	1
 //PosX,	PosY,	PosZ,	ScaleX,	ScaleY,	ScaleZ,	GeoType,Active
 
 //Geotype 7 = WALL

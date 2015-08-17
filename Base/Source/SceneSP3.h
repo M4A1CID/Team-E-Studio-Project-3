@@ -111,19 +111,19 @@ class SceneSP3 : public Scene
 	};
 	enum GEOMETRY_TYPE
 	{
-		GEO_AXES,
-		GEO_SPHERE,
-		GEO_QUAD,
-		GEO_CUBE,
-		GEO_RING,
-		GEO_CONE,
-		GEO_TEXT,
-		GEO_WALL, // 7
-		GEO_DOOR, // 9
-		GEO_BENCH, // 10
-		GEO_TABLE, // 11
-		GEO_TOILET, // 12
-
+		GEO_AXES,	// 0
+		GEO_SPHERE,	// 1
+		GEO_QUAD,	// 2
+		GEO_CUBE,	// 3
+		GEO_RING,	// 4
+		GEO_CONE,	// 5
+		GEO_TEXT,	// 6
+		GEO_WALL,	// 7
+		GEO_DOOR,	// 8
+		GEO_BENCH,	// 9
+		GEO_TABLE,	// 10
+		GEO_TOILET, // 11
+		GEO_CCTV,	// 12
 		//TSL
 		GEO_SKYPLANE,
 		GEO_TERRAIN,

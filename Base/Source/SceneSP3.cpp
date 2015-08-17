@@ -329,6 +329,9 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("GEO_WALL","Objects//wall.obj");
 	meshList[GEO_WALL]->textureArray[0] = LoadTGA("Image//wall.tga");
+
+	meshList[GEO_CCTV] = MeshBuilder::GenerateOBJ("GEO_CCTV","Objects//cctv.obj");
+	meshList[GEO_CCTV]->textureArray[0] = LoadTGA("Image//cctv.tga");
 }
 
 void SceneSP3::initVariables()
@@ -422,54 +425,25 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	Vector3 Scale;
 	int geotype;
 	bool active;
-	
+	CObj * obj;
 	if (myfile.is_open())
 	{
 		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >> geotype >> active)
 		{
 
-			CObj * obj = FetchOBJ();
+			obj = FetchOBJ();
 			obj->setActive(active);
 			obj->setPosition(Pos);
-
+			obj->setGeoType(geotype);
 			obj->setScale(Scale);
-			switch(geotype)
-			{
-			case GEO_WALL:
-				{
-					obj->setGeoType(GEO_WALL);
-					break;
-				}
-			case GEO_DOOR:
-				{
-					obj->setGeoType(GEO_DOOR);
-					break;
-				}
-			case GEO_BENCH:
-				{
-					obj->setGeoType(GEO_BENCH);
-					break;
-				}
-			case GEO_TABLE:
-				{
-					obj->setGeoType(GEO_TABLE);
-					break;
-				}
-			case GEO_TOILET:
-				{
-					obj->setGeoType(GEO_TOILET);
-					
-					break;
-				}
-			}
 			
 		}
 		myfile.close();
 		cout << "Objs Loaded: SUCCESS!" << endl;
 		return true;
 	}
-
-	else cout << "Objs Loaded: FAILED!"; 
+	else 
+		cout << "Objs Loaded: FAILED!"; 
 	return false;
 }
 
