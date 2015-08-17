@@ -113,10 +113,13 @@ class SceneSP3 : public Scene
 		GEO_RING,
 		GEO_CONE,
 		GEO_TEXT,
+
 		//TSL
 		GEO_SKYPLANE,
 		GEO_TERRAIN,
+
 		//Animations
+
 		//Assignment1
 		GEO_LIGHT_DEPTH_QUAD,
 		NUM_GEOMETRY,

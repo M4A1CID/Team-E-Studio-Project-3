@@ -115,6 +115,9 @@ bool Application::GetMouseUpdate()
 	//	scene->UpdateWeaponStatus(scene->WA_RELEASE);
 	//}
 
+	// Hide the cursor
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 	return false;
 }
 

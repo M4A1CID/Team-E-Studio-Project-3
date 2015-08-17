@@ -41,6 +41,7 @@ void SceneSP3::Init()
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 }
+
 void SceneSP3::initUniforms()
 {
 		// Black background
@@ -293,6 +294,7 @@ void SceneSP3::initUniforms()
 	glUniform1f(m_uiParameters[U_LIGHT4_COSINNER], lights[4].cosInner);
 	glUniform1f(m_uiParameters[U_LIGHT4_EXPONENT], lights[4].exponent);*/
 }
+
 void SceneSP3::initMeshlist()
 {
 	for(int i = 0; i < NUM_GEOMETRY; ++i)
@@ -303,7 +305,14 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+
+	meshList[GEO_TERRAIN] = MeshBuilder::GenerateQuad("Terrain", Color(1, 1, 1), 10000.f);
+	meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//grass.tga");
+
+	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
+	meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky1.tga"); 
 }
+
 void SceneSP3::initVariables()
 {
 	Math::InitRNG();
@@ -320,6 +329,7 @@ void SceneSP3::Update(double dt)
 	camera.Update(dt);	
 	UpdateSceneControls();
 }
+
 void SceneSP3::UpdateSceneControls()
 {
 	if(Application::IsKeyPressed(VK_F1))
@@ -342,6 +352,7 @@ void SceneSP3::UpdateSceneControls()
 		m_bLightEnabled = false;
 	}
 }
+
 void SceneSP3::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -361,6 +372,8 @@ void SceneSP3::Render()
 	modelStack.LoadIdentity();
 	//glUniform1i(m_uiParameters[U_FOG_ENABLE], 0);
 
+
+
 	//============================PRE RENDER PASS =============================
 	
 	RenderPassGPass();
@@ -368,9 +381,10 @@ void SceneSP3::Render()
 	//============================ MAIN RENDER PASS ===========================
 	RenderPassMain();
 
-	
+	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 
 }
+
 void SceneSP3::RenderPassMain()
 {
 	m_renderPass = RENDER_PASS_MAIN;
@@ -395,11 +409,23 @@ void SceneSP3::RenderPassMain()
 
 	//RenderMesh(meshList[GEO_LIGHT_DEPTH_QUAD],false);
 }
+
 void SceneSP3::RenderWorld()
 {
 	RenderMesh(meshList[GEO_AXES], false);
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 20, 0);
 	RenderMesh(meshList[GEO_SPHERE],false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Rotate(-90, 1, 0, 0);
+	RenderMesh(meshList[GEO_TERRAIN], false);
+	modelStack.PopMatrix();
 }
+
 void SceneSP3::RenderPassGPass()
 {
 	m_renderPass = RENDER_PASS_PRE;
@@ -428,6 +454,7 @@ void SceneSP3::RenderPassGPass()
 									lightUp.x,lightUp.y,lightUp.z);
 	RenderWorld();
 }
+
 void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
