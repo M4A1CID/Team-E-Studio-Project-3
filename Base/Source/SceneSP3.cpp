@@ -30,22 +30,7 @@ SceneSP3::~SceneSP3()
 		thePlayer = NULL;
 	}
 }
-bool SceneSP3::checkCollisionBetweenOBJ(CPlayer* go1, CObj* go2)
-{
-	Vector3 distanceAwayFromPlayer = go2->getPosition() - go1->GetPosition();
-	Vector3 totalSize = go2->getScale() + go1->GetScale();
-	//cout << distanceAwayFromPlayer << endl;
-	//If possible collision
-	if(distanceAwayFromPlayer.Length() < totalSize.x ||
-		distanceAwayFromPlayer.Length() < totalSize.y ||
-		distanceAwayFromPlayer.Length() < totalSize.z)
-	{
-		return true;
-	}
-	return false;
 
-	
-}
 void SceneSP3::initPlayer()
 {
 	//initialize the player class
@@ -336,7 +321,7 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-
+	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("GEO_CUBE",Color(1,0,0),1.f);
 	meshList[GEO_TERRAIN] = MeshBuilder::GenerateQuad("Terrain", Color(1, 1, 1), 10000.f);
 	meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//grass.tga");
 
@@ -390,9 +375,11 @@ void SceneSP3::Update(double dt)
 	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
 	{
 		CObj *go = (CObj *)*it;
-		if(checkCollisionBetweenOBJ(thePlayer,go))
+		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
 		{
 			cout << "Collision detected!" << endl;
+			//camera.position-= camera.target;
+			//camera.target = go->getPosition() - thePlayer->GetPosition();
 		}
 	}
 
@@ -509,6 +496,16 @@ void SceneSP3::Render()
 
 	//============================ MAIN RENDER PASS ===========================
 	RenderPassMain();
+
+	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT],"Collision Detected!",Color(1,1,1),2,2,2);
+			//cout << "Collision detected!" << endl;
+		}
+	}
 }
 
 void SceneSP3::RenderPassMain()
@@ -517,7 +514,7 @@ void SceneSP3::RenderPassMain()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0,0,Application::GetWindowWidth(), Application::GetWindowHeight());
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -573,6 +570,11 @@ void SceneSP3::RenderWorld()
 	modelStack.PopMatrix();
 
 	RenderObjList();
+	modelStack.PushMatrix();
+	modelStack.Translate(0,20,0);
+	modelStack.Scale(15,15,15);
+	RenderMesh(meshList[GEO_CUBE],false);
+	modelStack.PopMatrix();
 
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 
@@ -599,7 +601,7 @@ void SceneSP3::RenderPassGPass()
 	m_renderPass = RENDER_PASS_PRE;
 	m_lightDepthFBO.BindForWriting();
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glClear(GL_DEPTH_BUFFER_BIT);
 

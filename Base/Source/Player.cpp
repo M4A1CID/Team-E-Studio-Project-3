@@ -6,7 +6,7 @@ CPlayer::CPlayer(void)
 {
 	active = false;
 	pos.SetZero();
-	scale.SetZero();
+	scale.Set(1,1,1);
 }
 
 CPlayer::~CPlayer(void)

@@ -1,6 +1,10 @@
 #pragma once
 #include "Vector3.h"
 #include "Obj.h"
+#include "Player.h"
+#include "Obj.h"
+
+using namespace std;
 
 class CPhysics
 {
@@ -13,6 +17,8 @@ public:
 	// Set the gravity
 	void setGravity(Vector3); 
 
+	// Check collision
+	bool checkCollisionBetweenOBJ(CPlayer*, CObj*);
 
 
 private:

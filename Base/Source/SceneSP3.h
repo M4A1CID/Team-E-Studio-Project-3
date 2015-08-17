@@ -16,6 +16,7 @@
 #include "Wall.h"
 #include "Obj.h"
 #include "Player.h"
+#include "Physics.h"
 #include <vector>
 #include <fstream>
 
@@ -144,7 +145,7 @@ public:
 	SceneSP3();
 	~SceneSP3();
 
-	bool checkCollisionBetweenOBJ(CPlayer*, CObj*);
+	
 
 	virtual void Init();
 	virtual void Update(double dt);
@@ -250,6 +251,7 @@ private:
 	float m_speed;
 	int m_objectCount;
 	Vector3 m_gravity;
+	CPhysics physicsEngine;
 	
 
 	//Light Depth Buffer
