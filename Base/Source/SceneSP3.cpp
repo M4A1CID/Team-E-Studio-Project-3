@@ -333,6 +333,21 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_CCTV] = MeshBuilder::GenerateOBJ("GEO_CCTV","Objects//cctv.obj");
 	meshList[GEO_CCTV]->textureArray[0] = LoadTGA("Image//cctv.tga");
+
+	meshList[GEO_ARM] = MeshBuilder::GenerateOBJ("GEO_ARM","Objects//arm.obj");
+	meshList[GEO_ARM]->textureArray[0] = LoadTGA("Image//white.tga");
+
+	meshList[GEO_LEG] = MeshBuilder::GenerateOBJ("GEO_LEG","Objects//leg.obj");
+	meshList[GEO_LEG]->textureArray[0] = LoadTGA("Image//white.tga");
+
+	meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("GEO_BODY","Objects//body.obj");
+	meshList[GEO_BODY]->textureArray[0] = LoadTGA("Image//white.tga");
+
+	meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("GEO_HEAD","Objects//head.obj");
+	meshList[GEO_HEAD]->textureArray[0] = LoadTGA("Image//white.tga");
+
+	meshList[GEO_DESK] = MeshBuilder::GenerateOBJ("GEO_DESK","Objects//desk.obj");
+	meshList[GEO_DESK]->textureArray[0] = LoadTGA("Image//desk.tga");
 }
 
 void SceneSP3::initVariables()

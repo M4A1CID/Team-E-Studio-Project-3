@@ -125,6 +125,11 @@ class SceneSP3 : public Scene
 		GEO_TABLE,	// 10
 		GEO_TOILET, // 11
 		GEO_CCTV,	// 12
+		GEO_ARM,	// 13
+		GEO_LEG,	// 14
+		GEO_BODY,	// 15
+		GEO_HEAD,	// 16
+		GEO_DESK,	// 17
 		//TSL
 		GEO_SKYPLANE,
 		GEO_TERRAIN,
