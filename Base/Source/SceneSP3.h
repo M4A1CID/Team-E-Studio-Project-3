@@ -13,7 +13,10 @@
 #include "Target.h"
 #include "irrKlang.h"
 #include "DepthFBO.h"
+#include "Wall.h"
+#include "Obj.h"
 #include <vector>
+#include <fstream>
 
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
@@ -113,6 +116,11 @@ class SceneSP3 : public Scene
 		GEO_RING,
 		GEO_CONE,
 		GEO_TEXT,
+		GEO_WALL, // 8
+		GEO_DOOR, // 9
+		GEO_BENCH, // 10
+		GEO_TABLE, // 11
+		GEO_TOILET, // 12
 
 		//TSL
 		GEO_SKYPLANE,
@@ -149,7 +157,7 @@ public:
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
+	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
 
@@ -191,7 +199,8 @@ public:
 
 private:
 	std::vector<Particle *> m_paList;
-	std::vector<Vector3> m_treeList;
+	std::vector<CObj *> myObjList;
+	//std::vector<Vector3> m_treeList;
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
 	unsigned m_programID;
@@ -208,6 +217,10 @@ private:
 	Light lights[5];
 
 	float m_fFps;
+	//Crouch
+	void CharacterCrouch();
+
+	bool LoadFromTextFileOBJ(const string mapString);
 
 	double m_dJumpingSpeed;
 	bool m_bLightEnabled;

@@ -324,6 +324,20 @@ void SceneSP3::UpdateCameraStatus(const unsigned char key)
 	camera.UpdateStatus(key);
 }
 
+void SceneSP3::CharacterCrouch()
+{
+		if(Application::IsKeyPressed(VK_CONTROL) && camera.position.y != 4)
+		{
+			camera.position.y -= 0.5;
+			camera.target.y -= 0.5;
+		}
+		else if (Application::IsKeyReleased(VK_CONTROL) && camera.position.y != 6 )
+		{
+			camera.position.y = 6;
+			camera.target.y = 6;
+		}
+}
+
 void SceneSP3::Update(double dt)
 {
 	camera.Update(dt);	
@@ -341,7 +355,7 @@ void SceneSP3::UpdateSceneControls()
 	if(Application::IsKeyPressed(VK_F4))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	
+	//CharacterCrouch();
 
 	if(Application::IsKeyPressed('8'))
 	{
@@ -351,6 +365,73 @@ void SceneSP3::UpdateSceneControls()
 	{
 		m_bLightEnabled = false;
 	}
+}
+
+bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Normal;
+	Vector3 Scale;
+	int geotype;
+	bool active;
+	CObj * obj;
+	if (myfile.is_open())
+	{
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z >> Normal.x >> Normal.y >> Normal.z >> Scale.x >> Scale.y >> Scale.z >> geotype >> active)
+		{
+			switch(geotype)
+			{
+			case GEO_WALL:
+				{
+					obj->setActive(active);
+					obj->setGeoType(GEO_WALL);
+					obj->setPosition(Pos);
+					obj->setScale(Scale);
+					break;
+				}
+			case GEO_DOOR:
+				{
+					obj->setActive(active);
+					obj->setGeoType(GEO_DOOR);
+					obj->setPosition(Pos);
+					obj->setScale(Scale);
+					break;
+				}
+			case GEO_BENCH:
+				{
+					obj->setActive(active);
+					obj->setGeoType(GEO_BENCH);
+					obj->setPosition(Pos);
+					obj->setScale(Scale);
+					break;
+				}
+			case GEO_TABLE:
+				{
+					obj->setActive(active);
+					obj->setGeoType(GEO_TABLE);
+					obj->setPosition(Pos);
+					obj->setScale(Scale);
+					break;
+				}
+			case GEO_TOILET:
+				{
+					obj->setActive(active);
+					obj->setGeoType(GEO_TOILET);
+					obj->setPosition(Pos);
+					obj->setScale(Scale);
+					break;
+				}
+			}
+		}
+		myfile.close();
+		cout << "Level Loaded: SUCCESS!" << endl;
+		return true;
+	}
+
+	else cout << "Level Loaded: FAILED!"; 
+	return false;
 }
 
 void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius, float AtmosphereRadius, float hTile, float vTile)
@@ -462,7 +543,7 @@ void SceneSP3::RenderPassGPass()
 	RenderWorld();
 }
 
-void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
+void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -499,7 +580,6 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 	{	
 		glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
 	}
-	glUniform1i(m_uiParameters[U_FOG_ENABLE], enableFog);
 	for(unsigned i = 0; i < Mesh::MAX_TEXTURES; ++i)
 	{
 		if(mesh->textureArray[i] > 0)
