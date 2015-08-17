@@ -1,6 +1,6 @@
 #include "Player.h"
 
-static float offsetY = 20.f;
+static float offsetY = 0.f;
 
 CPlayer::CPlayer(void)
 {
@@ -50,5 +50,5 @@ void CPlayer::UpdateCameraStatus( const unsigned char key, Camera3 camera)
 void CPlayer::UpdatePosition(double dt, Camera3 camera)
 {
 	camera.Update(dt);
-	pos.Set(camera.position.x * dt, camera.position.y * dt + offsetY, camera.position.z * dt);
+	pos.Set(camera.position.x, camera.position.y-offsetY, camera.position.z);
 }

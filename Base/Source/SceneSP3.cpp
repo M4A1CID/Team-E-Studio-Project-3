@@ -30,6 +30,22 @@ SceneSP3::~SceneSP3()
 		thePlayer = NULL;
 	}
 }
+bool SceneSP3::checkCollisionBetweenOBJ(CPlayer* go1, CObj* go2)
+{
+	Vector3 distanceAwayFromPlayer = go2->getPosition() - go1->GetPosition();
+	Vector3 totalSize = go2->getScale() + go1->GetScale();
+	//cout << distanceAwayFromPlayer << endl;
+	//If possible collision
+	if(distanceAwayFromPlayer.Length() < totalSize.x ||
+		distanceAwayFromPlayer.Length() < totalSize.y ||
+		distanceAwayFromPlayer.Length() < totalSize.z)
+	{
+		return true;
+	}
+	return false;
+
+	
+}
 void SceneSP3::initPlayer()
 {
 	//initialize the player class
@@ -370,6 +386,16 @@ void SceneSP3::Update(double dt)
 	thePlayer->UpdatePosition(dt, camera);
 	camera.Update(dt);	
 	UpdateSceneControls();
+
+	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+		if(checkCollisionBetweenOBJ(thePlayer,go))
+		{
+			cout << "Collision detected!" << endl;
+		}
+	}
+
 
 	m_fFps = (float)(1.f / dt);
 }

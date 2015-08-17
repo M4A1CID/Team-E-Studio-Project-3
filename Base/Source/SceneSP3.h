@@ -144,6 +144,8 @@ public:
 	SceneSP3();
 	~SceneSP3();
 
+	bool checkCollisionBetweenOBJ(CPlayer*, CObj*);
+
 	virtual void Init();
 	virtual void Update(double dt);
 	virtual void Render();
