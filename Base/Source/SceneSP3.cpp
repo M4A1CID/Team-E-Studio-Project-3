@@ -36,9 +36,9 @@ void SceneSP3::initPlayer()
 	//initialize the player class
 	thePlayer = new CPlayer();
 	
-	//the parameters are as follows: active, position, scale
+	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
 	//scale is 5 for now.
-	thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5));
+	thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
 void SceneSP3::Init()
 {
