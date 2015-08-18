@@ -19,7 +19,6 @@ CPlayer::CPlayer(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int max
 	this->scale = scale;
 	this->itemsHeld = itemsHeld;
 	this->maxItemCap = maxItemCap;
-
 }
 //the destructor. nothing to destroy right now
 CPlayer::~CPlayer(void)

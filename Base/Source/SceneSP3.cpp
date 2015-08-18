@@ -387,6 +387,8 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("GEO_HEAD","Objects//head.obj");
 	meshList[GEO_HEAD]->textureArray[0] = LoadTGA("Image//white.tga");
 
+	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_ITEM_UI]->textureID = LoadTGA("Image//item_ui.tga");
 }
 
 void SceneSP3::initVariables()
@@ -600,6 +602,9 @@ void SceneSP3::Render()
 	//============================= HUD displayed on screen ====================================
 	SetHUD(true);
 
+	modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 32.f, 32.f, 32.f);
+	modelStack.PopMatrix();
 
 	std::ostringstream playerpos;
 	playerpos.precision(3);
@@ -789,58 +794,47 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 
 	mesh->Render();
 }
-void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, float y, bool rotate, bool m_rotate)
+void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rotate, bool m_rotate)
 {
-	Mtx44 ortho;
-	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
+	//if(m_rotate)
+	//{
+	//	//modelStack.PushMatrix();
+	//	
+	//	modelStack.Translate(67,45,0);
+
+	//	modelStack.Rotate(-camera.m_Yaw,0,0,1);
+	//	
+	//	
+	//	modelStack.Translate(x/64,y/64,0);
+	//	//modelStack.PopMatrix();
+	//}
+	//else
+	//{
+	//modelStack.Translate(x, y, 0);
+	//}
+	//modelStack.Scale(size, size, size);
+	//if(rotate)
+	//{
+	//	modelStack.Rotate(-camera.m_Yaw,0,0,1);
+	//	
+	//}
+
+		Mtx44 ortho;
+	ortho.SetToOrtho(0, 800, 0, 600, -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity();
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
-	if(m_rotate)
-	{
-		//modelStack.PushMatrix();
-		
-		modelStack.Translate(67,45,0);
-
-		modelStack.Rotate(-camera.m_Yaw,0,0,1);
-		
-		
-		modelStack.Translate(x/64,y/64,0);
-		//modelStack.PopMatrix();
-	}
-	else
-	{
 	modelStack.Translate(x, y, 0);
-	}
 	modelStack.Scale(size, size, size);
-	if(rotate)
-	{
-		modelStack.Rotate(-camera.m_Yaw,0,0,1);
-		
-	}
+	/*if (rotate)
+		modelStack.Rotate(rotateAngle, 0, 0, 1);*/
+
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
+
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	if(enableLight && m_bLightEnabled)
-	{
-		glUniform1i(m_uiParameters[U_LIGHTENABLED], 1);
-		modelView = viewStack.Top() * modelStack.Top();
-		glUniformMatrix4fv(m_uiParameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_uiParameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView.a[0]);
-		
-		//load material
-		glUniform3fv(m_uiParameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_uiParameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_uiParameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_uiParameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{	
-		glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
-	}
 	glUniformMatrix4fv(m_uiParameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 	if(mesh->textureID > 0)
 	{
@@ -858,6 +852,7 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x,
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
 	modelStack.PopMatrix();
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
@@ -906,12 +901,10 @@ const float SceneSP3::GetCameraCurrentY(void)
 	
 	return 350* (ReadHeightMap(m_heightMap, camera.position.x/SKYBOXSIZE, camera.position.z/SKYBOXSIZE));
 }
-
 const float SceneSP3::GetHeightMapY(float x, float z)
 {
 	return 350* (ReadHeightMap(m_heightMap, x/SKYBOXSIZE, z/SKYBOXSIZE));
 }
-
 const std::vector<unsigned char>SceneSP3::GetHeightMap()
 {
 	return m_heightMap;
