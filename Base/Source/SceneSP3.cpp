@@ -346,6 +346,9 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_DESK] = MeshBuilder::GenerateOBJ("GEO_DESK","Objects//desk.obj");
 	meshList[GEO_DESK]->textureArray[0] = LoadTGA("Image//desk.tga");
+
+	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_ITEM_UI]->textureArray[0] = LoadTGA("Image//item_ui.tga");
 }
 
 void SceneSP3::initVariables()
@@ -519,6 +522,28 @@ void SceneSP3::Render()
 			//cout << "Collision detected!" << endl;
 		}
 	}
+
+	//============================= HUD displayed on screen ====================================
+	SetHUD(true);
+
+
+	std::ostringstream playerpos;
+	playerpos.precision(3);
+	playerpos << "Pos_X: " << camera.position.x;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 0, 0), 2.5, 0.9, 54);
+
+	std::ostringstream playerposY;
+	playerposY.precision(3);
+	playerposY << "Pos_Y: " << camera.position.y;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 0, 0), 2.5, 0.9, 51);
+
+	std::ostringstream ss;
+	ss.precision(3);
+	ss << "FPS: " << m_fFps;
+
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5f, 0.9f, 57.f);
+	
+	SetHUD(false);
 }
 
 void SceneSP3::RenderPassMain()
@@ -544,27 +569,6 @@ void SceneSP3::RenderPassMain()
 	//Render GEO_LIGHT_DEPTH_QUAD
 
 	//RenderMesh(meshList[GEO_LIGHT_DEPTH_QUAD],false);
-
-	
-
-	
-
-	std::ostringstream playerpos;
-	playerpos.precision(3);
-	playerpos << "Pos_X: " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 0, 0), 2.5, 0.9, 54);
-
-	std::ostringstream playerposY;
-	playerposY.precision(3);
-	playerposY << "Pos_Y: " << camera.position.y;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 0, 0), 2.5, 0.9, 51);
-
-	std::ostringstream ss;
-	ss.precision(3);
-	ss << "FPS: " << m_fFps;
-
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5f, 0.9f, 57.f);
-
 }
 
 void SceneSP3::RenderWorld()
@@ -637,7 +641,22 @@ void SceneSP3::RenderPassGPass()
 									lightUp.x,lightUp.y,lightUp.z);
 	RenderWorld();
 }
-
+void SceneSP3::SetHUD(const bool m_bHUDmode)
+{
+	if(m_bHUDmode)
+	{
+		glDisable(GL_DEPTH_TEST);
+		Mtx44 ortho;
+		ortho.SetToOrtho(0,80,0,60,-10,10);
+		projectionStack.PushMatrix();
+		projectionStack.LoadMatrix(ortho);
+	}
+	else
+	{
+		projectionStack.PopMatrix();
+		glEnable(GL_DEPTH_TEST);
+	}
+}
 void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
@@ -694,7 +713,79 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 
 	mesh->Render();
 }
+void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, float y, bool rotate, bool m_rotate)
+{
+	Mtx44 ortho;
+	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	if(m_rotate)
+	{
+		//modelStack.PushMatrix();
+		
+		modelStack.Translate(67,45,0);
 
+		modelStack.Rotate(-camera.m_Yaw,0,0,1);
+		
+		
+		modelStack.Translate(x/64,y/64,0);
+		//modelStack.PopMatrix();
+	}
+	else
+	{
+	modelStack.Translate(x, y, 0);
+	}
+	modelStack.Scale(size, size, size);
+	if(rotate)
+	{
+		modelStack.Rotate(-camera.m_Yaw,0,0,1);
+		
+	}
+	Mtx44 MVP, modelView, modelView_inverse_transpose;
+	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	if(enableLight && m_bLightEnabled)
+	{
+		glUniform1i(m_uiParameters[U_LIGHTENABLED], 1);
+		modelView = viewStack.Top() * modelStack.Top();
+		glUniformMatrix4fv(m_uiParameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
+		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
+		glUniformMatrix4fv(m_uiParameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView.a[0]);
+		
+		//load material
+		glUniform3fv(m_uiParameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
+		glUniform3fv(m_uiParameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
+		glUniform3fv(m_uiParameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
+		glUniform1f(m_uiParameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
+	}
+	else
+	{	
+		glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
+	}
+	glUniformMatrix4fv(m_uiParameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	if(mesh->textureID > 0)
+	{
+		glUniform1i(m_uiParameters[U_COLOR_TEXTURE_ENABLED], 1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+		glUniform1i(m_uiParameters[U_COLOR_TEXTURE], 0);
+	}
+	else
+	{
+		glUniform1i(m_uiParameters[U_COLOR_TEXTURE_ENABLED], 0);
+	}
+	mesh->Render();
+	if(mesh->textureID > 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
+}
 void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if(!mesh || mesh->textureID <= 0)
@@ -734,7 +825,6 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
 	projectionStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
 }
-
 void SceneSP3::Exit()
 {
 	// Cleanup VBO

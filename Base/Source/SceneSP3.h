@@ -130,6 +130,9 @@ class SceneSP3 : public Scene
 		GEO_BODY,	// 15
 		GEO_HEAD,	// 16
 		GEO_DESK,	// 17
+
+		GEO_ITEM_UI,	// 18 to render out the item UI on the bottom of screen
+
 		//TSL
 		GEO_SKYPLANE,
 		GEO_TERRAIN,
