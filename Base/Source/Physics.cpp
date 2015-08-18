@@ -109,32 +109,34 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 }
 
- void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer )
+ void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
  {
-	 
 	 unsigned terrainSize = (unsigned)sqrt((double)heightMap.size());  
 
+	 
 	 float x = thePlayer->GetPosition().x / terrainSize;
 	 float z = thePlayer->GetPosition().z / terrainSize;
 
+	 //get the size of the grid based on the terrain size
 	 float gridSquareSize = 1.f/ (terrainSize);
 
 	 int gridX = (x + 0.5f) / gridSquareSize;
 	 int gridZ = (z + 0.5f) / gridSquareSize;
 
-
-
+	 //get the coordinates based on the player position and terrain size
 	 float xCoord = fmod((x + 0.5f),gridSquareSize) / gridSquareSize;
 	 float zCoord = fmod((z + 0.5f),gridSquareSize) / gridSquareSize;
 
 	 float answer = 0.f;
+
 	 if (xCoord <= (1-zCoord)) 
 	 {
 		 answer = barryCentric(Vector3(0, heights[gridX][gridZ], 0), 
 			 Vector3(1,heights[gridX + 1][gridZ], 0), 
 			 Vector3(0,heights[gridX][gridZ + 1], 1),  
 			 Vector2(xCoord, zCoord));
-	 } else 
+	 } 
+	 else 
 	 {
 		 answer = barryCentric(Vector3(1, heights[gridX + 1][gridZ], 0),
 			 Vector3(1, heights[gridX + 1][gridZ + 1], 1), 
