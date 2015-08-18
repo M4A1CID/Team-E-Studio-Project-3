@@ -392,8 +392,7 @@ void SceneSP3::Update(double dt)
 		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
 		{
 			cout << "Collision detected!" << endl;
-			//camera.position-= camera.target;
-			//camera.target = go->getPosition() - thePlayer->GetPosition();
+			physicsEngine.collisionResponseBetweenOBJ(camera,thePlayer,go,dt);
 		}
 	}
 

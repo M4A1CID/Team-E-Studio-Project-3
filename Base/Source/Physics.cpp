@@ -37,3 +37,12 @@ bool CPhysics::checkCollisionBetweenOBJ(CPlayer* go1, CObj* go2)
 
 	
 }
+
+void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, CObj* &go, double dt)
+{
+	Vector3 diffVec = go->getPosition() - thePlayer->GetPosition();
+	diffVec *= 10;
+	camera.position -= diffVec * dt;
+	camera.target -= diffVec * dt;
+
+}

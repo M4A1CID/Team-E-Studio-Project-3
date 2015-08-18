@@ -3,6 +3,7 @@
 #include "Obj.h"
 #include "Player.h"
 #include "Obj.h"
+#include "Camera3.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ public:
 
 	// Check collision
 	bool checkCollisionBetweenOBJ(CPlayer*, CObj*);
-
+	void collisionResponseBetweenOBJ(Camera3&,CPlayer*&, CObj*&, double);
 
 private:
 	Vector3 m_Gravity;
