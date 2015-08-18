@@ -33,11 +33,10 @@ SceneSP3::~SceneSP3()
 
 void SceneSP3::initPlayer()
 {
-	//initialize the player class
-	thePlayer = new CPlayer();
-	
+	//initialize the player class using the overloaded constructor
 	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
-	//scale is 5 for now.
+	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5), 0, 2);
+
 	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
 void SceneSP3::Init()
