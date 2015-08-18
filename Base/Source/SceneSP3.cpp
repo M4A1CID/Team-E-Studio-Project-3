@@ -346,6 +346,9 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_DESK] = MeshBuilder::GenerateOBJ("GEO_DESK","Objects//desk.obj");
 	meshList[GEO_DESK]->textureArray[0] = LoadTGA("Image//desk.tga");
 
+	meshList[GEO_CELL_DOOR] = MeshBuilder::GenerateOBJ("GEO_CELL_DOOR", "Objects//cell_door.obj");
+	meshList[GEO_CELL_DOOR]->textureArray[0] = LoadTGA("Image//metal2.tga");
+
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_ITEM_UI]->textureArray[0] = LoadTGA("Image//item_ui.tga");
 
@@ -357,7 +360,7 @@ void SceneSP3::initVariables()
 {
 	Math::InitRNG();
 	m_bLightEnabled = true;
-
+	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);
 	LoadFromTextFileOBJ("Variables/LoadOBJ.txt");
 }
 
@@ -454,12 +457,13 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 
 	Vector3 Pos;
 	Vector3 Scale;
+	Vector3 Offset;
 	int geotype;
 	bool active;
 	CObj * obj;
 	if (myfile.is_open())
 	{
-		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >> geotype >> active)
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >>  Offset.x >> Offset.y >> Offset.z >> geotype >> active)
 		{
 
 			obj = FetchOBJ();
@@ -467,6 +471,7 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 			obj->setPosition(Pos);
 			obj->setGeoType(geotype);
 			obj->setScale(Scale);
+			obj->setOffset(Offset);
 			
 		}
 		myfile.close();
@@ -485,16 +490,37 @@ void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetR
 	 modelStack.Translate(5,5,5);
 	 RenderMesh(meshList[GEO_SKYPLANE], false);
 	 modelStack.PopMatrix();
+
 }
-float scaleX = 4000.f;
-float scaleY = 150.f;
-float scaleZ = 4000.f;
+
+void SceneSP3::RenderDebugWireframe()
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+
+		if(go->getActive() == true)
+		{
+			Vector3 testVector = go->getScale() + go->getOffset();
+			modelStack.PushMatrix();
+			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			/*modelStack.Scale(go->getScale().x + go->getOffset().x +thePlayer->GetScale().x,
+				go->getScale().y + go->getOffset().y +thePlayer->GetScale().y,
+				go->getScale().z + go->getOffset().z +thePlayer->GetScale().z);*/
+			modelStack.Scale(testVector.x,testVector.y,testVector.z);
+			RenderMesh(meshList[GEO_CUBE],false);
+			modelStack.PopMatrix();
+		}
+	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
 void SceneSP3::RenderTerrain()
 {
 	modelStack.PushMatrix();  
 	modelStack.Translate(0, -30, 0);
-	modelStack.Scale(scaleX, scaleY, scaleZ); // values varies.
+	modelStack.Scale(TERRAIN_SCALE.x, TERRAIN_SCALE.y, TERRAIN_SCALE.z); // values varies.
 	RenderMesh(meshList[GEO_TERRAIN2], false);  
 	modelStack.PopMatrix();
 }
@@ -535,7 +561,7 @@ void SceneSP3::Render()
 			//cout << "Collision detected!" << endl;
 		}
 	}
-
+	RenderDebugWireframe();
 	//============================= HUD displayed on screen ====================================
 	SetHUD(true);
 
@@ -557,6 +583,7 @@ void SceneSP3::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5f, 0.9f, 57.f);
 	
 	SetHUD(false);
+	
 }
 
 void SceneSP3::RenderPassMain()

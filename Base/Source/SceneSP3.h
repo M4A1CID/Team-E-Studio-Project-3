@@ -27,6 +27,7 @@ using namespace irrklang;
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
+
 	enum UNIFORM_TYPE
 	{
 		U_MVP = 0,
@@ -112,26 +113,26 @@ class SceneSP3 : public Scene
 	};
 	enum GEOMETRY_TYPE
 	{
-		GEO_AXES,	// 0
-		GEO_SPHERE,	// 1
-		GEO_QUAD,	// 2
-		GEO_CUBE,	// 3
-		GEO_RING,	// 4
-		GEO_CONE,	// 5
-		GEO_TEXT,	// 6
-		GEO_WALL,	// 7
-		GEO_DOOR,	// 8
-		GEO_BENCH,	// 9
-		GEO_TABLE,	// 10
-		GEO_TOILET, // 11
-		GEO_CCTV,	// 12
-		GEO_ARM,	// 13
-		GEO_LEG,	// 14
-		GEO_BODY,	// 15
-		GEO_HEAD,	// 16
-		GEO_DESK,	// 17
-
-		GEO_ITEM_UI,	// 18 to render out the item UI on the bottom of screen
+		GEO_AXES,		// 0
+		GEO_SPHERE,		// 1
+		GEO_QUAD,		// 2
+		GEO_CUBE,		// 3
+		GEO_RING,		// 4
+		GEO_CONE,		// 5
+		GEO_TEXT,		// 6
+		GEO_WALL,		// 7
+		GEO_DOOR,		// 8
+		GEO_BENCH,		// 9
+		GEO_TABLE,		// 10
+		GEO_TOILET,		// 11
+		GEO_CCTV,		// 12
+		GEO_ARM,		// 13
+		GEO_LEG,		// 14
+		GEO_BODY,		// 15
+		GEO_HEAD,		// 16
+		GEO_DESK,		// 17
+		GEO_CELL_DOOR,	// 18
+		GEO_ITEM_UI,	//to render out the item UI on the bottom of screen
 
 		//TSL
 		GEO_SKYPLANE,
@@ -154,7 +155,7 @@ public:
 	SceneSP3();
 	~SceneSP3();
 
-	
+	Vector3 TERRAIN_SCALE;
 
 	virtual void Init();
 	virtual void Update(double dt);
@@ -178,11 +179,13 @@ public:
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
 	void RenderTerrain();
 	void RenderObjList();
+	void RenderDebugWireframe();
 
 	//Shadow things
 	void RenderPassGPass();
 	void RenderPassMain();
 	void RenderWorld();
+
 
 	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);

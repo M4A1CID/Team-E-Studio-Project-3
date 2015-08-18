@@ -3,9 +3,9 @@
 
 CObj::CObj(void)
 {
-	Pos.x = 0;
-	Pos.y = 0;
-	Pos.z = 0;
+	Pos.SetZero();
+	Pos.SetZero();
+	offset.SetZero();
 	active = false;
 	geoType = -1;
 }
@@ -60,6 +60,29 @@ void CObj::setScale_Z(float z)
 Vector3 CObj::getScale(void)
 {
 	return this->Scale;
+}
+/// Set the offset of this obj
+void CObj::setOffset(Vector3 offset)
+{
+	this->offset = offset;
+}
+void CObj::setOffset_X(float x)
+{
+	this->offset.x = x;
+}
+void CObj::setOffset_Y(float y)
+{
+	this->offset.y = y;
+}
+void CObj::setOffset_Z(float z)
+{
+	this->offset.z = z;
+}
+
+// Get the offset of this obj
+Vector3 CObj::getOffset(void)
+{
+	return this->offset;
 }
 
 // Set the active of this obj

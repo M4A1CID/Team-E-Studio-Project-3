@@ -25,6 +25,15 @@ public:
 	// Get the scale of this obj
 	Vector3 getScale(void);
 
+	/// Set the offset of this obj
+	void setOffset(Vector3);
+	void setOffset_X(float);
+	void setOffset_Y(float);
+	void setOffset_Z(float);
+
+	// Get the offset of this obj
+	Vector3 getOffset(void);
+
 	// Set the active of this obj
 	void setActive(bool);
 	// Get the active of this obj
@@ -37,6 +46,7 @@ public:
 private:
 	Vector3 Pos;		// Obj's position
 	Vector3 Scale;		// Obj's scale
+	Vector3 offset;
 	bool active;		// Obj's active
 	int geoType;		// Obj's Geometric type
 };
