@@ -424,6 +424,8 @@ void SceneSP3::CharacterCrouch()
 void SceneSP3::Update(double dt)
 {
 	thePlayer->UpdatePosition(dt, camera);
+	physicsEngine.setPlayerHeight(camera,thePlayer,m_heightMap,TERRAIN_SCALE);
+	//physicsEngine.getBarycentricCoordinatesAt(m_heightMap,camera,thePlayer); // Testing of Barymetric terrain
 	camera.Update(dt);	
 	UpdateSceneControls();
 

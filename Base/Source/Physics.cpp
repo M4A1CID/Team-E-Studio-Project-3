@@ -81,3 +81,94 @@ void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, 
 		camera.target -= diffVec * dt;
 	}
 }
+
+// Check height of terrain
+const float CPhysics::GetHeightMapY(float x, float z, std::vector<unsigned char> &heightMap,const Vector3& terrainSize )
+{
+	return 250* (ReadHeightMap(heightMap, x/terrainSize.x, z/terrainSize.z));
+}
+
+// Set player height from terrain
+void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector<unsigned char> &heightMap,const Vector3& terrainSize )
+{
+	float tempY = GetHeightMapY(thePlayer->GetPosition().x, thePlayer->GetPosition().z, heightMap, terrainSize);
+	float diffY = tempY - thePlayer->GetPosition().y;
+	camera.position.y += diffY;
+	camera.target.y += diffY;
+	thePlayer->SetPositionY(tempY);
+}
+
+
+//Barycentric Coordinate
+ float CPhysics::barryCentric(Vector3 p1, Vector3 p2, Vector3 p3, Vector2 pos) 
+ {
+	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
+	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
+	float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
+	float l3 = 1.0f - l1 - l2;
+	return l1 * p1.y + l2 * p2.y + l3 * p3.y;
+}
+
+ void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer )
+ {
+	 
+	 unsigned terrainSize = (unsigned)sqrt((double)heightMap.size());  
+
+	 float x = thePlayer->GetPosition().x / terrainSize;
+	 float z = thePlayer->GetPosition().z / terrainSize;
+
+	 float gridSquareSize = 1.f/ (terrainSize);
+
+	 int gridX = (x + 0.5f) / gridSquareSize;
+	 int gridZ = (z + 0.5f) / gridSquareSize;
+
+
+
+	 float xCoord = fmod((x + 0.5f),gridSquareSize) / gridSquareSize;
+	 float zCoord = fmod((z + 0.5f),gridSquareSize) / gridSquareSize;
+
+	 float answer = 0.f;
+	 if (xCoord <= (1-zCoord)) 
+	 {
+		 answer = barryCentric(Vector3(0, heights[gridX][gridZ], 0), 
+			 Vector3(1,heights[gridX + 1][gridZ], 0), 
+			 Vector3(0,heights[gridX][gridZ + 1], 1),  
+			 Vector2(xCoord, zCoord));
+	 } else 
+	 {
+		 answer = barryCentric(Vector3(1, heights[gridX + 1][gridZ], 0),
+			 Vector3(1, heights[gridX + 1][gridZ + 1], 1), 
+			 Vector3(0, heights[gridX][gridZ + 1], 1), 
+			 Vector2(xCoord, zCoord));
+	 }
+
+	 float diffY = (answer/ 256.f) - thePlayer->GetPosition().y;
+	 camera.position.y += diffY +20;
+	 camera.target.y += diffY +20;
+	 thePlayer->SetPositionY(camera.position.y + (answer / 256.f));
+
+ }
+
+
+
+
+
+//Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )
+//{
+//	Vector3 initVector,v1,v2,Zvector, Xvector,NormalVector;
+//
+//	initVector.Set(thePlayer->GetPosition().x, heightMap[thePlayer->GetPosition().z + thePlayer->GetPosition().x],thePlayer->GetPosition().z);
+//
+//	/*Vector3 initVector,v1,v2,Zvector, Xvector,NormalVector;
+//	initVector.Set(thePlayer->GetPosition().x , heightMap[thePlayer->GetPosition().z * terrainSize + thePlayer->GetPosition().x], thePlayer->GetPosition().z); 
+//	v1.Set( thePlayer->GetPosition().x+1 , heightMap[thePlayer->GetPosition().z * terrainSize + (thePlayer->GetPosition().x+1)], thePlayer->GetPosition().z); 
+//	v2.Set(thePlayer->GetPosition().x , heightMap[(thePlayer->GetPosition().z+1) * terrainSize + thePlayer->GetPosition().x], thePlayer->GetPosition().z+1); 
+//	Xvector = v1 - initVector;
+//	Zvector = v2 - initVector;
+//	NormalVector = Zvector.Cross(Xvector);
+//
+//	float diffY = NormalVector.y - thePlayer->GetPosition().y;
+//	camera.position.y += diffY;
+//	camera.target.y += diffY;
+//	thePlayer->SetPositionY(NormalVector.y);*/
+//}

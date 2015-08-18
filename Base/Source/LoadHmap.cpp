@@ -18,6 +18,14 @@ bool LoadHeightMap(const char *file_path, std::vector<unsigned char> &heightMap)
 	heightMap.resize((unsigned)fsize);
 	fileStream.read((char *)&heightMap[0], fsize);
 	
+	for(int i = 0 ; i < 256; ++i)
+	{
+		for(int j = 0; j < 256; ++j)
+		{
+			heights[j][i] = heightMap[(i*256) +j];
+		}
+	}
+
 	fileStream.close();
 	return true;
 }
