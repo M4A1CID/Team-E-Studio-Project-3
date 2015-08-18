@@ -67,6 +67,62 @@ Vector3 CPlayer::GetScale(void)
 	return scale;
 }
 
+//set the position of player
+void CPlayer::SetPositionX(float x)
+{
+	this->pos.x = x;
+}
+void CPlayer::SetPositionY(float y)
+{
+	this->pos.y = y;
+}
+void CPlayer::SetPositionZ(float z)
+{
+	this->pos.z = z;
+}
+
+//get the position of player
+float CPlayer::GetPositionX(void)
+{
+	return pos.x;
+}
+float CPlayer::GetPositionY(void)
+{
+	return pos.y;
+}
+float CPlayer::GetPositionZ(void)
+{
+	return pos.z;
+}
+
+//set the Scale of player
+void CPlayer::SetScaleX(float x)
+{
+	this->scale.x = x;
+}
+void CPlayer::SetScaleY(float y)
+{
+	this->scale.y = y;
+}
+void CPlayer::SetScaleZ(float z)
+{
+	this->scale.z = z;
+}
+
+//get the Scale of player
+float CPlayer::GetScaleX(void)
+{
+	return scale.x;
+}
+float CPlayer::GetScaleY(void)
+{
+	return scale.y;
+}
+float CPlayer::GetScaleZ(void)
+{
+	return scale.z;
+}
+
 /*============= inventory-related codes for player =================*/
 
 //get current maximum item capacity of player
