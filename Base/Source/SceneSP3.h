@@ -113,6 +113,7 @@ class SceneSP3 : public Scene
 	};
 	enum GEOMETRY_TYPE
 	{
+		/*----Basic Meshes----*/
 		GEO_AXES,		// 0
 		GEO_SPHERE,		// 1
 		GEO_QUAD,		// 2
@@ -120,18 +121,34 @@ class SceneSP3 : public Scene
 		GEO_RING,		// 4
 		GEO_CONE,		// 5
 		GEO_TEXT,		// 6
+
+		/*----Scene Meshes----*/
+		// Wall
 		GEO_WALL,		// 7
+
+		// Furniture
 		GEO_DOOR,		// 8
 		GEO_BENCH,		// 9
 		GEO_TABLE,		// 10
 		GEO_TOILET,		// 11
 		GEO_CCTV,		// 12
-		GEO_ARM,		// 13
-		GEO_LEG,		// 14
-		GEO_BODY,		// 15
-		GEO_HEAD,		// 16
-		GEO_DESK,		// 17
-		GEO_CELL_DOOR,	// 18
+		GEO_DESK,		// 13
+		GEO_CELL_DOOR,	// 14
+		GEO_SEC_DOOR,	// 15
+		GEO_BED,		// 16
+		GEO_STOOL,		// 17
+
+		// Keys
+		GEO_MIN,		// 18
+		GEO_MED,		// 19
+		GEO_MAX,		// 20
+
+		// Charcter parts
+		GEO_ARM,		// 21
+		GEO_LEG,		// 22
+		GEO_BODY,		// 23
+		GEO_HEAD,		// 24
+
 		GEO_ITEM_UI,	//to render out the item UI on the bottom of screen
 
 		//TSL

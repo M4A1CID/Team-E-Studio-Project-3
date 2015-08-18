@@ -4,16 +4,27 @@
 2		0		0		4		4		4		0			0			0			14		1
 11		8		0		5		5		5		0			0			0			13		1
 0		8		0		5		5		5		0			0			0			13		1
-6		12		1		5		5		5		0			0			0			16		1
-6		11		1		5		5		5		0			0			0			15		1
-50		0		0		10		10		10		0			0			0			17		1
--100	50		5		10		10		5		25			60			5			18		1
+6		12		1		5		5		5		0			0			0			22		1
+6		11		1		5		5		5		0			0			0			21		1
+50		0		0		10		10		10		0			0			0			23		1
+-100	50		5		10		10		5		25			60			5			24		1
 //PosX,	PosY,	PosZ,	ScaleX,	ScaleY,	ScaleZ,	OffsetX,	OffsetY,	OffsetZ,	GeoType,Active
 
-//Geotype 7 = WALL
-//Geotype 12 = CCTV
-//Geotype 13 = ARM
-//Geotype 14 = LEG
-//Geotype 15 = BODY
-//Geotype 16 = HEAD
-//Geotype 17 = Desk
+//Geotype 7 	= WALL
+//Geotype 8 	= DOOR
+//Geotype 9 	= BENCH
+//Geotype 10	= TABLE
+//Geotype 11	= TOILET
+//Geotype 12	= CCTV
+//Geotype 13	= DESK
+//Geotype 14	= CELL_DOOR
+//Geotype 15	= SEC_DOOR
+//Geotype 16	= BED
+//Geotype 17	= STOOL
+//Geotype 18	= MIN_SEC_KEY
+//Geotype 19	= MED_SEC_KEY
+//Geotype 20	= MAX_SEC_KEY
+//Geotype 21	= ARM
+//Geotype 22	= LEG
+//Geotype 23	= BODY
+//Geotype 24	= HEAD

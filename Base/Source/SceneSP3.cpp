@@ -322,15 +322,59 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_TERRAIN] = MeshBuilder::GenerateQuad("Terrain", Color(1, 1, 1), 10000.f);
 	meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//grass.tga");
 
+	// Terrain & Skyplane
 	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
 	meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky1.tga"); 
+	
+	meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("GEO_TERRAIN2",  "Image//prison_terrain.raw", m_heightMap);  
+	meshList[GEO_TERRAIN2]->textureArray[0] = LoadTGA("Image//grass.tga"); 
 
+
+	// Wall
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("GEO_WALL","Objects//wall.obj");
 	meshList[GEO_WALL]->textureArray[0] = LoadTGA("Image//wall.tga");
 
-	meshList[GEO_CCTV] = MeshBuilder::GenerateOBJ("GEO_CCTV","Objects//cctv.obj");
+	// Furniture
+	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("GEO_DOOR", "Objects//door1.obj");
+	meshList[GEO_DOOR]->textureArray[0] = LoadTGA("Image//door1.tga");
+
+	meshList[GEO_BENCH] = MeshBuilder::GenerateOBJ("GEO_BENCH", "Objects//bench.obj");
+	meshList[GEO_BENCH]->textureArray[0] = LoadTGA("Image//metal2.tga");
+
+	meshList[GEO_TABLE] = MeshBuilder::GenerateOBJ("GEO_TABLE", "Objects//long_table.obj");
+	meshList[GEO_TABLE]->textureArray[0] = LoadTGA("Image//metal2.tga");
+
+	/* ERROR 404: TOILET NOT FOUND */
+
+	meshList[GEO_CCTV] = MeshBuilder::GenerateOBJ("GEO_CCTV", "Objects//cctv.obj");
 	meshList[GEO_CCTV]->textureArray[0] = LoadTGA("Image//cctv.tga");
 
+	meshList[GEO_DESK] = MeshBuilder::GenerateOBJ("GEO_DESK", "Objects//desk.obj");
+	meshList[GEO_DESK]->textureArray[0] = LoadTGA("Image//desk.tga");
+
+	meshList[GEO_CELL_DOOR] = MeshBuilder::GenerateOBJ("GEO_CELL_DOOR", "Objects//cell_door.obj");
+	meshList[GEO_CELL_DOOR]->textureArray[0] = LoadTGA("Image//metal2.tga");
+
+	meshList[GEO_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_SEC_DOOR", "Objects//sec_door.obj");
+	meshList[GEO_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+
+	meshList[GEO_BED] = MeshBuilder::GenerateOBJ("GEO_BED", "Objects//bed.obj");
+	meshList[GEO_BED]->textureArray[0] = LoadTGA("Image//bed.tga");
+
+	meshList[GEO_STOOL] = MeshBuilder::GenerateOBJ("GEO_STOOL", "Objects//stool.obj");
+	meshList[GEO_STOOL]->textureArray[0] = LoadTGA("Image//metal2.tga");
+
+	// Keys
+	meshList[GEO_MIN] = MeshBuilder::GenerateOBJ("GEO_MIN_KEY", "Objects//min_sec_key.obj");
+	meshList[GEO_MIN]->textureArray[0] = LoadTGA("Image//min_sec_key.tga");
+
+	meshList[GEO_MED] = MeshBuilder::GenerateOBJ("GEO_MED_KEY", "Objects//med_sec_key.obj");
+	meshList[GEO_MED]->textureArray[0] = LoadTGA("Image//med_sec_key.tga");
+
+	meshList[GEO_MAX] = MeshBuilder::GenerateOBJ("GEO_MAX_KEY", "Objects//max_sec_key.obj");
+	meshList[GEO_MAX]->textureArray[0] = LoadTGA("Image//max_sec_key.tga");
+
+	// Character parts
 	meshList[GEO_ARM] = MeshBuilder::GenerateOBJ("GEO_ARM","Objects//arm.obj");
 	meshList[GEO_ARM]->textureArray[0] = LoadTGA("Image//white.tga");
 
@@ -343,17 +387,6 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("GEO_HEAD","Objects//head.obj");
 	meshList[GEO_HEAD]->textureArray[0] = LoadTGA("Image//white.tga");
 
-	meshList[GEO_DESK] = MeshBuilder::GenerateOBJ("GEO_DESK","Objects//desk.obj");
-	meshList[GEO_DESK]->textureArray[0] = LoadTGA("Image//desk.tga");
-
-	meshList[GEO_CELL_DOOR] = MeshBuilder::GenerateOBJ("GEO_CELL_DOOR", "Objects//cell_door.obj");
-	meshList[GEO_CELL_DOOR]->textureArray[0] = LoadTGA("Image//metal2.tga");
-
-	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
-	meshList[GEO_ITEM_UI]->textureArray[0] = LoadTGA("Image//item_ui.tga");
-
-	meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("GEO_TERRAIN2",  "Image//prison_terrain.raw", m_heightMap);  
-	meshList[GEO_TERRAIN2]->textureArray[0] = LoadTGA("Image//grass.tga"); 
 }
 
 void SceneSP3::initVariables()
