@@ -4,10 +4,6 @@
 2		0		0		4		4		4		0			0			0			14		1
 11		8		0		5		5		5		0			0			0			13		1
 0		8		0		5		5		5		0			0			0			13		1
-6		12		1		5		5		5		0			0			0			22		1
-6		11		1		5		5		5		0			0			0			21		1
-50		0		0		10		10		10		0			0			0			23		1
--100	50		5		10		10		5		25			60			5			24		1
 //PosX,	PosY,	PosZ,	ScaleX,	ScaleY,	ScaleZ,	OffsetX,	OffsetY,	OffsetZ,	GeoType,Active
 
 //Geotype 7 	= WALL
