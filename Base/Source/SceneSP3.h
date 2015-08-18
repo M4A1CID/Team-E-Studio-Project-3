@@ -144,10 +144,24 @@ class SceneSP3 : public Scene
 		GEO_MAX,		// 20
 
 		// Charcter parts
-		GEO_ARM,		// 21
-		GEO_LEG,		// 22
-		GEO_BODY,		// 23
-		GEO_HEAD,		// 24
+		// Character parts
+		// Inmate
+		GEO_INMATE_ARM,		// 21
+		GEO_INMATE_LEG,		// 22
+		GEO_INMATE_BODY,	// 23
+		GEO_INMATE_HEAD,	// 24
+
+		// Guard
+		GEO_GUARD_ARM,		// 25
+		GEO_GUARD_LEG,		// 26
+		GEO_GUARD_BODY,		// 27
+		GEO_GUARD_HEAD,		// 28
+
+		// Warden
+		GEO_WARDEN_ARM,		// 29
+		GEO_WARDEN_LEG,		// 30
+		GEO_WARDEN_BODY,	// 31
+		GEO_WARDEN_HEAD,	// 32
 
 		GEO_ITEM_UI,	//to render out the item UI on the bottom of screen
 
