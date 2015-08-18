@@ -167,7 +167,6 @@ class SceneSP3 : public Scene
 
 		//TSL
 		GEO_SKYPLANE,
-		GEO_TERRAIN,
 		GEO_TERRAIN2,	//backup terrain with the read map height here.
 
 		//Animations

@@ -319,8 +319,6 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("GEO_CUBE",Color(1,0,0),1.f);
-	//meshList[GEO_TERRAIN] = MeshBuilder::GenerateQuad("Terrain", Color(1, 1, 1), 10000.f);
-	//meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//grass.tga");
 
 	// Terrain & Skyplane
 	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
@@ -686,11 +684,6 @@ void SceneSP3::RenderWorld()
 	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_SPHERE],false);
 	modelStack.PopMatrix();
-
-	/*modelStack.PushMatrix();
-	modelStack.Rotate(-90, 1, 0, 0);
-	RenderMesh(meshList[GEO_TERRAIN], false);
-	modelStack.PopMatrix();*/
 
 	RenderObjList();
 	modelStack.PushMatrix();
