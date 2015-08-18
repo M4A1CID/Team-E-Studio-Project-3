@@ -9,9 +9,11 @@ class CPlayer
 {
 public:
 	CPlayer(void);
+	CPlayer(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap);
 	~CPlayer(void);
 
-	void Init(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap);
+	//this should be redundant already
+	//void Init(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap);
 
 	void SetActive(bool active);
 	bool GetActive(void);

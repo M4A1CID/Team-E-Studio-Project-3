@@ -136,6 +136,7 @@ class SceneSP3 : public Scene
 		//TSL
 		GEO_SKYPLANE,
 		GEO_TERRAIN,
+		GEO_TERRAIN2,	//backup terrain with the read map height here.
 
 		//Animations
 
@@ -175,6 +176,7 @@ public:
 	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
+	void RenderTerrain();
 	void RenderObjList();
 
 	//Shadow things
@@ -241,6 +243,7 @@ private:
 
 	double m_dJumpingSpeed;
 	bool m_bLightEnabled;
+	//for terrain
 	std::vector<unsigned char> m_heightMap;
 
 	//Handle to the minimap

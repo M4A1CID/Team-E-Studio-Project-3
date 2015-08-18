@@ -38,7 +38,7 @@ void SceneSP3::initPlayer()
 	
 	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
 	//scale is 5 for now.
-	thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
+	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
 void SceneSP3::Init()
 {
@@ -349,6 +349,9 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_ITEM_UI]->textureArray[0] = LoadTGA("Image//item_ui.tga");
+
+	meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("GEO_TERRAIN2",  "Image//prison_terrain.raw", m_heightMap);  
+	meshList[GEO_TERRAIN2]->textureArray[0] = LoadTGA("Image//grass.tga"); 
 }
 
 void SceneSP3::initVariables()
@@ -483,8 +486,19 @@ void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetR
 	 modelStack.Translate(5,5,5);
 	 RenderMesh(meshList[GEO_SKYPLANE], false);
 	 modelStack.PopMatrix();
-} 
+}
+float scaleX = 4000.f;
+float scaleY = 150.f;
+float scaleZ = 4000.f;
 
+void SceneSP3::RenderTerrain()
+{
+	modelStack.PushMatrix();  
+	modelStack.Translate(0, -30, 0);
+	modelStack.Scale(scaleX, scaleY, scaleZ); // values varies.
+	RenderMesh(meshList[GEO_TERRAIN2], false);  
+	modelStack.PopMatrix();
+}
 void SceneSP3::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -575,16 +589,16 @@ void SceneSP3::RenderWorld()
 {
 	RenderMesh(meshList[GEO_AXES], false);
 
+	RenderTerrain();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 20, 0);
 	RenderMesh(meshList[GEO_SPHERE],false);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_TERRAIN], false);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	RenderObjList();
 	modelStack.PushMatrix();
@@ -593,6 +607,7 @@ void SceneSP3::RenderWorld()
 	RenderMesh(meshList[GEO_CUBE],false);
 	modelStack.PopMatrix();
 
+	
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 
 	
@@ -824,6 +839,21 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
+}
+const float SceneSP3::GetCameraCurrentY(void)
+{
+	
+	return 350* (ReadHeightMap(m_heightMap, camera.position.x/SKYBOXSIZE, camera.position.z/SKYBOXSIZE));
+}
+
+const float SceneSP3::GetHeightMapY(float x, float z)
+{
+	return 350* (ReadHeightMap(m_heightMap, x/SKYBOXSIZE, z/SKYBOXSIZE));
+}
+
+const std::vector<unsigned char>SceneSP3::GetHeightMap()
+{
+	return m_heightMap;
 }
 void SceneSP3::Exit()
 {
