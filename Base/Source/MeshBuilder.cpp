@@ -573,25 +573,31 @@ Mesh* MeshBuilder::GenerateTerrain(const std::string &meshName, const std::strin
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
 	unsigned terrainSize = (unsigned)sqrt((double)heightMap.size());  
-	for(unsigned z = 0; z < terrainSize-1; ++z) 
+	for(unsigned z = 0; z < terrainSize ; ++z) 
 	{  
 		for(unsigned x = 0; x < terrainSize; ++x)  
 		{ 
-			
 			float scaledHeight = (float)heightMap[z * terrainSize + x] /  SCALE_FACTOR; 
 
-			Vector3 initVector,v1,v2,Zvector, Xvector,NormalVector;
-			initVector.Set(x , heightMap[z * terrainSize + x], z); 
-			v1.Set( x+1 , heightMap[z * terrainSize + (x+1)], z); 
-			v2.Set(x , heightMap[(z+1) * terrainSize + x], z+1); 
-			Xvector = v1 - initVector;
-			Zvector = v2 - initVector;
-			NormalVector = Zvector.Cross(Xvector);
-			NormalVector.Normalized();
 			v.pos.Set(static_cast<float>(x) / terrainSize - 0.5f, scaledHeight, static_cast<float>(z) / terrainSize - 0.5f);  
 			v.color.Set(scaledHeight, scaledHeight, scaledHeight); //for rendering  height map without texture  
 			v.texCoord.Set((float)x / terrainSize*8 , 1.f - (float)z / terrainSize*8);  
-			v.normal.Set(NormalVector.x,NormalVector.y,NormalVector.z);
+			
+			Vector3 initVector,v1,v2,Zvector, Xvector,NormalVector;
+			initVector.Set(x , heightMap[z * terrainSize + x], z); 
+			
+			if(x+1 < terrainSize && z + 1 < terrainSize)
+			{
+				v1.Set( x+1 , heightMap[z * terrainSize + (x+1)], z); 
+				v2.Set(x , heightMap[z * terrainSize + x], z+1); 
+				Xvector = v1 - initVector;
+				Zvector = v2 - initVector;
+				NormalVector = Zvector.Cross(Xvector);
+				NormalVector.Normalized();
+				v.normal.Set(NormalVector.x,NormalVector.y,NormalVector.z);
+			}
+			else
+				v.normal.Set(0,1,0);
 			vertex_buffer_data.push_back(v); 
 		} 
 	}  

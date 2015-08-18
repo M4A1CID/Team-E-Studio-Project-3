@@ -319,8 +319,8 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("GEO_CUBE",Color(1,0,0),1.f);
-	meshList[GEO_TERRAIN] = MeshBuilder::GenerateQuad("Terrain", Color(1, 1, 1), 10000.f);
-	meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//grass.tga");
+	//meshList[GEO_TERRAIN] = MeshBuilder::GenerateQuad("Terrain", Color(1, 1, 1), 10000.f);
+	//meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//grass.tga");
 
 	// Terrain & Skyplane
 	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
@@ -941,7 +941,7 @@ void SceneSP3::Exit()
 		if(meshList[i])
 			delete meshList[i];
 	}
-	for(int i = 0; i < myObjList.size(); ++i)
+	for(unsigned int i = 0; i < myObjList.size(); ++i)
 	{
 		if(myObjList[i] != NULL)
 			delete myObjList[i];
