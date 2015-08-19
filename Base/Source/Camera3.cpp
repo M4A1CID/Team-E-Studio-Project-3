@@ -178,8 +178,11 @@ void Camera3::Jump(const double dt)
 ================================*/
 void Camera3::UpdateJump(const double dt)
 {
+	float height = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
 	if(m_bJumping)
 	{
+		
+
 		//Factor in gravity
 		JumpVel += GRAVITY * dt;
 
@@ -187,23 +190,28 @@ void Camera3::UpdateJump(const double dt)
 		position.y += JumpVel * (float)dt;
 		target.y += JumpVel * (float)dt;
 
-		float height = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
+	
 		
-		//Check if the camera has reached the ground
 		
-		float movedt = height - position.y;
-		if (position.y < height)
-		{
-			
-			m_bJumping = false;
-		}
 
-		if(!m_bJumping)
+	}
+	//Check if the camera has reached the ground
+	if (position.y < height)
 		{
+			float movedt = height - position.y;
+			m_bJumping = false;
 			position.y = height;
 			target.y += movedt;
 			JumpVel = 0.0f;
 		}
+	if(position.y > height)
+	{
+		//Factor in gravity
+		JumpVel += GRAVITY * dt;
+
+		//Update the camera and target position
+		position.y += JumpVel * (float)dt;
+		target.y += JumpVel * (float)dt;
 	}
 
 
