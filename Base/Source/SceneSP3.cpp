@@ -461,14 +461,11 @@ void SceneSP3::CharacterCrouch()
 
 void SceneSP3::Update(double dt)
 {
-	
+	thePlayer->UpdatePosition(dt, camera);
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
 		physicsEngine.setPlayerHeight(camera,thePlayer,m_heightMap,TERRAIN_SCALE, true);
 	}
-
-	thePlayer->UpdatePosition(dt, camera);
-	//thePlayer->SetPosition(Vector3(camera.position.x, camera.position.y, camera.position.z));
 	//physicsEngine.getBarycentricCoordinatesAt(m_heightMap,camera,thePlayer); // Testing of Barymetric terrain
 	camera.Update(dt);	
 	UpdateSceneControls();
@@ -539,39 +536,19 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	Vector3 Offset;
 	int geotype;
 	bool active;
-	
+	CObj * obj;
 	if (myfile.is_open())
 	{
 		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >>  Offset.x >> Offset.y >> Offset.z >> geotype >> active)
 		{
 
-			switch(geotype)
-			{
-			case GEO_WALL:
-				{
-					CObj * obj= new CWall();
-					obj->setActive(active);
-					obj->setPosition(Pos);
-					obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
-					obj->setGeoType(geotype);
-					obj->setScale(Scale);
-					obj->setOffset(Offset);
-					myObjList.push_back(obj);
-
-				}
-				break;
-			default:
-				{
-					CObj * obj = FetchOBJ();
-					obj->setActive(active);
-					obj->setPosition(Pos);
-					obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
-					obj->setGeoType(geotype);
-					obj->setScale(Scale);
-					obj->setOffset(Offset);
-				}
-				break;
-			}
+			obj = FetchOBJ();
+			obj->setActive(active);
+			obj->setPosition(Pos);
+			obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			obj->setGeoType(geotype);
+			obj->setScale(Scale);
+			obj->setOffset(Offset);
 			
 		}
 		myfile.close();
@@ -777,7 +754,7 @@ void SceneSP3::RenderObjList()
 			modelStack.PushMatrix();
 			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
 			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
-			RenderMesh(meshList[go->getGeoType()],m_bLightEnabled);
+			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 			modelStack.PopMatrix();
 		}
 	}
