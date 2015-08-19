@@ -281,7 +281,7 @@ void Camera3::UpdateProne(const double dt)
 void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up, std::vector<unsigned char> heightmap, Vector3 tScale)
 {
 
-	sCameraType = LAND_CAM;
+	sCameraType = AIR_CAM;
 	//For jump use
 	m_Pitch_Limiter = 0.f;
 	m_Yaw = 0.f;
@@ -386,7 +386,8 @@ void Camera3::Update(double dt)
 		Jump(dt);
 		myKeys[32] = false;
 	}
-	UpdateJump(dt);
+	if(sCameraType == LAND_CAM)
+		UpdateJump(dt);
 	
 	if(Application::m_sdCamera_yaw != 0)
 		Yaw(dt);

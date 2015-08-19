@@ -337,8 +337,8 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky1.tga"); 
 	
 	meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("GEO_TERRAIN2",  "Image//prison_terrain.raw", m_heightMap);  
-	meshList[GEO_TERRAIN2]->textureArray[0] = LoadTGA("Image//grass.tga"); 
-
+	meshList[GEO_TERRAIN2]->textureArray[0] = LoadTGA("Image//concrete.tga"); 
+	meshList[GEO_TERRAIN2]->textureArray[1] = LoadTGA("Image//wall.tga"); 
 
 	// Wall
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("GEO_WALL","Objects//wall.obj");
