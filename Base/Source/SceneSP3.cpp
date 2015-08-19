@@ -41,13 +41,14 @@ void SceneSP3::initPlayer()
 }
 void SceneSP3::Init()
 {
-	
 	initUniforms(); // Init the standard Uniforms
-	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0));
+	
 
 	initPlayer();
 	initMeshlist();
 	initVariables();
+
+	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
 
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
@@ -461,7 +462,10 @@ void SceneSP3::CharacterCrouch()
 void SceneSP3::Update(double dt)
 {
 	thePlayer->UpdatePosition(dt, camera);
-	physicsEngine.setPlayerHeight(camera,thePlayer,m_heightMap,TERRAIN_SCALE);
+	if (Application::IsKeyPressed(VK_SPACE))
+	{
+		physicsEngine.setPlayerHeight(camera,thePlayer,m_heightMap,TERRAIN_SCALE, true);
+	}
 	//physicsEngine.getBarycentricCoordinatesAt(m_heightMap,camera,thePlayer); // Testing of Barymetric terrain
 	camera.Update(dt);	
 	UpdateSceneControls();

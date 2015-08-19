@@ -232,7 +232,7 @@ void SceneShadow::Init()
 {
 	
 	initUniforms(); // Init the standard Uniforms
-	camera.Init(Vector3(0, -1, 10), Vector3(0, -1, 0), Vector3(0, 1, 0));
+	//camera.Init(Vector3(0, -1, 10), Vector3(0, -1, 0), Vector3(0, 1, 0));
 
 	initMeshlist();
 	initVariables();

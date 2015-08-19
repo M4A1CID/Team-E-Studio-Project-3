@@ -304,7 +304,7 @@ void Assignment1::Init()
 {
 	
 	initUniforms(); // Init the standard Uniforms
-	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0));
+	//camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0));
 
 	initMeshlist();
 	initVariables();

@@ -187,16 +187,26 @@ void Camera3::UpdateJump(const double dt)
 		position.y += JumpVel * (float)dt;
 		target.y += JumpVel * (float)dt;
 
+		float height = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
+		
 		//Check if the camera has reached the ground
-		if(position.y <= 40)
+		
+		float movedt = height - position.y;
+		if (position.y < height)
 		{
-			//position.y = 0;
-			//target.y = 0;
-			JumpVel = 0.0f;
+			
 			m_bJumping = false;
 		}
 
+		if(!m_bJumping)
+		{
+			position.y = height;
+			target.y += movedt;
+			JumpVel = 0.0f;
+		}
 	}
+
+
 }
 void Camera3::Crouch(const double dt)
 {
@@ -266,8 +276,9 @@ void Camera3::UpdateProne(const double dt)
 		}
 	}
 }
-void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
+void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up, std::vector<unsigned char> heightmap, Vector3 tScale)
 {
+
 	sCameraType = LAND_CAM;
 	//For jump use
 	m_Pitch_Limiter = 0.f;
@@ -276,9 +287,10 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	m_bProne = false;
 	m_bJumping= false;
 	JumpVel = 0.0f;
-	JUMPMAXSPEED = 20.f;
-	JUMPACCEL = 200.0f;
+	JUMPMAXSPEED = 25.f;
+	JUMPACCEL = 75.0f;
 	GRAVITY = -35.8f;
+	JumpOff = 5.f;
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
 	Vector3 view = (target - position).Normalized();
@@ -286,6 +298,8 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	right.y = 0;
 	right.Normalize();
 	this->up = defaultUp = right.Cross(view).Normalized();
+	this->heightmap = heightmap;
+	this->tScale = tScale;
 
 	//Initialise the camera movement flags
 	for(int i = 0; i<255; i++)
@@ -338,11 +352,7 @@ void Camera3::UpdateStatus(const unsigned char key)
 void Camera3::Update(double dt)
 {
 	
-	if(myKeys[32] == true)
-	{
-		Jump(dt);
-		myKeys[32] = false;
-	}
+	
 	/*UpdateJump(dt);
 	UpdateCrouch(dt);
 	UpdateProne(dt);
@@ -369,6 +379,12 @@ void Camera3::Update(double dt)
 		MoveRight(dt);
 		myKeys['d'] = false;
 	}
+	if(myKeys[32] == true)
+	{
+		Jump(dt);
+		myKeys[32] = false;
+	}
+	UpdateJump(dt);
 	
 	if(Application::m_sdCamera_yaw != 0)
 		Yaw(dt);

@@ -4,7 +4,6 @@
 #include "Camera.h"
 #include "LoadHmap.h"
 
-
 class Camera3 : public Camera
 {
 public:
@@ -22,10 +21,12 @@ public:
 	Vector3 defaultPosition;
 	Vector3 defaultTarget;
 	Vector3 defaultUp;
+	Vector3 tScale;
+	std::vector<unsigned char> heightmap;
 	CAM_TYPE sCameraType;
 	Camera3();
 	~Camera3();
-	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up);
+	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up, std::vector<unsigned char> heightmap, Vector3 tScale);
 	virtual void Update(double dt);
 	virtual void Reset();
 	virtual void SetCameraType(CAM_TYPE sCameraType);
@@ -72,6 +73,7 @@ private:
 	float GRAVITY;
 	float JumpVel;
 	float JUMPMAXSPEED, JUMPACCEL;
+	float JumpOff;
 	
 };
 

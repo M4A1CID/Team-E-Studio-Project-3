@@ -4,6 +4,8 @@
 CPhysics::CPhysics(void)
 {
 	m_Gravity = Vector3(0,-9.8,0);
+	m_fOffset = 160.f;
+	
 }
 
 CPhysics::~CPhysics(void)
@@ -87,13 +89,22 @@ void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, 
 // Check height of terrain
 const float CPhysics::GetHeightMapY(float x, float z, std::vector<unsigned char> &heightMap,const Vector3& terrainSize )
 {
-	return 250* (ReadHeightMap(heightMap, x/terrainSize.x, z/terrainSize.z));
+	return m_fOffset* (ReadHeightMap(heightMap, x/terrainSize.x, z/terrainSize.z));
 }
 
 // Set player height from terrain
-void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector<unsigned char> &heightMap,const Vector3& terrainSize )
+void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, bool IgnoreHM )
 {
-	float tempY = GetHeightMapY(thePlayer->GetPosition().x, thePlayer->GetPosition().z, heightMap, terrainSize);
+	float tempY;
+	if (IgnoreHM == false)
+	{
+		tempY = GetHeightMapY(thePlayer->GetPosition().x, thePlayer->GetPosition().z, heightMap, terrainSize);
+	}
+	else
+	{
+		tempY = thePlayer->GetPosition().y;
+	}
+	
 	float diffY = tempY - thePlayer->GetPosition().y;
 	camera.position.y += diffY;
 	camera.target.y += diffY;
