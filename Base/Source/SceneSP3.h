@@ -27,7 +27,7 @@ using namespace irrklang;
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
-
+	const static int INTERACTION_DISTANCE = 10;
 	enum UNIFORM_TYPE
 	{
 		U_MVP = 0,
@@ -143,7 +143,6 @@ class SceneSP3 : public Scene
 		GEO_MED,		// 19
 		GEO_MAX,		// 20
 
-		// Charcter parts
 		// Character parts
 		// Inmate
 		GEO_INMATE_ARM,		// 21
@@ -253,6 +252,7 @@ public:
 private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
+	std::vector<CKey *> myKeyList;
 	//std::vector<Vector3> m_treeList;
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
@@ -270,8 +270,7 @@ private:
 	Light lights[5];
 
 	float m_fFps;
-	//Crouch
-	void CharacterCrouch();
+	void checkPickUpItem();
 
 	bool LoadFromTextFileOBJ(const string mapString);
 

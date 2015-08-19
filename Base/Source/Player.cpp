@@ -143,13 +143,25 @@ void CPlayer::setInventory(CItem* pickedUp, int slot)
 {
 	InventoryList[slot] = pickedUp;
 }
+void CPlayer::setKeyList(CKey* pickedUp)
+{
+	KeyList.push_back(pickedUp);
+}
+void CPlayer::setKeyList(CKey* pickedUp, int slot)
+{
+	KeyList[slot] = pickedUp;
+}
 CItem* CPlayer::getItem(int i)
 {
 	return InventoryList[i];
 }
-std::vector<CItem*> CPlayer::getVector()
+std::vector<CItem*> CPlayer::getItemVector()
 {
 	return InventoryList;
+}
+std::vector<CKey*> CPlayer::getKeyVector()
+{
+	return KeyList;
 }
 
 /*============= inventory-related codes for player ends here =================*/

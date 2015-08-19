@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "Camera3.h"
 #include "Item.h"
+#include "Key.h"
 
 class CPlayer
 {
@@ -55,9 +56,17 @@ public:
 	void setInventory(CItem* pickedUp);
 	void setInventory(CItem* pickedUp, int slot);
 
+	void setKeyList(CKey* pickedUp);
+	void setKeyList(CKey* pickedUp, int slot);
+
 	int getMaxItemCap();
 	int getItemsHeld();
-	std::vector<CItem*> getVector();
+
+	// Get the inventory Vector for CItems
+	std::vector<CItem*> getItemVector();
+
+	// Get the Key vector for CKey*
+	std::vector<CKey*> getKeyVector();
 	CItem* getItem(int i);
 private:
 	Vector3 pos;	// position of player
@@ -71,5 +80,6 @@ private:
 	int maxItemCap;	// max number of items that can be carried by player
 
 	std::vector<CItem*> InventoryList;	// the list of items inside player's inventory
+	std::vector<CKey*> KeyList; //List of keys inside player's inventory
 };
 #endif

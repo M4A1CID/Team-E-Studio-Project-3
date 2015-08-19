@@ -445,18 +445,38 @@ void SceneSP3::UpdateCameraStatus(const unsigned char key)
 	camera.UpdateStatus(key);
 }
 
-void SceneSP3::CharacterCrouch()
+void SceneSP3::checkPickUpItem()
 {
-		/*if(Application::IsKeyPressed(VK_CONTROL) && camera.position.y != 4)
+	float magnitudeFromTarget = 0.f;
+	float magnitudeFromPosition = 0.f;
+	float previous = 99.0f;
+	int chosen = 0;
+	for(unsigned int i = 0; i < myKeyList.size(); ++i)
+	{
+		if(myKeyList[i]->getActive()) //If Item is available for taking
 		{
-			camera.position.y -= 0.5;
-			camera.target.y -= 0.5;
+			//Distance between Camera Target and Item position = Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+			magnitudeFromTarget = sqrt((camera.target.x - myKeyList[i]->getPosition().x) * (camera.target.x - myKeyList[i]->getPosition().x) + 
+									   (camera.target.y - myKeyList[i]->getPosition().y) * (camera.target.y - myKeyList[i]->getPosition().y) +
+									   (camera.target.z - myKeyList[i]->getPosition().z) * (camera.target.z - myKeyList[i]->getPosition().z));
+
+			//Get lowest magnitude of Item from target
+			if(previous > magnitudeFromTarget)
+			{
+				previous = magnitudeFromTarget;
+				//Distance between Camera Position and Item position= Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+				magnitudeFromPosition = sqrt((camera.target.x - myKeyList[i]->getPosition().x) * (camera.target.x - myKeyList[i]->getPosition().x)	+ 
+											(camera.target.y - myKeyList[i]->getPosition().y) * (camera.target.y - myKeyList[i]->getPosition().y) +
+											(camera.target.z - myKeyList[i]->getPosition().z) * (camera.target.z - myKeyList[i]->getPosition().z));
+
+				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
+				{
+					thePlayer->setKeyList(myKeyList[i]);
+					myKeyList[i]->setActive(false);
+				}
+			}
 		}
-		else if (Application::IsKeyReleased(VK_CONTROL) && camera.position.y != 6 )
-		{
-			camera.position.y = 6;
-			camera.target.y = 6;
-		}*/
+	}
 }
 
 void SceneSP3::Update(double dt)
