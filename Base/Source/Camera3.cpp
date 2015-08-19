@@ -10,7 +10,8 @@ Camera3::Camera3()
 Camera3::~Camera3()
 {
 }
-static float const CAMERA_SPEED = 200.f;
+static float CAMERA_SPEED = 100.f;
+static float const CAMERA_LOOK_SPEED = 250.f;
  
 void Camera3::SetCameraType(CAM_TYPE sCameraType)
 {
@@ -61,7 +62,7 @@ void Camera3::Pitch(const double dt)
 ===========================*/
 void Camera3::LookUp(const double dt)
 {
-	float pitch = (float)(-CAMERA_SPEED * Application::m_sdCamera_pitch * (float)dt);
+	float pitch = (float)(-CAMERA_LOOK_SPEED * Application::m_sdCamera_pitch * (float)dt);
 	Vector3 view = (target - position).Normalized();
 	Vector3 right = view.Cross(up);
 	m_Pitch_Limiter += pitch;
@@ -78,7 +79,7 @@ void Camera3::LookUp(const double dt)
 ===========================*/
 void Camera3::LookDown(const double dt)
 {
-	float pitch = (float)(-CAMERA_SPEED * Application::m_sdCamera_pitch * (float)dt);
+	float pitch = (float)(-CAMERA_LOOK_SPEED * Application::m_sdCamera_pitch * (float)dt);
 	Vector3 view = (target - position).Normalized();
 	Vector3 right = view.Cross(up);
 	m_Pitch_Limiter += pitch;
@@ -96,7 +97,7 @@ void Camera3::LookDown(const double dt)
 void Camera3::TurnLeft(const double dt)
 {
 	Vector3 view = (target - position).Normalized();
-	float yaw = (float)(-CAMERA_SPEED* Application::m_sdCamera_yaw * (float)dt);
+	float yaw = (float)(-CAMERA_LOOK_SPEED* Application::m_sdCamera_yaw * (float)dt);
 	Mtx44 rotation;
 	m_Yaw += yaw;
 	rotation.SetToRotation(yaw, 0, 1, 0);
@@ -113,7 +114,7 @@ void Camera3::TurnLeft(const double dt)
 void Camera3::TurnRight(const double dt)
 {
 	Vector3 view = (target - position).Normalized();
-	float yaw = (float)(-CAMERA_SPEED * Application::m_sdCamera_yaw * (float)dt);
+	float yaw = (float)(-CAMERA_LOOK_SPEED * Application::m_sdCamera_yaw * (float)dt);
 	m_Yaw += yaw;
 	Mtx44 rotation;
 	rotation.SetToRotation(yaw, 0, 1, 0);
@@ -181,29 +182,22 @@ void Camera3::UpdateJump(const double dt)
 	float height = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
 	if(m_bJumping)
 	{
-		
-
 		//Factor in gravity
 		JumpVel += GRAVITY * dt;
 
 		//Update the camera and target position
 		position.y += JumpVel * (float)dt;
 		target.y += JumpVel * (float)dt;
-
-	
-		
-		
-
 	}
 	//Check if the camera has reached the ground
 	if (position.y < height)
-		{
-			float movedt = height - position.y;
-			m_bJumping = false;
-			position.y = height;
-			target.y += movedt;
-			JumpVel = 0.0f;
-		}
+	{
+		float movedt = height - position.y;
+		m_bJumping = false;
+		position.y = height;
+		target.y += movedt;
+		JumpVel = 0.0f;
+	}
 	if(position.y > height)
 	{
 		//Factor in gravity
@@ -295,9 +289,9 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	m_bProne = false;
 	m_bJumping= false;
 	JumpVel = 0.0f;
-	JUMPMAXSPEED = 60.f;
-	JUMPACCEL = 300.0f;
-	GRAVITY = -50.f;
+	JUMPMAXSPEED = 155.f;
+	JUMPACCEL = 200.0f;
+	GRAVITY = -175.f;
 	JumpOff = 5.f;
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
