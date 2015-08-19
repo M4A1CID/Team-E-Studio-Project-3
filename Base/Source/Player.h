@@ -45,8 +45,8 @@ public:
 	float GetScaleY(void);
 	float GetScaleZ(void);
 
-	virtual void UpdateCameraStatus( const unsigned char key, Camera3 camera);
-	void UpdatePosition(double dt, Camera3 camera);
+	virtual void UpdateCameraStatus( const unsigned char& key, Camera3& camera);
+	virtual void UpdatePosition(double&, Camera3&);
 	//to add in the collision detection here
 
 

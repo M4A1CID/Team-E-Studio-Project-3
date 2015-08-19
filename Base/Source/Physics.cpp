@@ -116,7 +116,7 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 
 
 //Barycentric Coordinate
- float CPhysics::barryCentric(Vector3 p1, Vector3 p2, Vector3 p3, Vector2 pos) 
+ float CPhysics::barryCentric(Vector3 & p1, Vector3 & p2, Vector3 & p3, Vector2 & pos) 
  {
 	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;

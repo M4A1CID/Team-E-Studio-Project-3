@@ -154,12 +154,11 @@ std::vector<CItem*> CPlayer::getVector()
 
 /*============= inventory-related codes for player ends here =================*/
 
-void CPlayer::UpdateCameraStatus( const unsigned char key, Camera3 camera)
+void CPlayer::UpdateCameraStatus( const unsigned char& key, Camera3& camera)
 {
 	camera.UpdateStatus(key);
 }
-void CPlayer::UpdatePosition(double dt, Camera3 camera)
+void CPlayer::UpdatePosition(double& dt, Camera3& camera)
 {
-	camera.Update(dt);
 	pos.Set(camera.position.x, camera.position.y-offsetY, camera.position.z);
 }
