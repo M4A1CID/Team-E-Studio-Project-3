@@ -530,6 +530,7 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 			obj = FetchOBJ();
 			obj->setActive(active);
 			obj->setPosition(Pos);
+			obj->setPosition_Y(ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			obj->setGeoType(geotype);
 			obj->setScale(Scale);
 			obj->setOffset(Offset);
@@ -922,7 +923,7 @@ const float SceneSP3::GetCameraCurrentY(void)
 }
 const float SceneSP3::GetHeightMapY(float x, float z)
 {
-	return 350* (ReadHeightMap(m_heightMap, x/SKYBOXSIZE, z/SKYBOXSIZE));
+	return 350* (ReadHeightMap(m_heightMap, x/TERRAIN_SCALE.x, z/TERRAIN_SCALE.z));
 }
 const std::vector<unsigned char>SceneSP3::GetHeightMap()
 {

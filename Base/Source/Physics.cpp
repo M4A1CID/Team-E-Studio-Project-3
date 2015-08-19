@@ -111,11 +111,24 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 
  void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
  {
-	 unsigned terrainSize = (unsigned)sqrt((double)heightMap.size());  
+	  
 
 	 
-	 float x = thePlayer->GetPosition().x / terrainSize;
-	 float z = thePlayer->GetPosition().z / terrainSize;
+	 float x = thePlayer->GetPosition().x / 4000.f;
+	 float z = thePlayer->GetPosition().z / 4000.f;
+
+	 //If out of bound
+	if(x < -0.5f || x > 0.5f || z < -0.5f || z > 0.5f)
+		return;
+
+	//If heightMap failed to load and is empty
+	if(heightMap.size() == 0)
+		return;
+
+
+	unsigned terrainSize = static_cast<unsigned>((unsigned)sqrt(static_cast<double>(heightMap.size()))); 
+	 x/= terrainSize;
+	 z/= terrainSize;
 
 	 //get the size of the grid based on the terrain size
 	 float gridSquareSize = 1.f/ (terrainSize);
@@ -144,11 +157,11 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 			 Vector2(xCoord, zCoord));
 	 }
 
-	 float diffY = (answer/ 256.f) - thePlayer->GetPosition().y;
+	 float diffY = answer - thePlayer->GetPosition().y;
 	 camera.position.y += diffY +20;
 	 camera.target.y += diffY +20;
 	 thePlayer->SetPositionY(camera.position.y + (answer / 256.f));
-
+	
  }
 
 

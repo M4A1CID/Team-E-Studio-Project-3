@@ -47,4 +47,6 @@ float ReadHeightMap(std::vector<unsigned char> &heightMap, float x, float z)
 	unsigned zCoord = static_cast<unsigned>((z + 0.5f) * rowSize);
 
 	return static_cast<float>(heightMap[zCoord * rowSize + xCoord] / 256.f);
+
+
 }
