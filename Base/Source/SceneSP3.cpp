@@ -56,47 +56,8 @@ void SceneSP3::Init()
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 }
-
-void SceneSP3::initUniforms()
+void SceneSP3::initLights()
 {
-		// Black background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS); 
-	
-	glEnable(GL_CULL_FACE);
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glGenVertexArrays(1, &m_vertexArrayID);
-	glBindVertexArray(m_vertexArrayID);
-
-	//m_programID = LoadShaders( "Shader//Fog.vertexshader", "Shader//MultiTexture.fragmentshader" );
-	m_gPassShaderID = LoadShaders("Shader//GPass.vertexshader", "Shader//GPass.fragmentshader");
-	m_programID = LoadShaders( "Shader//Shadow.vertexshader", "Shader//Shadow.fragmentshader" );
-	
-	//Handle Shadow Uniform
-	m_uiParameters[U_LIGHT_DEPTH_MVP_GPASS] = glGetUniformLocation(m_gPassShaderID, "lightDepthMVP");
-	m_uiParameters[U_LIGHT_DEPTH_MVP] = glGetUniformLocation(m_programID,"lightDepthMVP");
-	m_uiParameters[U_SHADOW_MAP] = glGetUniformLocation(m_programID, "shadowMap");
-	
-	// Get a handle for our uniform
-	m_uiParameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
-	//m_uiParameters[U_MODEL] = glGetUniformLocation(m_programID, "M");
-	//m_uiParameters[U_VIEW] = glGetUniformLocation(m_programID, "V");
-	m_uiParameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
-	m_uiParameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
-	m_uiParameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
-	m_uiParameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
-	m_uiParameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
-	m_uiParameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
-	m_uiParameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
-	m_uiParameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 	m_uiParameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
 	m_uiParameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
 	m_uiParameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
@@ -159,29 +120,8 @@ void SceneSP3::initUniforms()
 	m_uiParameters[U_LIGHT4_COSINNER] = glGetUniformLocation(m_programID, "lights[4].cosInner");
 	m_uiParameters[U_LIGHT4_EXPONENT] = glGetUniformLocation(m_programID, "lights[4].exponent");*/
 
-	// Get a handle for our "colorTexture" uniform
-	m_uiParameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled[0]");
-	m_uiParameters[U_COLOR_TEXTURE_ENABLED2] = glGetUniformLocation(m_programID, "colorTextureEnabled[1]");
-	m_uiParameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture[0]");
-	m_uiParameters[U_COLOR_TEXTURE2] = glGetUniformLocation(m_programID, "colorTexture[1]");
-	// Get a handle for our "textColor" uniform
-	m_uiParameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
-	m_uiParameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
-
-	//Get a handle for our Fog
-	m_uiParameters[U_FOG_COLOR] =  glGetUniformLocation(m_programID, "fogParam.color");
-	m_uiParameters[U_FOG_DENSITY] = glGetUniformLocation(m_programID, "fogParam.density");
-	m_uiParameters[U_FOG_ENABLE] = glGetUniformLocation(m_programID, "fogParam.enabled");
-	m_uiParameters[U_FOG_END] = glGetUniformLocation(m_programID, "fogParam.end");
-	m_uiParameters[U_FOG_START] = glGetUniformLocation(m_programID, "fogParam.start");
-	m_uiParameters[U_FOG_TYPE] = glGetUniformLocation(m_programID, "fogParam.type");
-	
-	// Use our shader
-	glUseProgram(m_programID);
-
-
 	lights[0].type = Light::LIGHT_DIRECTIONAL;
-	lights[0].position.Set(-4000, 2000, 500);
+	lights[0].position.Set(-2000, 100, 500);
 	lights[0].color.Set(0.7f, 0.7f, 0.5f);
 	lights[0].power = 1.f;
 	lights[0].kC = 1.f;
@@ -241,22 +181,6 @@ void SceneSP3::initUniforms()
 	lights[4].exponent = 3.f;
 	lights[4].spotDirection.Set(0.f, 1.f, 0.f);*/
 
-	m_lightDepthFBO.Init(1024,1024);
-
-	
-	glUniform1i(m_uiParameters[U_NUMLIGHTS], 5);
-	glUniform1i(m_uiParameters[U_TEXT_ENABLED], 0);
-	//Handle fog here
-	
-	fogColor.Set(0.8f,0.8f,0.8f);
-	glUniform3fv(m_uiParameters[U_FOG_COLOR],1,&fogColor.r);
-	glUniform1f(m_uiParameters[U_FOG_START],400);
-	glUniform1f(m_uiParameters[U_FOG_END],1800);
-	glUniform1f(m_uiParameters[U_FOG_DENSITY],0.1f);
-	glUniform1i(m_uiParameters[U_FOG_TYPE], 0);
-	glUniform1i(m_uiParameters[U_FOG_ENABLE],1);
-
-
 	glUniform1i(m_uiParameters[U_LIGHT0_TYPE], lights[0].type);
 	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
 	glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
@@ -306,6 +230,93 @@ void SceneSP3::initUniforms()
 	glUniform1f(m_uiParameters[U_LIGHT4_COSCUTOFF], lights[4].cosCutoff);
 	glUniform1f(m_uiParameters[U_LIGHT4_COSINNER], lights[4].cosInner);
 	glUniform1f(m_uiParameters[U_LIGHT4_EXPONENT], lights[4].exponent);*/
+}
+
+void SceneSP3::initUniforms()
+{
+		// Black background
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS); 
+	
+	glEnable(GL_CULL_FACE);
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glGenVertexArrays(1, &m_vertexArrayID);
+	glBindVertexArray(m_vertexArrayID);
+
+	//m_programID = LoadShaders( "Shader//Fog.vertexshader", "Shader//MultiTexture.fragmentshader" );
+	m_gPassShaderID = LoadShaders("Shader//GPass.vertexshader", "Shader//GPass.fragmentshader");
+	m_programID = LoadShaders( "Shader//Shadow.vertexshader", "Shader//Shadow.fragmentshader" );
+	
+	//Handle Shadow Uniform
+	m_uiParameters[U_LIGHT_DEPTH_MVP_GPASS] = glGetUniformLocation(m_gPassShaderID, "lightDepthMVP");
+	m_uiParameters[U_LIGHT_DEPTH_MVP] = glGetUniformLocation(m_programID,"lightDepthMVP");
+	m_uiParameters[U_SHADOW_MAP] = glGetUniformLocation(m_programID, "shadowMap");
+	
+	// Get a handle for our uniform
+	m_uiParameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
+	//m_uiParameters[U_MODEL] = glGetUniformLocation(m_programID, "M");
+	//m_uiParameters[U_VIEW] = glGetUniformLocation(m_programID, "V");
+	m_uiParameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
+	m_uiParameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
+	m_uiParameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
+	m_uiParameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
+	m_uiParameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
+	m_uiParameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
+	m_uiParameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
+	m_uiParameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
+
+
+	
+	
+
+	// Get a handle for our "colorTexture" uniform
+	m_uiParameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled[0]");
+	m_uiParameters[U_COLOR_TEXTURE_ENABLED2] = glGetUniformLocation(m_programID, "colorTextureEnabled[1]");
+	m_uiParameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture[0]");
+	m_uiParameters[U_COLOR_TEXTURE2] = glGetUniformLocation(m_programID, "colorTexture[1]");
+	// Get a handle for our "textColor" uniform
+	m_uiParameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
+	m_uiParameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
+
+	//Get a handle for our Fog
+	m_uiParameters[U_FOG_COLOR] =  glGetUniformLocation(m_programID, "fogParam.color");
+	m_uiParameters[U_FOG_DENSITY] = glGetUniformLocation(m_programID, "fogParam.density");
+	m_uiParameters[U_FOG_ENABLE] = glGetUniformLocation(m_programID, "fogParam.enabled");
+	m_uiParameters[U_FOG_END] = glGetUniformLocation(m_programID, "fogParam.end");
+	m_uiParameters[U_FOG_START] = glGetUniformLocation(m_programID, "fogParam.start");
+	m_uiParameters[U_FOG_TYPE] = glGetUniformLocation(m_programID, "fogParam.type");
+	
+	// Use our shader
+	glUseProgram(m_programID);
+
+
+	initLights();
+
+	m_lightDepthFBO.Init(1024,1024);
+
+	
+	glUniform1i(m_uiParameters[U_NUMLIGHTS], 5);
+	glUniform1i(m_uiParameters[U_TEXT_ENABLED], 0);
+	//Handle fog here
+	
+	fogColor.Set(0.8f,0.8f,0.8f);
+	glUniform3fv(m_uiParameters[U_FOG_COLOR],1,&fogColor.r);
+	glUniform1f(m_uiParameters[U_FOG_START],400);
+	glUniform1f(m_uiParameters[U_FOG_END],1800);
+	glUniform1f(m_uiParameters[U_FOG_DENSITY],0.1f);
+	glUniform1i(m_uiParameters[U_FOG_TYPE], 0);
+	glUniform1i(m_uiParameters[U_FOG_ENABLE],1);
+
+
+	
 }
 
 void SceneSP3::initMeshlist()
@@ -530,7 +541,7 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 			obj = FetchOBJ();
 			obj->setActive(active);
 			obj->setPosition(Pos);
-			obj->setPosition_Y(ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			obj->setGeoType(geotype);
 			obj->setScale(Scale);
 			obj->setOffset(Offset);
@@ -678,6 +689,36 @@ void SceneSP3::RenderPassMain()
 
 void SceneSP3::RenderWorld()
 {
+	switch(lights[0].type)
+	{
+	case Light::LIGHT_DIRECTIONAL:
+		{
+			Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
+			Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+			glUniform3fv(m_uiParameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+		}
+		break;
+
+	case Light::LIGHT_SPOT:
+		{
+			Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
+			glUniform3fv(m_uiParameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+			Vector3 spotDirection_cameraspace = viewStack.Top() * lights[0].spotDirection;
+			glUniform3fv(m_uiParameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+		}
+
+		break;
+
+	default:
+		{
+			Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
+			glUniform3fv(m_uiParameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		}
+		break;
+	}
+
+
+
 	RenderMesh(meshList[GEO_AXES], false);
 
 	RenderTerrain();

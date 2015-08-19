@@ -197,6 +197,7 @@ public:
 	void initUniforms();
 	void initVariables();
 	void initMeshlist();
+	void initLights();
 	
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);

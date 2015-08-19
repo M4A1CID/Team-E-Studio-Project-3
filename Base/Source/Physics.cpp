@@ -36,13 +36,15 @@ bool CPhysics::checkCollisionBetweenOBJ(CPlayer* go1, CObj* go2)
 	//}
 	//return false;
 	
+	Vector3 halfScale = (go2->getScale() + go2->getOffset()) * 0.5;
+
 	//AABB to AABB collision detection
-	if( go1->GetPosition().x + go1->GetScale().x > go2->getPosition().x - go2->getScale().x - go2->getOffset().x &&
-		go1->GetPosition().x - go1->GetScale().x < go2->getPosition().x + go2->getScale().x + go2->getOffset().x &&
-		go1->GetPosition().y + go1->GetScale().y > go2->getPosition().y - go2->getScale().y - go2->getOffset().y && 
-		go1->GetPosition().y - go1->GetScale().y < go2->getPosition().y + go2->getScale().y + go2->getOffset().y &&
-		go1->GetPosition().z + go1->GetScale().z > go2->getPosition().z - go2->getScale().z - go2->getOffset().z &&
-		go1->GetPosition().z - go1->GetScale().z < go2->getPosition().z + go2->getScale().z + go2->getOffset().z)
+	if( go1->GetPosition().x + go1->GetScale().x > go2->getPosition().x - halfScale.x  &&
+		go1->GetPosition().x - go1->GetScale().x < go2->getPosition().x + halfScale.x  &&
+		go1->GetPosition().y + go1->GetScale().y > go2->getPosition().y - halfScale.y  && 
+		go1->GetPosition().y - go1->GetScale().y < go2->getPosition().y + halfScale.y  &&
+		go1->GetPosition().z + go1->GetScale().z > go2->getPosition().z - halfScale.z  &&
+		go1->GetPosition().z - go1->GetScale().z < go2->getPosition().z + halfScale.z )
 	{
 		return true;
 	}
