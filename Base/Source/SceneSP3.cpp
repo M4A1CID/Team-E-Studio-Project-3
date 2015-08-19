@@ -536,19 +536,39 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	Vector3 Offset;
 	int geotype;
 	bool active;
-	CObj * obj;
+	
 	if (myfile.is_open())
 	{
 		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >>  Offset.x >> Offset.y >> Offset.z >> geotype >> active)
 		{
 
-			obj = FetchOBJ();
-			obj->setActive(active);
-			obj->setPosition(Pos);
-			obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
-			obj->setGeoType(geotype);
-			obj->setScale(Scale);
-			obj->setOffset(Offset);
+			switch(geotype)
+			{
+			case GEO_WALL:
+				{
+					CObj * obj= new CWall();
+					obj->setActive(active);
+					obj->setPosition(Pos);
+					obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+					obj->setGeoType(geotype);
+					obj->setScale(Scale);
+					obj->setOffset(Offset);
+					myObjList.push_back(obj);
+
+				}
+				break;
+			default:
+				{
+					CObj * obj = FetchOBJ();
+					obj->setActive(active);
+					obj->setPosition(Pos);
+					obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+					obj->setGeoType(geotype);
+					obj->setScale(Scale);
+					obj->setOffset(Offset);
+				}
+				break;
+			}
 			
 		}
 		myfile.close();
