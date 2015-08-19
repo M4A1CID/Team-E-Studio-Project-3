@@ -295,9 +295,9 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	m_bProne = false;
 	m_bJumping= false;
 	JumpVel = 0.0f;
-	JUMPMAXSPEED = 57.5f;
-	JUMPACCEL = 200.0f;
-	GRAVITY = -87.5f;
+	JUMPMAXSPEED = 60.f;
+	JUMPACCEL = 300.0f;
+	GRAVITY = -50.f;
 	JumpOff = 5.f;
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
