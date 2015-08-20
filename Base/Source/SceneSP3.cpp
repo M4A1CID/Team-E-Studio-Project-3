@@ -452,24 +452,14 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	initMap();
-	m_Current_Level = '0';
-	switch(m_Current_Level)
-	{	
-	case '1': //Someone's level
-		break;
-	case '2'://Someone's level
-		break;
-	case '3'://Someone's level
-		break;
-	case '4'://Someone's level
-		break;
-	default:
-		{
-			LoadFromTextFileOBJ("Variables/" + m_fileBuffer[0] + "/LoadOBJ.txt");
-			LoadFromTextFileItem("Variables/"+ m_fileBuffer[0] +"/LoadItems.txt");
-		}
-		break;
-	}
+	m_Current_Level = 0;
+	
+	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
+	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
+	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
+	
+
+	
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
 }
@@ -517,7 +507,23 @@ void SceneSP3::checkPickUpItem()
 		}
 	}
 }
+void SceneSP3::UpdateEnemies()
+{
+	for(std::vector<CEnemy *>::iterator it = myEnemyList.begin(); it != myEnemyList.end(); ++it)
+	{
+		CEnemy *enemy = (CEnemy *)*it;
 
+		if(enemy->getActive())
+		{
+			
+			int checkPosition_X = (int) ((enemy->getPosition().x+ thePlayer->GetPositionX()) / m_cMap->GetTileSize() );
+			int checkPosition_Z = m_cMap->GetNumOfTiles_Width() - (int) ( (enemy->getPosition().z + m_cMap->GetTileSize()) / m_cMap->GetTileSize());
+
+
+		}
+
+	}
+}
 void SceneSP3::Update(double dt)
 {
 	thePlayer->UpdatePosition(dt, camera);
@@ -529,7 +535,7 @@ void SceneSP3::Update(double dt)
 	//physicsEngine.getBarycentricCoordinatesAt(m_heightMap,camera,thePlayer); // Testing of Barymetric terrain
 	camera.Update(dt);	
 	UpdateSceneControls();
-
+	UpdateEnemies();
 	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
 	{
 		CObj *go = (CObj *)*it;
@@ -633,10 +639,10 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 			obj->setGeoType(geotype);
 			obj->setScale(Scale);
 			obj->setOffset(Offset);
+			cout << "Objs Loaded: SUCCESS!" << endl;
 			
 		}
 		myfile.close();
-		cout << "Objs Loaded: SUCCESS!" << endl;
 		return true;
 	}
 	else 
@@ -664,9 +670,10 @@ bool SceneSP3::LoadFromTextFileItem(const string mapString)
 			Key->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			Key->setGeoType(geotype);
 			Key->setScale(Scale);
+			cout << "Items Loaded: SUCCESS!" << endl;
 		}
 		myfile.close();
-		cout << "Items Loaded: SUCCESS!" << endl;
+		
 		return true;
 	}
 	else 
@@ -674,6 +681,33 @@ bool SceneSP3::LoadFromTextFileItem(const string mapString)
 	return false;
 }
 
+bool SceneSP3::LoadFromTextFileEnemy(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Scale;
+	int geotype;
+	bool active;
+	CEnemy * enemy;
+	if (myfile.is_open())
+	{
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> geotype >> active)
+		{
+
+			enemy = new CEnemy(Pos,Scale,geotype,active);
+			enemy->setPosition_Y(GetHeightMapY(Pos.x,Pos.z) + Pos.y);
+			myEnemyList.push_back(enemy);
+			cout << "Enemies Loaded: SUCCESS!" << endl;
+		}
+		myfile.close();
+		
+		return true;
+	}
+	else 
+		cout << "Enemies Loaded: FAILED!"; 
+	return false;
+}
 void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius, float AtmosphereRadius, float hTile, float vTile)
 {
 	 modelStack.PushMatrix();
@@ -766,6 +800,22 @@ void SceneSP3::RenderTileMap()
 				}
 			}
 		}
+}
+void SceneSP3::RenderEnemyList()
+{
+	for(std::vector<CEnemy *>::iterator it = myEnemyList.begin(); it != myEnemyList.end(); ++it)
+	{
+		CEnemy *enemy = (CEnemy *)*it;
+
+		if(enemy->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(enemy->getPosition().x,enemy->getPosition().y,enemy->getPosition().z);
+			modelStack.Scale(enemy->getScale().x,enemy->getScale().y,enemy->getScale().z);
+			RenderMesh(meshList[enemy->getGeoType()], m_bLightEnabled);
+			modelStack.PopMatrix();
+		}
+	}
 }
 void SceneSP3::Render()
 {
@@ -907,14 +957,9 @@ void SceneSP3::RenderWorld()
 	RenderMesh(meshList[GEO_SPHERE],false);
 	modelStack.PopMatrix();
 
-	RenderObjList();
+	//RenderObjList();
 	RenderKeyList();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0,20,0);
-	modelStack.Scale(15,15,15);
-	RenderMesh(meshList[GEO_CUBE],false);
-	modelStack.PopMatrix();
+	RenderEnemyList();
 
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 }
@@ -1159,7 +1204,7 @@ const float SceneSP3::GetCameraCurrentY(void)
 }
 const float SceneSP3::GetHeightMapY(float x, float z)
 {
-	return 350* (ReadHeightMap(m_heightMap, x/TERRAIN_SCALE.x, z/TERRAIN_SCALE.z));
+	return TERRAIN_SCALE.y* (ReadHeightMap(m_heightMap, x/TERRAIN_SCALE.x, z/TERRAIN_SCALE.z));
 }
 const std::vector<unsigned char>SceneSP3::GetHeightMap()
 {
@@ -1177,6 +1222,16 @@ void SceneSP3::Exit()
 	{
 		if(myObjList[i] != NULL)
 			delete myObjList[i];
+	}
+	for(unsigned int i = 0; i < myKeyList.size(); ++i)
+	{
+		if(myKeyList[i] != NULL)
+			delete myKeyList[i];
+	}
+	for(unsigned int i = 0; i < myEnemyList.size(); ++i)
+	{
+		if(myEnemyList[i] != NULL)
+			delete myEnemyList[i];
 	}
 	if(m_cMap != NULL)
 	{

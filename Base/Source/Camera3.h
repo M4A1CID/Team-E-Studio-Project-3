@@ -83,6 +83,7 @@ private:
 	// Crouch
 	float CrouchHeight;
 	float CrouchSpeed;
+	float CrouchOff;
 };
 
 #endif

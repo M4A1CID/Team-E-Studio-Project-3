@@ -6,6 +6,7 @@ class CEnemy
 {
 public:
 	CEnemy(void);
+	CEnemy(Vector3 Pos, Vector3 Scale, int GeoType, bool Active);
 	virtual ~CEnemy(void);
 
 	//Set the position of this Enemy
@@ -52,7 +53,9 @@ public:
 	void Idle();
 
 	//Update the enemy
-	virtual void Update() = 0;
+	void Update();
+
+
 private:
 	Vector3 Pos;			// Enemy's position
 	Vector3 Scale;			// Enemy's scale
