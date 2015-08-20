@@ -211,16 +211,9 @@ void Camera3::UpdateJump(const double dt)
 }
 void Camera3::Crouch(const double dt)
 {
-	static bool bCrouching = false;
-	if(!bCrouching && Application::IsKeyPressed(VK_CONTROL) && !m_bJumping)
+	if(!m_bCrouching && !m_bJumping)
 	{
-		bCrouching = true;
 		m_bCrouching = true;
-	}
-	else if(bCrouching && !Application::IsKeyPressed(VK_CONTROL) && !m_bJumping)
-	{
-		bCrouching = false;
-		m_bCrouching = false;
 	}
 }
 void Camera3::UpdateCrouch(const double dt)
@@ -231,6 +224,8 @@ void Camera3::UpdateCrouch(const double dt)
 		{
 			position.y -= CrouchSpeed;
 			target.y -= CrouchSpeed;
+			CAMERA_SPEED = crouchWalkSpeed;
+			m_bCrouching = false;
 		}
 	}
 	else
@@ -310,13 +305,13 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	// Speed
 	tempSpeed = 100.f;
 	sprintSpeed = 300.f;
-	crouchWalkSpeed = 50.f;
+	crouchWalkSpeed = 20.f;
 
 
 	// Crouch
 	CrouchOff = 60.f;
 	CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
-	CrouchSpeed = 15.f;
+	CrouchSpeed = 20.f;
 
 	//Initialise the camera movement flags
 	for(int i = 0; i < 255; i++)
@@ -376,7 +371,7 @@ void Camera3::Update(double dt)
 	Prone(dt);*/
 	if(myKeys['w'] == true)
 	{
-		if(myKeys[VK_SHIFT] == true)
+		if(myKeys[VK_SHIFT] == true && m_bCrouching == false)
 		{
 			CAMERA_SPEED = sprintSpeed;
 			myKeys[VK_SHIFT] = false;
@@ -393,7 +388,7 @@ void Camera3::Update(double dt)
 
 	if(myKeys['a'] == true)
 	{
-		if(myKeys[VK_SHIFT] == true)
+		if(myKeys[VK_SHIFT] == true && m_bCrouching == false)
 		{
 			CAMERA_SPEED = sprintSpeed;
 			myKeys[VK_SHIFT] = false;
@@ -404,7 +399,7 @@ void Camera3::Update(double dt)
 
 	if(myKeys['d'] == true)
 	{
-		if(myKeys[VK_SHIFT] == true)
+		if(myKeys[VK_SHIFT] == true && m_bCrouching == false)
 		{
 			CAMERA_SPEED = sprintSpeed;
 			myKeys[VK_SHIFT] = false;
@@ -425,6 +420,7 @@ void Camera3::Update(double dt)
 		myKeys[VK_CONTROL] = false;
 	}
 	
+	std::cout << CAMERA_SPEED << std::endl;
 
 	CAMERA_SPEED = tempSpeed;
 
