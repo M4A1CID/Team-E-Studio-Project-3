@@ -70,11 +70,21 @@ private:
 
 	bool m_bRun;	//check if player is running
 
+	// Jump;
 	float GRAVITY;
 	float JumpVel;
 	float JUMPMAXSPEED, JUMPACCEL;
 	float JumpOff;
-	
+	float JumpHeight;
+
+	// Speed
+	float tempSpeed;
+	float sprintSpeed, crouchWalkSpeed;
+
+	// Crouch
+	float CrouchHeight;
+	float CrouchSpeed;
+	float CrouchOff;
 };
 
 #endif

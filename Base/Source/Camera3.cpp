@@ -179,7 +179,6 @@ void Camera3::Jump(const double dt)
 ================================*/
 void Camera3::UpdateJump(const double dt)
 {
-	float height = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
 	if(m_bJumping)
 	{
 		//Factor in gravity
@@ -190,15 +189,15 @@ void Camera3::UpdateJump(const double dt)
 		target.y += JumpVel * (float)dt;
 	}
 	//Check if the camera has reached the ground
-	if (position.y < height)
+	if (position.y < JumpHeight)
 	{
-		float movedt = height - position.y;
+		float movedt = JumpHeight - position.y;
 		m_bJumping = false;
-		position.y = height;
+		position.y = JumpHeight;
 		target.y += movedt;
 		JumpVel = 0.0f;
 	}
-	if(position.y > height)
+	if(position.y > JumpHeight)
 	{
 		//Factor in gravity
 		JumpVel += GRAVITY * dt;
@@ -212,7 +211,6 @@ void Camera3::UpdateJump(const double dt)
 }
 void Camera3::Crouch(const double dt)
 {
-
 	static bool bCrouching = false;
 	if(!bCrouching && Application::IsKeyPressed(VK_CONTROL) && !m_bJumping)
 	{
@@ -229,18 +227,18 @@ void Camera3::UpdateCrouch(const double dt)
 {
 	if(m_bCrouching)
 	{
-		if(position.y > 30)
+		if(position.y > CrouchOff)
 		{
-			position.y -= dt * 70;
-			target.y -= dt * 70;
+			position.y -= CrouchSpeed;
+			target.y -= CrouchSpeed;
 		}
 	}
 	else
 	{
-		if(position.y <40  && !m_bProne)
+		if(position.y < CrouchOff && !m_bProne)
 		{
-			position.y += dt * 70;
-			target.y += dt * 70;
+			position.y += CrouchSpeed;
+			target.y += CrouchSpeed;
 		}
 	}
 }
@@ -281,18 +279,11 @@ void Camera3::UpdateProne(const double dt)
 void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up, std::vector<unsigned char> heightmap, Vector3 tScale)
 {
 
-	sCameraType = AIR_CAM;
+	sCameraType = LAND_CAM;
 	//For jump use
 	m_Pitch_Limiter = 0.f;
 	m_Yaw = 0.f;
-	m_bCrouching = false;
-	m_bProne = false;
-	m_bJumping= false;
-	JumpVel = 0.0f;
-	JUMPMAXSPEED = 155.f;
-	JUMPACCEL = 200.0f;
-	GRAVITY = -175.f;
-	JumpOff = 5.f;
+
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
 	Vector3 view = (target - position).Normalized();
@@ -303,10 +294,34 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	this->heightmap = heightmap;
 	this->tScale = tScale;
 
+	// Bools
+	m_bCrouching = false;
+	m_bProne = false;
+	m_bJumping= false;
+
+	// Jump
+	JumpVel = 0.0f;
+	JUMPMAXSPEED = 155.f;
+	JUMPACCEL = 200.0f;
+	GRAVITY = -175.f;
+	JumpOff = 5.f;
+	JumpHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
+
+	// Speed
+	tempSpeed = 100.f;
+	sprintSpeed = 300.f;
+	crouchWalkSpeed = 50.f;
+
+
+	// Crouch
+	CrouchOff = 60.f;
+	CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
+	CrouchSpeed = 15.f;
+
 	//Initialise the camera movement flags
-	for(int i = 0; i<255; i++)
+	for(int i = 0; i < 255; i++)
 	{
-		myKeys[i] =false;
+		myKeys[i] = false;
 	}
 }
 void Camera3::MoveLeft(const double dt)
@@ -353,8 +368,6 @@ void Camera3::UpdateStatus(const unsigned char key)
 }
 void Camera3::Update(double dt)
 {
-	
-	
 	/*UpdateJump(dt);
 	UpdateCrouch(dt);
 	UpdateProne(dt);
@@ -363,31 +376,63 @@ void Camera3::Update(double dt)
 	Prone(dt);*/
 	if(myKeys['w'] == true)
 	{
+		if(myKeys[VK_SHIFT] == true)
+		{
+			CAMERA_SPEED = sprintSpeed;
+			myKeys[VK_SHIFT] = false;
+		}
 		MoveForward(dt);
 		myKeys['w'] = false;
 	}
+
 	if(myKeys['s'] == true)
 	{
 		MoveBackward(dt);
 		myKeys['s'] = false;
 	}
+
 	if(myKeys['a'] == true)
 	{
+		if(myKeys[VK_SHIFT] == true)
+		{
+			CAMERA_SPEED = sprintSpeed;
+			myKeys[VK_SHIFT] = false;
+		}
 		MoveLeft(dt);
 		myKeys['a'] = false;
 	}
+
 	if(myKeys['d'] == true)
 	{
+		if(myKeys[VK_SHIFT] == true)
+		{
+			CAMERA_SPEED = sprintSpeed;
+			myKeys[VK_SHIFT] = false;
+		}
 		MoveRight(dt);
 		myKeys['d'] = false;
 	}
+
 	if(myKeys[32] == true)
 	{
 		Jump(dt);
 		myKeys[32] = false;
 	}
+
+	if(myKeys[VK_CONTROL] == true)
+	{
+		Crouch(dt);
+		myKeys[VK_CONTROL] = false;
+	}
+	
+
+	CAMERA_SPEED = tempSpeed;
+
 	if(sCameraType == LAND_CAM)
+	{
 		UpdateJump(dt);
+		UpdateCrouch(dt);
+	}
 	
 	if(Application::m_sdCamera_yaw != 0)
 		Yaw(dt);
