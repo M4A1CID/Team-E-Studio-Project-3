@@ -179,6 +179,8 @@ void Camera3::Jump(const double dt)
 ================================*/
 void Camera3::UpdateJump(const double dt)
 {
+	float JumpHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
+
 	if(m_bJumping)
 	{
 		//Factor in gravity
@@ -299,7 +301,6 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	JUMPACCEL = 200.0f;
 	GRAVITY = -175.f;
 	JumpOff = 5.f;
-	JumpHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) + JumpOff;
 
 	// Speed
 	tempSpeed = 100.f;

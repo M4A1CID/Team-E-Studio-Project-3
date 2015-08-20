@@ -75,7 +75,6 @@ private:
 	float JumpVel;
 	float JUMPMAXSPEED, JUMPACCEL;
 	float JumpOff;
-	float JumpHeight;
 
 	// Speed
 	float tempSpeed;
