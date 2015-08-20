@@ -30,6 +30,11 @@ SceneSP3::~SceneSP3()
 		delete thePlayer;
 		thePlayer = NULL;
 	}
+	if(m_cMap)
+	{
+		delete m_cMap;
+		m_cMap = NULL;
+	}
 }
 
 void SceneSP3::initPlayer()
