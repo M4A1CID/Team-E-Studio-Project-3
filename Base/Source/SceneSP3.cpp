@@ -727,9 +727,7 @@ void SceneSP3::RenderTileMap()
 							modelStack.PopMatrix();
 						}
 						break;
-
-
-					default:
+					case 1:
 						{
 							glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 							modelStack.PushMatrix();
@@ -739,6 +737,8 @@ void SceneSP3::RenderTileMap()
 							modelStack.PopMatrix();
 							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 						}
+
+					default:
 						break;
 					}
 				}
