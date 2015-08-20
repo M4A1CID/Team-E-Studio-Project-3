@@ -47,6 +47,10 @@ public:
 	// Get the destination of this Enemy
 	Vector3 getDestination(void);
 
+	// Animations
+	void Walking();
+	void Idle();
+
 	//Update the enemy
 	virtual void Update() = 0;
 private:

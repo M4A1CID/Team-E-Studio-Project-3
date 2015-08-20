@@ -222,7 +222,7 @@ void Camera3::UpdateCrouch(const double dt)
 {
 	if(m_bCrouching)
 	{
-		if(position.y > CrouchOff)
+		if(position.y > CrouchHeight)
 		{
 			position.y -= CrouchSpeed;
 			target.y -= CrouchSpeed;
@@ -231,7 +231,7 @@ void Camera3::UpdateCrouch(const double dt)
 	}
 	else
 	{
-		if(position.y < CrouchOff && !m_bProne)
+		if(position.y < CrouchHeight && !m_bProne)
 		{
 			position.y += CrouchSpeed;
 			target.y += CrouchSpeed;
@@ -305,12 +305,10 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	// Speed
 	tempSpeed = 100.f;
 	sprintSpeed = 300.f;
-	crouchWalkSpeed = 20.f;
-
+	crouchWalkSpeed = 25.f;
 
 	// Crouch
-	CrouchOff = 60.f;
-	CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
+	CrouchHeight = 60.f;
 	CrouchSpeed = 20.f;
 
 	//Initialise the camera movement flags
@@ -444,7 +442,7 @@ void Camera3::Update(double dt)
 		myKeys[VK_CONTROL] = false;
 	}
 	
-	std::cout << CAMERA_SPEED << std::endl;
+	//std::cout << CAMERA_SPEED << std::endl;
 
 	CAMERA_SPEED = tempSpeed;
 

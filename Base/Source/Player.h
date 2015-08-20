@@ -62,12 +62,20 @@ public:
 	int getMaxItemCap();
 	int getItemsHeld();
 
+	// Animations
+	void Walking();
+	void Idle();
+	void Running();
+	void Jump();
+	void Crouch();
+
 	// Get the inventory Vector for CItems
 	std::vector<CItem*> getItemVector();
 
 	// Get the Key vector for CKey*
 	std::vector<CKey*> getKeyVector();
 	CItem* getItem(int i);
+
 private:
 	Vector3 pos;	// position of player
 	Vector3 scale;	// scale of hitbox of player

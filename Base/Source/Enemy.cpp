@@ -126,3 +126,16 @@ Vector3 CEnemy::getDestination(void)
 {
 	return this->destination;
 }
+
+/*======== Animations =========*/
+// Walking
+void CEnemy::Walking()
+{
+
+}
+
+// Idle
+void CEnemy::Idle()
+{
+
+}
