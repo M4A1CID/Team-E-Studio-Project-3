@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: bed.ma
-//Last modified: Wed, Aug 19, 2015 11:19:19 AM
+//Last modified: Thu, Aug 20, 2015 02:24:57 PM
 //Codeset: 1252
 requires maya "2015";
 currentUnit -l centimeter -a degree -t film;
@@ -12,8 +12,8 @@ fileInfo "osv" "Microsoft Windows 8 Home Premium Edition, 64-bit  (Build 9200)\n
 fileInfo "license" "student";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 9.4910270147154172 23.881412326953352 6.4503041320316328 ;
-	setAttr ".r" -type "double3" -64.538352707291736 1859.3999999995431 6.2481255611239769e-015 ;
+	setAttr ".t" -type "double3" 22.374953148311807 12.411802146533388 6.2362161926133801 ;
+	setAttr ".r" -type "double3" -27.938352707223334 1876.1999999995062 -1.333378853280638e-014 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
