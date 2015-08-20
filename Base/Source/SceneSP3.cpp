@@ -432,7 +432,7 @@ void SceneSP3::initVariables()
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
-	LoadFromTextFileOBJ("Variables/LoadOBJ.txt");
+	LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 }
 
 void SceneSP3::UpdatePlayerStatus(const unsigned char key)
