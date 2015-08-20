@@ -1,8 +1,17 @@
 #include "Enemy.h"
 
-CEnemy::CEnemy(void)
+CEnemy::CEnemy(void) :
+	theStrategy(NULL)
 {
 
+}
+CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
+{
+	this->Pos = Pos;
+	this->Scale = Scale;
+	this->geoType = geoType;
+	this->active = active;
+	theStrategy = NULL;
 }
 
 CEnemy::~CEnemy(void)
@@ -125,4 +134,9 @@ void CEnemy::setDestination_Z(float z)
 Vector3 CEnemy::getDestination(void)
 {
 	return this->destination;
+}
+void CEnemy::Update()
+{
+	//Update the enemy
+
 }

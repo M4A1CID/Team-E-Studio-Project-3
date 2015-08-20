@@ -444,7 +444,6 @@ void Camera3::Update(double dt)
 		myKeys[VK_CONTROL] = false;
 	}
 	
-	std::cout << CAMERA_SPEED << std::endl;
 
 	CAMERA_SPEED = tempSpeed;
 

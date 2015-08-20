@@ -19,6 +19,7 @@
 #include "Physics.h"
 #include "Map.h"
 #include "FrustrumCulling.h"
+#include "Enemy.h"
 #include <vector>
 #include <fstream>
 
@@ -166,6 +167,8 @@ class SceneSP3 : public Scene
 		GEO_WARDEN_BODY,	// 31
 		GEO_WARDEN_HEAD,	// 32
 
+		
+
 		GEO_ITEM_UI,	//to render out the item UI on the bottom of screen
 		GEO_MIN_UI,
 		GEO_MED_UI,
@@ -211,6 +214,7 @@ public:
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
 	bool LoadFromTextFileItem(const string mapString);
+	bool LoadFromTextFileEnemy(const string mapString);
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
 	CObj* FetchOBJ();
@@ -224,6 +228,7 @@ public:
 	void RenderTerrain();
 	void RenderObjList();
 	void RenderKeyList();
+	void RenderEnemyList();
 	void RenderDebugWireframe();
 
 	//Test render 2D Partitioning
@@ -238,6 +243,7 @@ public:
 
 	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);
+	void UpdateEnemies();
 	void UpdateSceneControls();
 
 	const float GetCameraCurrentY(void);
@@ -272,6 +278,7 @@ private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
 	std::vector<CKey *> myKeyList;
+	std::vector<CEnemy *> myEnemyList;
 	//std::vector<Vector3> m_treeList;
 	
 
@@ -293,7 +300,7 @@ private:
 	float m_fFps;
 	
 	//Current level of scene
-	char m_Current_Level;
+	short int m_Current_Level;
 
 	double m_dJumpingSpeed;
 	bool m_bLightEnabled;
