@@ -224,7 +224,6 @@ void Camera3::UpdateCrouch(const double dt)
 		{
 			position.y -= CrouchSpeed;
 			target.y -= CrouchSpeed;
-			CAMERA_SPEED = crouchWalkSpeed;
 			m_bCrouching = false;
 		}
 	}
@@ -371,10 +370,16 @@ void Camera3::Update(double dt)
 	Prone(dt);*/
 	if(myKeys['w'] == true)
 	{
-		if(myKeys[VK_SHIFT] == true && m_bCrouching == false)
+		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
 			myKeys[VK_SHIFT] = false;
+		}
+		if(myKeys[VK_CONTROL] == true)
+		{
+			Crouch(dt);
+			CAMERA_SPEED = crouchWalkSpeed;
+			myKeys[VK_CONTROL] = false;
 		}
 		MoveForward(dt);
 		myKeys['w'] = false;
@@ -382,16 +387,28 @@ void Camera3::Update(double dt)
 
 	if(myKeys['s'] == true)
 	{
+		if(myKeys[VK_CONTROL] == true)
+		{
+			Crouch(dt);
+			CAMERA_SPEED = crouchWalkSpeed;
+			myKeys[VK_CONTROL] = false;
+		}
 		MoveBackward(dt);
 		myKeys['s'] = false;
 	}
 
 	if(myKeys['a'] == true)
 	{
-		if(myKeys[VK_SHIFT] == true && m_bCrouching == false)
+		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
 			myKeys[VK_SHIFT] = false;
+		}
+		if(myKeys[VK_CONTROL] == true)
+		{
+			Crouch(dt);
+			CAMERA_SPEED = crouchWalkSpeed;
+			myKeys[VK_CONTROL] = false;
 		}
 		MoveLeft(dt);
 		myKeys['a'] = false;
@@ -399,10 +416,16 @@ void Camera3::Update(double dt)
 
 	if(myKeys['d'] == true)
 	{
-		if(myKeys[VK_SHIFT] == true && m_bCrouching == false)
+		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
 			myKeys[VK_SHIFT] = false;
+		}
+		if(myKeys[VK_CONTROL] == true)
+		{
+			Crouch(dt);
+			CAMERA_SPEED = crouchWalkSpeed;
+			myKeys[VK_CONTROL] = false;
 		}
 		MoveRight(dt);
 		myKeys['d'] = false;
