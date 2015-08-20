@@ -1,0 +1,3 @@
+
+
+//PosX,	PosY,	PosZ,	GeoType,	Active

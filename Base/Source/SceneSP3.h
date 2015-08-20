@@ -22,7 +22,8 @@
 #include <vector>
 #include <fstream>
 
-
+//Modify this to load your level via string
+const static string m_fileBuffer[5] = {"Level Sandbox"};
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 
@@ -30,6 +31,7 @@ class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
 	const static int INTERACTION_DISTANCE = 10;
+	
 	enum UNIFORM_TYPE
 	{
 		U_MVP = 0,
@@ -197,13 +199,18 @@ public:
 	virtual void Exit();
 
 	void initPlayer();			//initialize player class info here. this is done to make the code more organized
-
+	void initEnemies();
 	void initUniforms();
 	void initVariables();
 	void initMap();
 	void initMeshlist();
 	void initLights();
 	
+	void checkPickUpItem();
+
+	//Loading of stuff
+	bool LoadFromTextFileOBJ(const string mapString);
+	bool LoadFromTextFileItem(const string mapString);
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
 	CObj* FetchOBJ();
@@ -266,6 +273,8 @@ private:
 	std::vector<CObj *> myObjList;
 	std::vector<CKey *> myKeyList;
 	//std::vector<Vector3> m_treeList;
+	
+
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
 	unsigned m_programID;
@@ -282,11 +291,9 @@ private:
 	Light lights[5];
 
 	float m_fFps;
-	void checkPickUpItem();
-
-	//Loading of stuff
-	bool LoadFromTextFileOBJ(const string mapString);
-	bool LoadFromTextFileItem(const string mapString);
+	
+	//Current level of scene
+	char m_Current_Level;
 
 	double m_dJumpingSpeed;
 	bool m_bLightEnabled;

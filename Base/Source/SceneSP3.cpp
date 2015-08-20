@@ -452,8 +452,26 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	initMap();
-	LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
-	LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
+	m_Current_Level = '0';
+	switch(m_Current_Level)
+	{	
+	case '1': //Someone's level
+		break;
+	case '2'://Someone's level
+		break;
+	case '3'://Someone's level
+		break;
+	case '4'://Someone's level
+		break;
+	default:
+		{
+			LoadFromTextFileOBJ("Variables/" + m_fileBuffer[0] + "/LoadOBJ.txt");
+			LoadFromTextFileItem("Variables/"+ m_fileBuffer[0] +"/LoadItems.txt");
+		}
+		break;
+	}
+	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
+	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
 }
 
 void SceneSP3::UpdatePlayerStatus(const unsigned char key)
@@ -704,7 +722,6 @@ void SceneSP3::RenderTileMap()
 	int m = 0;
 	int h = 0;
 	
-
 	//mapFineOffset_x = mapOffset_x % m_cMap->GetTileSize();
 	//mapFineOffset_y = mapOffset_y % m_cMap->GetTileSize();
 	
