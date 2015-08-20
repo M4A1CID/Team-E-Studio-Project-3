@@ -17,6 +17,8 @@
 #include "Obj.h"
 #include "Player.h"
 #include "Physics.h"
+#include "Map.h"
+#include "FrustrumCulling.h"
 #include <vector>
 #include <fstream>
 
@@ -195,6 +197,7 @@ public:
 
 	void initUniforms();
 	void initVariables();
+	void initMap();
 	void initMeshlist();
 	void initLights();
 	
@@ -210,6 +213,10 @@ public:
 	void RenderTerrain();
 	void RenderObjList();
 	void RenderDebugWireframe();
+
+	//Test render 2D Partitioning
+	void RenderTileMap();
+
 
 	//Shadow things
 	void RenderPassGPass();
@@ -272,6 +279,7 @@ private:
 	float m_fFps;
 	void checkPickUpItem();
 
+	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
 
 	double m_dJumpingSpeed;
@@ -281,6 +289,8 @@ private:
 
 	//Handle to the minimap
 	CMinimap* m_cMinimap;
+	//Maps to 2D paritioning
+	CMap* m_cMap;
 
 	//Handle to the player class
 	CPlayer* thePlayer;
@@ -289,12 +299,13 @@ private:
 	ISound* music ;
 	ISound* fire;
 
+	//Fog
 	Color fogColor;
 
 	//Physics stuff
 	float m_speed;
-	int m_objectCount;
-	Vector3 m_gravity;
+	//int m_objectCount;
+	//Vector3 m_gravity;
 	CPhysics physicsEngine;
 	
 
