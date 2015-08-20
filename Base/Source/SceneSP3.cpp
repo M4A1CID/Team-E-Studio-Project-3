@@ -13,6 +13,7 @@
 SceneSP3::SceneSP3()
 	: m_cMinimap(NULL)
 	, thePlayer(NULL)
+	, m_cMap(NULL)
 {
 
 }
@@ -39,18 +40,21 @@ void SceneSP3::initPlayer()
 
 	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
+void SceneSP3::initMap()
+{
+	m_cMap = new CMap();
+	m_cMap->Init( 4096, 4096, 32, 32, 4096, 4096, 128,'1'); //Init level 1
+	m_cMap->LoadMap( "Variables/Level Sandbox/Level1.csv" ); // Load level 1
+}
 void SceneSP3::Init()
 {
 	initUniforms(); // Init the standard Uniforms
-	
-
 	initPlayer();
 	initMeshlist();
 	initVariables();
 
 	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
-
-
+	
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -442,6 +446,7 @@ void SceneSP3::initVariables()
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
+	initMap();
 	LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
 }
@@ -685,6 +690,60 @@ void SceneSP3::RenderTerrain()
 	RenderMesh(meshList[GEO_TERRAIN2], false);  
 	modelStack.PopMatrix();
 }
+/********************************************************************************
+ Render the tile map. This is a private function for use in this class only
+ ********************************************************************************/
+void SceneSP3::RenderTileMap()
+{
+	int m = 0;
+	int h = 0;
+	
+
+	//mapFineOffset_x = mapOffset_x % m_cMap->GetTileSize();
+	//mapFineOffset_y = mapOffset_y % m_cMap->GetTileSize();
+	
+	
+		for(int i = 0; i < m_cMap->GetNumOfTiles_Height(); i ++)
+		{
+			for(int k = 0; k < m_cMap->GetNumOfTiles_Width(); k ++)
+			{
+				m = k ;
+				h =  i;
+				float x = h*m_cMap->GetTileSize() - m_cMap->GetScreenHeight() * 0.5;
+				float z = m*m_cMap->GetTileSize() - m_cMap->GetScreenWidth() * 0.5;
+				float y = GetHeightMapY(x,z);
+				if(CubeInFrustumBool(x,y,z,m_cMap->GetTileSize()))
+				{
+					switch(m_cMap->theScreenMap[h][m])
+					{
+					case 7:// Wall
+						{
+
+							modelStack.PushMatrix();
+							modelStack.Translate(x,GetHeightMapY(x,z),z);
+							modelStack.Scale(1,1,1);
+							RenderMesh(meshList[GEO_WALL], m_bLightEnabled);
+							modelStack.PopMatrix();
+						}
+						break;
+
+
+					default:
+						{
+							glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+							modelStack.PushMatrix();
+							modelStack.Translate(x,GetHeightMapY(x,z),z);
+							modelStack.Scale(m_cMap->GetTileSize(),m_cMap->GetTileSize(),m_cMap->GetTileSize());
+							RenderMesh(meshList[GEO_CUBE], false);
+							modelStack.PopMatrix();
+							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+						}
+						break;
+					}
+				}
+			}
+		}
+}
 void SceneSP3::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -703,9 +762,10 @@ void SceneSP3::Render()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 	//glUniform1i(m_uiParameters[U_FOG_ENABLE], 0);
-
-
-
+	
+	
+	Mtx44 modelView = viewStack.Top() * modelStack.Top(); 
+	ExtractFrustum(perspective,modelView);
 	//============================PRE RENDER PASS =============================
 	
 	RenderPassGPass();
@@ -814,6 +874,7 @@ void SceneSP3::RenderWorld()
 	}
 
 
+	RenderTileMap();
 
 	RenderMesh(meshList[GEO_AXES], false);
 
@@ -1094,7 +1155,11 @@ void SceneSP3::Exit()
 		if(myObjList[i] != NULL)
 			delete myObjList[i];
 	}
-
+	if(m_cMap != NULL)
+	{
+		delete m_cMap;
+		m_cMap = NULL;
+	}
 	//if (music)
 	//	music->drop(); // release music stream.
 	//if(fire)
