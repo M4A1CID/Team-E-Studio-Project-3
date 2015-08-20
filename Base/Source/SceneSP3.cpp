@@ -386,6 +386,16 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_ITEM_UI]->textureID = LoadTGA("Image//item_ui.tga");
+
+	meshList[GEO_MIN_UI] = MeshBuilder::GenerateQuad("GEO_MIN_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_MIN_UI]->textureID = LoadTGA("Image//min_sec_key.tga");
+
+	meshList[GEO_MED_UI] = MeshBuilder::GenerateQuad("GEO_MED_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_MED_UI]->textureID = LoadTGA("Image//med_sec_key.tga");
+
+	meshList[GEO_MAX_UI] = MeshBuilder::GenerateQuad("GEO_MAX_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_MAX_UI]->textureID = LoadTGA("Image//max_sec_key.tga");
+
 	// Character parts
 	//Inmate
 	meshList[GEO_INMATE_ARM] = MeshBuilder::GenerateOBJ("GEO_INMATE_ARM","Objects//arm.obj");
@@ -433,6 +443,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
+	LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
 }
 
 void SceneSP3::UpdatePlayerStatus(const unsigned char key)
@@ -515,7 +526,10 @@ void SceneSP3::UpdateSceneControls()
 	if(Application::IsKeyPressed(VK_F4))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	//CharacterCrouch();
+	if(Application::IsKeyPressed('F'))
+	{
+		checkPickUpItem();
+	}
 
 	if(Application::IsKeyPressed('8'))
 	{
@@ -543,6 +557,27 @@ CObj* SceneSP3::FetchOBJ()
 		myObjList.push_back(go);
 	}
 	CObj *go = myObjList.back();
+	go->setActive(true);
+	return go;
+}
+
+CKey* SceneSP3::FetchKey()
+{
+	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
+	{
+		CKey *go = (CKey *)*it;
+		if(!go->getActive())
+		{
+			go->setActive(true);
+			return go;
+		}
+	}
+	for(unsigned i = 0; i < 10; ++i)
+	{
+		CKey *go = new CKey();
+		myKeyList.push_back(go);
+	}
+	CKey *go = myKeyList.back();
 	go->setActive(true);
 	return go;
 }
@@ -577,6 +612,36 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	}
 	else 
 		cout << "Objs Loaded: FAILED!"; 
+	return false;
+}
+
+bool SceneSP3::LoadFromTextFileItem(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Scale;
+	int geotype;
+	bool active;
+	CKey * Key;
+	if (myfile.is_open())
+	{
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> geotype >> active)
+		{
+
+			Key = FetchKey();
+			Key->setActive(active);
+			Key->setPosition(Pos);
+			Key->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			Key->setGeoType(geotype);
+			Key->setScale(Scale);
+		}
+		myfile.close();
+		cout << "Items Loaded: SUCCESS!" << endl;
+		return true;
+	}
+	else 
+		cout << "Items Loaded: FAILED!"; 
 	return false;
 }
 
@@ -654,6 +719,15 @@ void SceneSP3::Render()
 		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
 		{
 			RenderTextOnScreen(meshList[GEO_TEXT],"Collision Detected!",Color(1,1,1),2,2,2);
+			//cout << "Collision detected!" << endl;
+		}
+	}
+	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
+	{
+		CKey *go = (CKey *)*it;
+		if(physicsEngine.checkCollisionBetweenKey(thePlayer,go))
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT],"Stop walking into the item!",Color(1,1,1),2,2,2);
 			//cout << "Collision detected!" << endl;
 		}
 	}
@@ -750,22 +824,37 @@ void SceneSP3::RenderWorld()
 	modelStack.PopMatrix();
 
 	RenderObjList();
+	RenderKeyList();
+
 	modelStack.PushMatrix();
 	modelStack.Translate(0,20,0);
 	modelStack.Scale(15,15,15);
 	RenderMesh(meshList[GEO_CUBE],false);
 	modelStack.PopMatrix();
 
-	
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
-
-	
 }
 void SceneSP3::RenderObjList()
 {
 	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
 	{
 		CObj *go = (CObj *)*it;
+
+		if(go->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
+			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
+			modelStack.PopMatrix();
+		}
+	}
+}
+void SceneSP3::RenderKeyList()
+{
+	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
+	{
+		CKey *go = (CKey *)*it;
 
 		if(go->getActive() == true)
 		{

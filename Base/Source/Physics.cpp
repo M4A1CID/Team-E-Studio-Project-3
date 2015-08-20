@@ -89,6 +89,43 @@ void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, 
 	}
 }
 
+bool CPhysics::checkCollisionBetweenKey(CPlayer* go1, CKey* go2)
+{
+	Vector3 obj1 = go1->GetPosition();
+	Vector3 obj2 = go2->getPosition();
+	Vector3 halfScale = (go2->getScale()) * 0.5;
+
+	//AABB to AABB collision detection
+	if( obj1.x + go1->GetScale().x > obj2.x - halfScale.x  &&
+		obj1.x - go1->GetScale().x < obj2.x + halfScale.x  &&
+		obj1.y + go1->GetScale().y > obj2.y - halfScale.y  && 
+		obj1.y - go1->GetScale().y < obj2.y + halfScale.y  &&
+		obj1.z + go1->GetScale().z > obj2.z - halfScale.z  &&
+		obj1.z - go1->GetScale().z < obj2.z + halfScale.z )
+	{
+		return true;
+	}
+	return false;
+	
+}
+void CPhysics::collisionResponseBetweenKey(Camera3 &camera,CPlayer* &thePlayer, CKey* &go, double dt)
+{
+	Vector3 diffVec = go->getPosition() - thePlayer->GetPosition();
+	diffVec *= 10;
+	if(camera.GetCameraType() == Camera3::LAND_CAM)
+	{
+		camera.position.x -= diffVec.x * dt;
+		camera.position.z -= diffVec.z * dt;
+		camera.target.x -= diffVec.x * dt;
+		camera.target.z -= diffVec.z * dt;
+	}
+	else
+	{
+		camera.position -= diffVec * dt;
+		camera.target -= diffVec * dt;
+	}
+}
+
 // Check height of terrain
 const float CPhysics::GetHeightMapY(float x, float z, std::vector<unsigned char> &heightMap,const Vector3& terrainSize )
 {

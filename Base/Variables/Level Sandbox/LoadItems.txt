@@ -1,0 +1,5 @@
+-50		70		50		2		2		2		18		1
+//PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
+//GEOTYPE 18 == MIN SECURITY
+//GEOTYPE 19 == MED SECURITY
+//GEOTYPE 20 == MAX SECURITY

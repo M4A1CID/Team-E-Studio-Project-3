@@ -20,6 +20,7 @@
     <ClCompile Include="Source\DepthFBO.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Item.cpp" />
+    <ClCompile Include="Source\Key.cpp" />
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Geometry.h" />
     <ClInclude Include="Source\Item.h" />
+    <ClInclude Include="Source\Key.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadHmap.h" />
     <ClInclude Include="Source\LoadOBJ.h" />

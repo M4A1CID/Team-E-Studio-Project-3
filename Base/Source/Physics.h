@@ -24,6 +24,9 @@ public:
 	bool checkCollisionBetweenOBJ(CPlayer*, CObj*);
 	void collisionResponseBetweenOBJ(Camera3&,CPlayer*&, CObj*&, double);
 
+	bool checkCollisionBetweenKey(CPlayer*, CKey*);
+	void collisionResponseBetweenKey(Camera3&, CPlayer*&, CKey*&, double);
+
 	// Check height of terrain
 	const float GetHeightMapY(float x, float z, std::vector<unsigned char> &heightMap,const Vector3& terrainSize);
 

@@ -163,6 +163,9 @@ class SceneSP3 : public Scene
 		GEO_WARDEN_HEAD,	// 32
 
 		GEO_ITEM_UI,	//to render out the item UI on the bottom of screen
+		GEO_MIN_UI,
+		GEO_MED_UI,
+		GEO_MAX_UI,
 
 		//TSL
 		GEO_SKYPLANE,
@@ -201,6 +204,7 @@ public:
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
 	CObj* FetchOBJ();
+	CKey* FetchKey();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -209,6 +213,7 @@ public:
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
 	void RenderTerrain();
 	void RenderObjList();
+	void RenderKeyList();
 	void RenderDebugWireframe();
 
 	//Shadow things
@@ -273,6 +278,7 @@ private:
 	void checkPickUpItem();
 
 	bool LoadFromTextFileOBJ(const string mapString);
+	bool LoadFromTextFileItem(const string mapString);
 
 	double m_dJumpingSpeed;
 	bool m_bLightEnabled;
