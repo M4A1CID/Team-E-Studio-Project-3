@@ -407,42 +407,42 @@ void SceneSP3::initMeshlist()
 
 	// Character parts
 	//Inmate
-	meshList[GEO_INMATE_ARM] = MeshBuilder::GenerateOBJ("GEO_INMATE_ARM","Objects//arm.obj");
+	meshList[GEO_INMATE_ARM] = MeshBuilder::GenerateOBJ("GEO_INMATE_ARM","Objects//inmate_arm.obj");
 	meshList[GEO_INMATE_ARM]->textureArray[0] = LoadTGA("Image//inmate.tga");
 
-	meshList[GEO_INMATE_LEG] = MeshBuilder::GenerateOBJ("GEO_INMATE_LEG","Objects//leg.obj");
+	meshList[GEO_INMATE_LEG] = MeshBuilder::GenerateOBJ("GEO_INMATE_LEG","Objects//inmate_leg.obj");
 	meshList[GEO_INMATE_LEG]->textureArray[0] = LoadTGA("Image//inmate.tga");
 
-	meshList[GEO_INMATE_BODY] = MeshBuilder::GenerateOBJ("GEO_INMATE_BODY","Objects//body.obj");
+	meshList[GEO_INMATE_BODY] = MeshBuilder::GenerateOBJ("GEO_INMATE_BODY","Objects//inmate_body.obj");
 	meshList[GEO_INMATE_BODY]->textureArray[0] = LoadTGA("Image//inmate.tga");
 
-	meshList[GEO_INMATE_HEAD] = MeshBuilder::GenerateOBJ("GEO_INMATE_HEAD","Objects//head.obj");
+	meshList[GEO_INMATE_HEAD] = MeshBuilder::GenerateOBJ("GEO_INMATE_HEAD","Objects//inmate_head.obj");
 	meshList[GEO_INMATE_HEAD]->textureArray[0] = LoadTGA("Image//inmate.tga");
 
 	//// Guard
-	meshList[GEO_GUARD_ARM] = MeshBuilder::GenerateOBJ("GEO_GUARD_ARM","Objects//arm.obj");
+	meshList[GEO_GUARD_ARM] = MeshBuilder::GenerateOBJ("GEO_GUARD_ARM","Objects//guard_arm.obj");
 	meshList[GEO_GUARD_ARM]->textureArray[0] = LoadTGA("Image//guard.tga");
 
-	meshList[GEO_GUARD_LEG] = MeshBuilder::GenerateOBJ("GEO_GUARD_LEG","Objects//leg.obj");
+	meshList[GEO_GUARD_LEG] = MeshBuilder::GenerateOBJ("GEO_GUARD_LEG","Objects//guard_leg.obj");
 	meshList[GEO_GUARD_LEG]->textureArray[0] = LoadTGA("Image//guard.tga");
 
-	meshList[GEO_GUARD_BODY] = MeshBuilder::GenerateOBJ("GEO_GUARD_BODY","Objects//body.obj");
+	meshList[GEO_GUARD_BODY] = MeshBuilder::GenerateOBJ("GEO_GUARD_BODY","Objects//guard_body.obj");
 	meshList[GEO_GUARD_BODY]->textureArray[0] = LoadTGA("Image//guard.tga");
 
-	meshList[GEO_GUARD_HEAD] = MeshBuilder::GenerateOBJ("GEO_GUARD_HEAD","Objects//head.obj");
+	meshList[GEO_GUARD_HEAD] = MeshBuilder::GenerateOBJ("GEO_GUARD_HEAD","Objects//guard_head.obj");
 	meshList[GEO_GUARD_HEAD]->textureArray[0] = LoadTGA("Image//guard.tga");
 
 	//// Warden
-	meshList[GEO_WARDEN_ARM] = MeshBuilder::GenerateOBJ("GEO_WARDEN_ARM","Objects//arm.obj");
+	meshList[GEO_WARDEN_ARM] = MeshBuilder::GenerateOBJ("GEO_WARDEN_ARM","Objects//warden_arm.obj");
 	meshList[GEO_WARDEN_ARM]->textureArray[0] = LoadTGA("Image//warden.tga");
 
-	meshList[GEO_WARDEN_LEG] = MeshBuilder::GenerateOBJ("GEO_WARDEN_LEG","Objects//leg.obj");
+	meshList[GEO_WARDEN_LEG] = MeshBuilder::GenerateOBJ("GEO_WARDEN_LEG","Objects//warden_leg.obj");
 	meshList[GEO_WARDEN_LEG]->textureArray[0] = LoadTGA("Image//warden.tga");
 
-	meshList[GEO_WARDEN_BODY] = MeshBuilder::GenerateOBJ("GEO_WARDEN_BODY","Objects//body.obj");
+	meshList[GEO_WARDEN_BODY] = MeshBuilder::GenerateOBJ("GEO_WARDEN_BODY","Objects//warden_body.obj");
 	meshList[GEO_WARDEN_BODY]->textureArray[0] = LoadTGA("Image//warden.tga");
 
-	meshList[GEO_WARDEN_HEAD] = MeshBuilder::GenerateOBJ("GEO_WARDEN_HEAD","Objects//head.obj");
+	meshList[GEO_WARDEN_HEAD] = MeshBuilder::GenerateOBJ("GEO_WARDEN_HEAD","Objects//warden_head.obj");
 	meshList[GEO_WARDEN_HEAD]->textureArray[0] = LoadTGA("Image//warden.tga");
 }
 

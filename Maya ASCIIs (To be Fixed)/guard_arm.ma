@@ -1,14 +1,14 @@
 //Maya ASCII 2015 scene
 //Name: guard_arm.ma
-//Last modified: Wed, Aug 19, 2015 11:00:30 AM
-//Codeset: 932
+//Last modified: Thu, Aug 20, 2015 05:10:37 PM
+//Codeset: 1252
 requires maya "2015";
 currentUnit -l centimeter -a degree -t film;
 fileInfo "application" "maya";
 fileInfo "product" "Maya 2015";
 fileInfo "version" "2015";
 fileInfo "cutIdentifier" "201405190330-916664";
-fileInfo "osv" "Microsoft Windows 8 Enterprise Edition, 64-bit  (Build 9200)\n";
+fileInfo "osv" "Microsoft Windows 8 Home Premium Edition, 64-bit  (Build 9200)\n";
 fileInfo "license" "student";
 createNode transform -n "polySurface1";
 createNode mesh -n "polySurfaceShape1" -p "polySurface1";
@@ -22,7 +22,6 @@ createNode mesh -n "polySurfaceShape1" -p "polySurface1";
 createNode mesh -n "polySurfaceShape2" -p "polySurface1";
 	setAttr -k off ".v";
 	setAttr ".io" yes;
-	setAttr -s 3 ".iog[0].og";
 	setAttr ".vir" yes;
 	setAttr ".vif" yes;
 	setAttr ".uvst[0].uvsn" -type "string" "map1";
@@ -98,12 +97,12 @@ createNode mesh -n "polySurfaceShape2" -p "polySurface1";
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 1.9714823088996685 3.9734079387734074 5.6730636859333776 ;
-	setAttr ".r" -type "double3" 345.8616472701558 17.399999999998801 -4.166343879021621e-016 ;
+	setAttr ".t" -type "double3" 14.676935630585907 12.432354148071624 -0.29813568898912823 ;
+	setAttr ".r" -type "double3" 325.46164727013041 90.199999999999122 9.1599974826149293e-013 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 6.3980842894202672;
+	setAttr ".coi" 17.67639424032058;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -169,7 +168,7 @@ createNode shadingEngine -n "lambert2SG";
 	setAttr ".ro" yes;
 createNode materialInfo -n "materialInfo1";
 createNode file -n "file1";
-	setAttr ".ftn" -type "string" "C:/Users/c3pot_000/Desktop/SP3/Team-E-Studio-Project-3/Base/Image/guard.tga";
+	setAttr ".ftn" -type "string" "C:/Users/Glen/Desktop/On-Going Projects and Assignments/SP3_2/Base/Image/guard.tga";
 createNode place2dTexture -n "place2dTexture1";
 createNode polyPlanarProj -n "polyPlanarProj1";
 	setAttr ".uopa" yes;
@@ -523,6 +522,8 @@ select -ne :postProcessList1;
 select -ne :defaultRenderUtilityList1;
 select -ne :defaultRenderingList1;
 select -ne :defaultTextureList1;
+select -ne :ikSystem;
+	setAttr -s 4 ".sol";
 connectAttr "groupId1.id" "polySurfaceShape1.iog.og[0].gid";
 connectAttr "initialShadingGroup1.mwc" "polySurfaceShape1.iog.og[0].gco";
 connectAttr "groupId2.id" "polySurfaceShape1.iog.og[1].gid";
@@ -632,6 +633,6 @@ connectAttr "place2dTexture1.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
 connectAttr "file1.msg" ":defaultTextureList1.tx" -na;
 dataStructure -fmt "raw" -as "name=externalContentTable:string=node:string=key:string=upath:uint32=upathcrc:string=rpath:string=roles";
-applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"file1\" \"fileTextureName\" \"C:/Users/c3pot_000/Desktop/SP3/Team-E-Studio-Project-3/Base/Image/guard.tga\" 2321372503 \"C:/Users/c3pot_000/Desktop/SP3/Team-E-Studio-Project-3/Base/Image/guard.tga\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
+applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"file1\" \"fileTextureName\" \"C:/Users/Glen/Desktop/On-Going Projects and Assignments/SP3_2/Base/Image/guard.tga\" 1879954088 \"C:/Users/Glen/Desktop/On-Going Projects and Assignments/SP3_2/Base/Image/guard.tga\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
 		-scn;
 // End of guard_arm.ma
