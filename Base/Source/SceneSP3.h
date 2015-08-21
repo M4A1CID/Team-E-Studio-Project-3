@@ -19,6 +19,7 @@
 #include "Physics.h"
 #include "Map.h"
 #include "FrustrumCulling.h"
+#include "Warden.h"
 #include "Enemy.h"
 #include <vector>
 #include <fstream>
@@ -238,6 +239,7 @@ public:
 	void RenderKeyList();
 	void RenderEnemyList();
 	void RenderUI();
+	
 	void RenderDebugWireframe();
 
 	//Test render 2D Partitioning

@@ -9,7 +9,7 @@ CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
 {
 	this->Pos = Pos;
 	this->Scale = Scale;
-	this->geoType = geoType;
+	//this->geoType = geoType;
 	this->active = active;
 	theStrategy = NULL;
 	this->DirectionFacing = Vector3(1,0,0); // Facing along the X axis
@@ -95,16 +95,16 @@ bool CEnemy::getActive(void)
 	return this->active;
 }
 
-// Set the geoType of this Enemy
-void CEnemy::setGeoType(int geoType)
-{
-	this->geoType = geoType;
-}
-// Get the geoType of this Enemy
-int CEnemy::getGeoType(void)
-{
-	return this->geoType;
-}
+//// Set the geoType of this Enemy
+//void CEnemy::setGeoType(int geoType)
+//{
+//	this->geoType = geoType;
+//}
+//// Get the geoType of this Enemy
+//int CEnemy::getGeoType(void)
+//{
+//	return this->geoType;
+//}
 
 // Set the destination of this Enemy
 void CEnemy::setDestination(Vector3 destination)
@@ -232,4 +232,147 @@ void CEnemy::Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, 
 	//{
 	//	cout << "Player is not detected!" << endl;
 	//}
+}
+
+/***************************************
+	Get/Set functions for Animations 
+****************************************/
+// Set geotype for Arm
+void CEnemy::setGeoArmType(int geoArmType)
+{
+	this->geoArmType = geoArmType;
+}
+// Set geotype for Leg
+void CEnemy::setGeoLegType(int geoLegType)
+{
+	this->geoLegType = geoLegType;
+}
+// Set geoType for Body
+void CEnemy::setGeoBodyType(int geoBodyType)
+{
+	this->geoBodyType = geoBodyType;
+}
+// Set geoType for Head
+void CEnemy::setGeoHeadType(int geoHeadType)
+{
+	this->geoHeadType = geoHeadType;
+}
+
+// Get geotype for Arm
+int CEnemy::getGeoArmType(void)
+{
+	return geoArmType;
+}
+// Get geotype for Leg
+int CEnemy::getGeoLegType(void)
+{
+	return geoLegType;
+}
+// Get geotype for Body
+int CEnemy::getGeoBodyType(void)
+{
+	return geoBodyType;
+}
+// Get geotype for Head
+int CEnemy::getGeoHeadType(void)
+{
+	return geoHeadType;
+}
+
+
+// Set the offset for Arms
+void CEnemy::setOffsetArm(Vector3 OffsetArm)
+{
+	this->OffsetArm = OffsetArm;
+}
+// Set the offset for Legs
+void CEnemy::setOffsetLeg(Vector3 OffsetLeg)
+{
+	this->OffsetLeg = OffsetLeg;
+}
+// Set the offset for Head
+void CEnemy::setOffsetHead(Vector3 OffsetHead)
+{
+	this->OffsetHead = OffsetHead;
+}
+
+// Get the offset for Arms
+Vector3 CEnemy::getOffsetArm(void)
+{
+	return OffsetArm;
+}
+// Get the offset for Legs
+Vector3 CEnemy::getOffsetLeg(void)
+{
+	return OffsetLeg;
+}
+// Get the offset for Head
+Vector3 CEnemy::getOffsetHead(void)
+{
+	return OffsetHead;
+}
+
+// Set rotation value for Left Arm
+void CEnemy::setRotationLeftArm(float RotationLeftArm)
+{
+	this->RotationLeftArm = RotationLeftArm;
+}
+// Set rotation value for Right Arm
+void CEnemy::setRotationRightArm(float RotationRightArm)
+{
+	this->RotationRightArm = RotationRightArm;
+}
+
+// Set rotation value for Left Leg
+void CEnemy::setRotationLeftLeg(float RotationLeftLeg)
+{
+	this->RotationLeftLeg = RotationLeftLeg;
+}
+// Set rotation value for Right Leg
+void CEnemy::setRotationRightLeg(float RotationRightLeg)
+{
+	this->RotationRightLeg = RotationRightLeg;
+}
+
+// Set rotation value for Body
+void CEnemy::setRotationBody(float RotationBody)
+{
+	this->RotationBody = RotationBody;
+}
+
+// Set rotation value for Head
+void CEnemy::setRotationHead(float RotationHead)
+{
+	this->RotationHead = RotationHead;
+}
+
+// Get rotation value for Left Arm
+float CEnemy::getRotationLeftArm(void)
+{
+	return RotationLeftArm;
+}
+// Get rotation value for Right Arm
+float CEnemy::getRotationRightArm(void)
+{
+	return RotationRightArm;
+}
+// Get rotation value for Left Leg
+float CEnemy::getRotationLeftLeg(void)
+{
+	return RotationLeftLeg;
+}
+// Get rotation value for Right Leg
+float CEnemy::getRotationRightLeg(void)
+{
+	return RotationRightLeg;
+}
+// Get rotation value for Body
+float CEnemy::getRotationBody(void)
+{
+	return RotationBody;
+}
+// Get rotation value for Head
+float CEnemy::getRotationHead(void)
+{
+	return RotationHead;
 }

@@ -36,9 +36,9 @@ public:
 	bool getActive(void);
 
 	// Set the geoType of this Enemy
-	void setGeoType(int);
+	//void setGeoType(int);
 	// Get the geoType of this Enemy
-	int getGeoType(void);
+	//int getGeoType(void);
 
 	// Set the destination of this Enemy
 	void setDestination(Vector3);
@@ -62,6 +62,70 @@ public:
 	//Update the enemy
 	void Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z);
 
+	/***************************************
+		Get/Set functions for Animations 
+	****************************************/
+	// Set geotype for Arm
+	void setGeoArmType(int geoArmType);
+	// Set geotype for Leg
+	void setGeoLegType(int geoLegType);
+	// Set geoType for Body
+	void setGeoBodyType(int geoBodyType);
+	// Set geoType for Head
+	void setGeoHeadType(int geoHeadType);
+
+	// Get geotype for Arm
+	int getGeoArmType(void);
+	// Get geotype for Leg
+	int getGeoLegType(void);
+	// Get geotype for Body
+	int getGeoBodyType(void);
+	// Get geotype for Head
+	int getGeoHeadType(void);
+
+
+	// Set the offset for Arms
+	void setOffsetArm(Vector3 OffsetArm);
+	// Set the offset for Legs
+	void setOffsetLeg(Vector3 OffsetLeg);
+	// Set the offset for Head
+	void setOffsetHead(Vector3 OffsetHead);
+
+	// Get the offset for Arms
+	Vector3 getOffsetArm(void);
+	// Get the offset for Legs
+	Vector3 getOffsetLeg(void);
+	// Get the offset for Head
+	Vector3 getOffsetHead(void);
+
+	// Set rotation value for Left Arm
+	void setRotationLeftArm(float RotationLeftArm);
+	// Set rotation value for Right Arm
+	void setRotationRightArm(float RotationRightArm);
+
+	// Set rotation value for Left Leg
+	void setRotationLeftLeg(float RotationLeftLeg);
+	// Set rotation value for Right Leg
+	void setRotationRightLeg(float RotationRightLeg);
+
+	// Set rotation value for Body
+	void setRotationBody(float RotationBody);
+
+	// Set rotation value for Head
+	void setRotationHead(float RotationHead);
+
+	// Get rotation value for Left Arm
+	float getRotationLeftArm(void);
+	// Get rotation value for Right Arm
+	float getRotationRightArm(void);
+	// Get rotation value for Left Leg
+	float getRotationLeftLeg(void);
+	// Get rotation value for Right Leg
+	float getRotationRightLeg(void);
+	// Get rotation value for Body
+	float getRotationBody(void);
+	// Get rotation value for Head
+	float getRotationHead(void);
 
 private:
 	Vector3 Pos;			// Enemy's position
@@ -69,7 +133,39 @@ private:
 	Vector3 DirectionFacing;// Enemy's look-at directional vector
 	Vector3 destination;	// Enemy's Destination
 	bool active;			// Enemy's active
-	int geoType;			// Enemy's Geometric type
+
+	/**************************
+		GeoTypes values
+	**************************/
+	//int geoType;			// Enemy's Geometric type
+	int geoArmType;			// Enemy's Arm type
+	int geoLegType;			// Enemy's Leg type
+	int geoBodyType;		// Enemy's Body type
+	int geoHeadType;		// Enemy's Head type
+
+	/**************************
+		Offsets values
+	**************************/
+	Vector3 OffsetArm;
+	Vector3 OffsetLeg;
+	Vector3 OffsetHead;
+
+	/**************************
+		Rotation values
+	**************************/
+	// Arm rotation values
+	float RotationLeftArm;	// Rotation value for left arm
+	float RotationRightArm;	// Rotation value for right arm
+
+	// Leg rotation values
+	float RotationLeftLeg;	// Rotation value for left leg
+	float RotationRightLeg;	// Rotation value for right leg
+
+	// Body rotation value
+	float RotationBody;
+
+	// Head Rotation value
+	float RotationHead;
 
 
 	CStrategy* theStrategy;	// Enemy's strategy

@@ -772,18 +772,33 @@ bool SceneSP3::LoadFromTextFileEnemy(const string mapString)
 
 	Vector3 Pos;
 	Vector3 Scale;
-	int geotype;
+	int type;
 	bool active;
-	CEnemy * enemy;
 	if (myfile.is_open())
 	{
-		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> geotype >> active)
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> type >> active)
 		{
+			switch(type)
+			{
+			case 1:
+				{
+					CWarden* ptr = new CWarden();
+					ptr->setPosition(Pos);
+					ptr->setPosition_Y(GetHeightMapY(Pos.x,Pos.z) + Pos.y);
+					ptr->setScale(Scale);
+					ptr->setActive(active);
+					myEnemyList.push_back(ptr);
+				}
+				break;
 
-			enemy = new CEnemy(Pos,Scale,geotype,active);
+
+			}
+
+
+			/*enemy = new CEnemy(Pos,Scale,geotype,active);
 			enemy->setPosition_Y(GetHeightMapY(Pos.x,Pos.z) + Pos.y);
 			myEnemyList.push_back(enemy);
-			cout << "Enemies Loaded: SUCCESS!" << endl;
+			cout << "Enemies Loaded: SUCCESS!" << endl;*/
 		}
 		myfile.close();
 		
@@ -897,7 +912,43 @@ void SceneSP3::RenderEnemyList()
 			modelStack.PushMatrix();
 			modelStack.Translate(enemy->getPosition().x,enemy->getPosition().y,enemy->getPosition().z);
 			modelStack.Scale(enemy->getScale().x,enemy->getScale().y,enemy->getScale().z);
-			RenderMesh(meshList[enemy->getGeoType()], m_bLightEnabled);
+			RenderMesh(meshList[enemy->getGeoBodyType()], m_bLightEnabled);		// Render the body at center point
+
+				// Render left arm
+				modelStack.PushMatrix();
+				modelStack.Translate(enemy->getOffsetArm().x,enemy->getOffsetArm().y, enemy->getOffsetArm().z);
+				modelStack.Rotate(enemy->getRotationLeftArm(),1,0,0);
+				RenderMesh(meshList[enemy->getGeoArmType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render right arm
+				modelStack.PushMatrix();
+				modelStack.Translate(-enemy->getOffsetArm().x,enemy->getOffsetArm().y, enemy->getOffsetArm().z);
+				modelStack.Rotate(enemy->getRotationRightArm(),1,0,0);
+				RenderMesh(meshList[enemy->getGeoArmType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render left leg
+				modelStack.PushMatrix();
+				modelStack.Translate(enemy->getOffsetLeg().x, enemy->getOffsetLeg().y, enemy->getOffsetLeg().z);
+				modelStack.Rotate(enemy->getRotationLeftLeg(),1,0,0);
+				RenderMesh(meshList[enemy->getGeoLegType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render right leg
+				modelStack.PushMatrix();
+				modelStack.Translate(-enemy->getOffsetLeg().x, enemy->getOffsetLeg().y, enemy->getOffsetLeg().z);
+				modelStack.Rotate(enemy->getRotationRightLeg(),1,0,0);
+				RenderMesh(meshList[enemy->getGeoLegType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render head
+				modelStack.PushMatrix();
+				modelStack.Translate(enemy->getOffsetHead().x,enemy->getOffsetHead().y, enemy->getOffsetHead().z);
+				modelStack.Rotate(enemy->getRotationHead(),0,1,0);
+				RenderMesh(meshList[enemy->getGeoHeadType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+				
 			modelStack.PopMatrix();
 		}
 	}
