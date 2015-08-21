@@ -393,6 +393,11 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_MAX] = MeshBuilder::GenerateOBJ("GEO_MAX_KEY", "Objects//max_sec_key.obj");
 	meshList[GEO_MAX]->textureArray[0] = LoadTGA("Image//max_sec_key.tga");
 
+
+	//UI
+	meshList[GEO_CROSSHAIR_UI] = MeshBuilder::GenerateQuad("GEO_CROSSHAIR_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_CROSSHAIR_UI]->textureID = LoadTGA("Image//crosshair_ui.tga");
+
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_ITEM_UI]->textureID = LoadTGA("Image//item_ui.tga");
 
@@ -869,8 +874,12 @@ void SceneSP3::Render()
 	SetHUD(true);
 
 	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 32.f, 32.f, 32.f);
+	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
 	modelStack.PopMatrix();
+
+	/*modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 32.f, 32.f, 32.f);
+	modelStack.PopMatrix();*/
 
 	std::ostringstream playerpos;
 	playerpos.precision(3);
@@ -957,7 +966,7 @@ void SceneSP3::RenderWorld()
 	RenderMesh(meshList[GEO_SPHERE],false);
 	modelStack.PopMatrix();
 
-	//RenderObjList();
+	RenderObjList();
 	RenderKeyList();
 	RenderEnemyList();
 
@@ -1120,8 +1129,8 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 	//	
 	//}
 
-		Mtx44 ortho;
-	ortho.SetToOrtho(0, 800, 0, 600, -10, 10);
+	Mtx44 ortho;
+	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();

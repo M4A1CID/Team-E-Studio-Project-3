@@ -167,9 +167,9 @@ class SceneSP3 : public Scene
 		GEO_WARDEN_BODY,	// 31
 		GEO_WARDEN_HEAD,	// 32
 
-		
-
-		GEO_ITEM_UI,	//to render out the item UI on the bottom of screen
+		//to render out the item UI on the bottom of screen
+		GEO_CROSSHAIR_UI,
+		GEO_ITEM_UI,
 		GEO_MIN_UI,
 		GEO_MED_UI,
 		GEO_MAX_UI,
