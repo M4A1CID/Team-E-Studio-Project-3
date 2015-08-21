@@ -224,6 +224,7 @@ public:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
 	void RenderMeshIn2D(Mesh *mesh, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
+	void RenderMeshUI(Mesh *mesh, float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
 	void RenderTerrain();
 	void RenderObjList();
@@ -250,7 +251,6 @@ public:
 	const float GetHeightMapY(float x, float z);
 	const std::vector<unsigned char>GetHeightMap();
 	static const int cameraYoffset = 20;
-
 
 	//Toggle HUD mode
 	void SetHUD(const bool m_bHUDmode);
@@ -314,6 +314,11 @@ private:
 
 	//Handle to the player class
 	CPlayer* thePlayer;
+
+	//Bools to render in UI; can be modified or removed if too expensive
+	bool MinCollected;
+	bool MedCollected;
+	bool MaxCollected;
 
 	ISoundEngine* engine;
 	ISound* music ;

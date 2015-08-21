@@ -402,13 +402,13 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_ITEM_UI]->textureID = LoadTGA("Image//item_ui.tga");
 
 	meshList[GEO_MIN_UI] = MeshBuilder::GenerateQuad("GEO_MIN_UI", Color(1, 1, 1), 1.f);
-	meshList[GEO_MIN_UI]->textureID = LoadTGA("Image//min_sec_key.tga");
+	meshList[GEO_MIN_UI]->textureID = LoadTGA("Image//min_sec_ui.tga");
 
 	meshList[GEO_MED_UI] = MeshBuilder::GenerateQuad("GEO_MED_UI", Color(1, 1, 1), 1.f);
-	meshList[GEO_MED_UI]->textureID = LoadTGA("Image//med_sec_key.tga");
+	meshList[GEO_MED_UI]->textureID = LoadTGA("Image//med_sec_ui.tga");
 
 	meshList[GEO_MAX_UI] = MeshBuilder::GenerateQuad("GEO_MAX_UI", Color(1, 1, 1), 1.f);
-	meshList[GEO_MAX_UI]->textureID = LoadTGA("Image//max_sec_key.tga");
+	meshList[GEO_MAX_UI]->textureID = LoadTGA("Image//max_sec_ui.tga");
 
 	// Character parts
 	//Inmate
@@ -507,6 +507,24 @@ void SceneSP3::checkPickUpItem()
 				{
 					thePlayer->setKeyList(myKeyList[i]);
 					myKeyList[i]->setActive(false);
+					if(myKeyList[i]->getGeoType() == 18)
+					{
+						cout << "YOU GOT : MINIMUM SECURITY CARD" << endl;
+						myKeyList[i]->SetLevel(1); 
+						MinCollected = true;
+					}
+					if(myKeyList[i]->getGeoType() == 19)
+					{
+						cout << "YOU GOT : MEDIUM SECURITY CARD" << endl;
+						myKeyList[i]->SetLevel(2);
+						MedCollected = true;
+					}
+					if(myKeyList[i]->getGeoType() == 20)
+					{
+						cout << "YOU GOT : MAXIMUM SECURITY CARD" << endl;
+						myKeyList[i]->SetLevel(3);
+						MaxCollected = true;
+					}
 				}
 			}
 		}
@@ -877,9 +895,46 @@ void SceneSP3::Render()
 	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
 	modelStack.PopMatrix();
 
-	/*modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 32.f, 32.f, 32.f);
-	modelStack.PopMatrix();*/
+	for(unsigned int i = 0; i < 3; ++i)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
+		modelStack.PopMatrix();
+		//thePlayer->GetActive();
+		if(MinCollected = true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                    Min";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+		}
+		if(MedCollected = true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                        Med";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+		}
+		if(MaxCollected = true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                            Max";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+		}
+	}
 
 	std::ostringstream playerpos;
 	playerpos.precision(3);
@@ -899,7 +954,6 @@ void SceneSP3::Render()
 	SetHUD(false);
 	
 }
-
 void SceneSP3::RenderPassMain()
 {
 	m_renderPass = RENDER_PASS_MAIN;
@@ -924,7 +978,6 @@ void SceneSP3::RenderPassMain()
 
 	//RenderMesh(meshList[GEO_LIGHT_DEPTH_QUAD],false);
 }
-
 void SceneSP3::RenderWorld()
 {
 	switch(lights[0].type)
@@ -1141,6 +1194,44 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 	modelStack.Scale(size, size, size);
 	/*if (rotate)
 		modelStack.Rotate(rotateAngle, 0, 0, 1);*/
+
+	Mtx44 MVP, modelView, modelView_inverse_transpose;
+
+	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_uiParameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	if(mesh->textureID > 0)
+	{
+		glUniform1i(m_uiParameters[U_COLOR_TEXTURE_ENABLED], 1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+		glUniform1i(m_uiParameters[U_COLOR_TEXTURE], 0);
+	}
+	else
+	{
+		glUniform1i(m_uiParameters[U_COLOR_TEXTURE_ENABLED], 0);
+	}
+	mesh->Render();
+	if(mesh->textureID > 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
+}
+void SceneSP3::RenderMeshUI(Mesh *mesh, float sizeX, float sizeY, float sizeZ, float x, float y, bool rotate, bool m_rotate)
+{
+	Mtx44 ortho;
+	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(sizeX, sizeY, sizeZ);
 
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
