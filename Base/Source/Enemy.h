@@ -1,6 +1,8 @@
 #pragma once
 #include "Vector3.h"
 #include "Strategy.h"
+#include "Map.h"
+#include "Player.h"
 
 class CEnemy
 {
@@ -48,20 +50,27 @@ public:
 	// Get the destination of this Enemy
 	Vector3 getDestination(void);
 
+	// Set the directional vector of this Enemy
+	void setDirectionalVector(Vector3);
+	// Get the directional vector of this Enemy
+	Vector3 getDirectionalVector(void);
+
 	// Animations
 	void Walking();
 	void Idle();
 
 	//Update the enemy
-	void Update();
+	void Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z);
 
 
 private:
 	Vector3 Pos;			// Enemy's position
 	Vector3 Scale;			// Enemy's scale
+	Vector3 DirectionFacing;// Enemy's look-at directional vector
 	Vector3 destination;	// Enemy's Destination
 	bool active;			// Enemy's active
 	int geoType;			// Enemy's Geometric type
+
 
 	CStrategy* theStrategy;	// Enemy's strategy
 

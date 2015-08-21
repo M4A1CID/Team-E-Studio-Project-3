@@ -32,6 +32,10 @@ class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
 	const static int INTERACTION_DISTANCE = 10;
+	const static int AI_PATH_OFFSET_X = 16;
+	const static int AI_PATH_OFFSET_Z = 15;
+	const static int MAP_SIZE = 4096;
+	const static int MAP_BOX_SIZE = 128;
 	
 	enum UNIFORM_TYPE
 	{

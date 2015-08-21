@@ -60,8 +60,8 @@ void SceneSP3::initTokenForEnemyPathfinding()
 			for(int z = 0; z < 32; ++z)
 			{
 
-				int checkPositionX = myObjList[i]->getPosition().x/128 + 16;
-				int checkPositionZ =  myObjList[i]->getPosition().z/128 + 15;
+				int checkPositionX = myObjList[i]->getPosition().x/MAP_BOX_SIZE + AI_PATH_OFFSET_X;
+				int checkPositionZ =  myObjList[i]->getPosition().z/MAP_BOX_SIZE + AI_PATH_OFFSET_Z;
 				if(checkPositionX == x && checkPositionZ == z)
 				{
 					tempArray[z][x] = 1;
@@ -105,7 +105,7 @@ void SceneSP3::initMap()
 
 	//Base on the Enemy path finding, load the map
 	m_cMap = new CMap();
-	m_cMap->Init( 4096, 4096, 32, 32, 4096, 4096, 128,'1'); //Init level 1
+	m_cMap->Init( MAP_SIZE, MAP_SIZE, MAP_SIZE/MAP_BOX_SIZE, MAP_SIZE/MAP_BOX_SIZE, MAP_SIZE, MAP_SIZE, MAP_BOX_SIZE,'1'); //Init level 1
 	//m_cMap->LoadMap( "Variables/"+ m_fileBuffer[m_Current_Level] +"/Level1.csv" ); // Load level 1
 	m_cMap->LoadMap( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" ); // Load level 1
 }
@@ -604,13 +604,13 @@ void SceneSP3::UpdateEnemies()
 
 		if(enemy->getActive())
 		{
-			
-			/*int checkPosition_X = (int) ((enemy->getPosition().x+ thePlayer->GetPositionX()) / m_cMap->GetTileSize() );
-			int checkPosition_Z = m_cMap->GetNumOfTiles_Width() - (int) ( (enemy->getPosition().z + m_cMap->GetTileSize()) / m_cMap->GetTileSize());
-*/
+
+			//int checkPosition_X = (int) ((enemy->getPosition().x+ thePlayer->GetPositionX()) / m_cMap->GetTileSize() );
+			//int checkPosition_Z = m_cMap->GetNumOfTiles_Width() - (int) ( (enemy->getPosition().z + m_cMap->GetTileSize()) / m_cMap->GetTileSize());
+
+			enemy->Update(m_cMap,thePlayer,AI_PATH_OFFSET_X,AI_PATH_OFFSET_Z);
 
 		}
-
 	}
 }
 void SceneSP3::Update(double dt)

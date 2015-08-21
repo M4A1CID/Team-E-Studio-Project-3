@@ -19,6 +19,7 @@ CPlayer::CPlayer(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int max
 	this->scale = scale;
 	this->itemsHeld = itemsHeld;
 	this->maxItemCap = maxItemCap;
+	this->detected = false;
 }
 //the destructor. nothing to destroy right now
 CPlayer::~CPlayer(void)
@@ -34,6 +35,18 @@ CPlayer::~CPlayer(void)
 //	this->itemsHeld = itemsHeld;
 //	this->maxItemCap = maxItemCap;
 //}
+
+// Set player detected
+void CPlayer::SetDetected(bool detected)
+{
+	this->detected = detected;
+}
+// Get player detected
+bool CPlayer::GetDetected(void)
+{
+	return this->detected;
+}
+
 
 //set current status of player
 void CPlayer::SetActive(bool active)

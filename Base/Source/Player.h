@@ -15,6 +15,11 @@ public:
 	~CPlayer(void);
 
 	//void Init(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap);
+	
+	// Set player detected
+	void SetDetected(bool);
+	// Get player detected
+	bool GetDetected(void);
 
 	void SetActive(bool);
 	bool GetActive(void);
@@ -81,7 +86,7 @@ private:
 	Vector3 pos;	// position of player
 	Vector3 scale;	// scale of hitbox of player
 	bool active;	// if player is dead, this flips to false
-
+	bool detected;	// if the player is detected
 	Camera3 camera;
 
 	//below are the items-related code
