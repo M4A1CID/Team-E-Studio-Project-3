@@ -507,6 +507,37 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_WARDEN_HEAD] = MeshBuilder::GenerateOBJ("GEO_WARDEN_HEAD","Objects//warden_head.obj");
 	meshList[GEO_WARDEN_HEAD]->textureArray[0] = LoadTGA("Image//warden.tga");
+
+	// New objects
+	meshList[GEO_BATON] = MeshBuilder::GenerateOBJ("GEO_BATON", "Objects//baton.obj");
+	meshList[GEO_BATON]->textureArray[0] = LoadTGA("Image//baton.tga");
+
+	meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJ("GEO_CHAIR", "Objects//chair.obj");
+	meshList[GEO_CHAIR]->textureArray[0] = LoadTGA("Image//chair.tga");
+
+	meshList[GEO_FLASHLIGHT] = MeshBuilder::GenerateOBJ("GEO_FLASHLIGHT", "Objects//flashlight.obj");
+	meshList[GEO_FLASHLIGHT]->textureArray[0] = LoadTGA("Image//flashlight.tga");
+
+	meshList[GEO_FOOD_CARROT] = MeshBuilder::GenerateOBJ("GEO_FOOD_CARROT", "Objects//food_carrot.obj");
+	meshList[GEO_FOOD_CARROT]->textureArray[0] = LoadTGA("Image//food_carrot.tga");
+
+	meshList[GEO_FOOD_CONTAINER] = MeshBuilder::GenerateOBJ("GEO_FOOD_CONTAINER", "Objects//food_container.obj");
+	meshList[GEO_FOOD_CONTAINER]->textureArray[0] = LoadTGA("Image//food_container.tga");
+
+	meshList[GEO_FOOD_DONUT] = MeshBuilder::GenerateOBJ("GEO_FOOD_DONUT", "Objects//food_donut.obj");
+	meshList[GEO_FOOD_DONUT]->textureArray[0] = LoadTGA("Image//food_donut.tga");
+
+	meshList[GEO_FOOD_ORANGE] = MeshBuilder::GenerateOBJ("GEO_FOOD_ORANGE", "Objects//food_orange.obj");
+	meshList[GEO_FOOD_ORANGE]->textureArray[0] = LoadTGA("Image//food_orange.tga");
+
+	meshList[GEO_FOOD_RICE] = MeshBuilder::GenerateOBJ("GEO_FOOD_RICE", "Objects//food_rice.obj");
+	meshList[GEO_FOOD_RICE]->textureArray[0] = LoadTGA("Image//food_rice.tga");
+
+	meshList[GEO_FORK] = MeshBuilder::GenerateOBJ("GEO_FORK", "Objects//fork.obj");
+	meshList[GEO_FORK]->textureArray[0] = LoadTGA("Image//wood_fork.tga");
+
+	meshList[GEO_SPOON] = MeshBuilder::GenerateOBJ("GEO_SPOON", "Objects//spoon.obj");
+	meshList[GEO_SPOON]->textureArray[0] = LoadTGA("Image//wood_spoon.tga");
 }
 
 void SceneSP3::initVariables()

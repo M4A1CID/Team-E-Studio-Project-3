@@ -172,6 +172,18 @@ class SceneSP3 : public Scene
 		GEO_WARDEN_BODY,	// 31
 		GEO_WARDEN_HEAD,	// 32
 
+		// New objects
+		GEO_BATON,			// 33
+		GEO_CHAIR,			// 34
+		GEO_FLASHLIGHT,		// 35
+		GEO_FOOD_CARROT,	// 36
+		GEO_FOOD_CONTAINER,	// 37
+		GEO_FOOD_DONUT,		// 38
+		GEO_FOOD_ORANGE,	// 39
+		GEO_FOOD_RICE,		// 40
+		GEO_FORK,			// 41
+		GEO_SPOON,			// 42
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,

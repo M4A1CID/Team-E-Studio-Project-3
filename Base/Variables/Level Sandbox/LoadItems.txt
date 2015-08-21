@@ -1,7 +1,30 @@
--50		75		-110		2		2		2		18		1
--30		75		-110		2		2		2		19		1
--10		75		-110		2		2		2		20		1
+-30		75		-110		2		2		2		18		1
+-50		75		-110		2		2		2		19		1
+-20		75		-110		2		2		2		20		1
+
+-15		70		-150		5		5		5		33		1
+-30		70		-150		5		5		5		34		1
+-45		70		-150		5		5		5		35		1
+-60		70		-150		5		5		5		36		1
+-75		70		-150		5		5		5		37		1
+-90		70		-150		5		5		5		38		1
+-105	70		-150		5		5		5		39		1
+-120	70		-150		5		5		5		40		1
+-135	70		-150		5		5		5		41		1
+-150	70		-150		5		5		5		42		1
+
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
 //GEOTYPE 18 == MIN SECURITY
 //GEOTYPE 19 == MED SECURITY
 //GEOTYPE 20 == MAX SECURITY
+
+//Geotype 33	= BATON
+//Geotype 34	= CHAIR
+//Geotype 35	= FLASHLIGHT
+//Geotype 36	= CARROT
+//Geotype 37	= CONTAINER
+//Geotype 38	= DONUT
+//Geotype 39	= ORANGE
+//Geotype 40	= RICE
+//Geotype 41	= FORK
+//Geotype 42	= SPOON
