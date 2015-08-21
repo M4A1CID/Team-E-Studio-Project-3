@@ -16,7 +16,18 @@ public:
 
 	//Get the position of this obj
 	Vector3 getPosition(void);
-	
+
+	// Set the rotation of this obj
+	void setRotation(float, Vector3);
+	void setAngle(float);
+	void setRotation_X(float);
+	void setRotation_Y(float);
+	void setRotation_Z(float);
+
+	// Get the rotation of this obj
+	float getRotationAngle(void);
+	Vector3 getRotation(void);
+
 	// Set the scale of this obj
 	void setScale(Vector3);
 	void setScale_X(float);
@@ -25,7 +36,7 @@ public:
 	// Get the scale of this obj
 	Vector3 getScale(void);
 
-	/// Set the offset of this obj
+	// Set the offset of this obj
 	void setOffset(Vector3);
 	void setOffset_X(float);
 	void setOffset_Y(float);
@@ -45,6 +56,8 @@ public:
 	int getGeoType(void);
 private:
 	Vector3 Pos;		// Obj's position
+	float Angle;		// Obj's angle
+	Vector3 Rotate;		// Obj's rotation
 	Vector3 Scale;		// Obj's scale
 	Vector3 offset;
 	bool active;		// Obj's active

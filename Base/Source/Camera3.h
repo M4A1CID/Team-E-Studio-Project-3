@@ -81,7 +81,7 @@ private:
 	float sprintSpeed, crouchWalkSpeed;
 
 	// Crouch
-	float CrouchHeight;
+	//float CrouchHeight;
 	float CrouchSpeed;
 	float CrouchOff;
 };

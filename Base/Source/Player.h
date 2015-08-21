@@ -5,6 +5,7 @@
 #include "Camera3.h"
 #include "Item.h"
 #include "Key.h"
+#include "Obj.h"
 
 class CPlayer
 {
@@ -84,10 +85,10 @@ private:
 	Camera3 camera;
 
 	//below are the items-related code
-	int itemsHeld;	// number of items held by player
-	int maxItemCap;	// max number of items that can be carried by player
+	int itemsHeld;						// number of items held by player
+	int maxItemCap;						// max number of items that can be carried by player
 
 	std::vector<CItem*> InventoryList;	// the list of items inside player's inventory
-	std::vector<CKey*> KeyList; //List of keys inside player's inventory
+	std::vector<CKey*> KeyList;			//List of keys inside player's inventory
 };
 #endif

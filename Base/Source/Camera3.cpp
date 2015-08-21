@@ -309,7 +309,7 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 
 	// Crouch
 	CrouchOff = 60.f;
-	CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
+	//CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
 	CrouchSpeed = 20.f;
 
 	//Initialise the camera movement flags

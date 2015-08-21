@@ -39,6 +39,44 @@ Vector3 CObj::getPosition(void)
 	return this->Pos;
 }
 
+// Set rotation of this obj
+void CObj::setRotation(float Angle, Vector3 Rotate)
+{
+	this->Angle = Angle;
+	this->Rotate = Rotate;
+}
+
+void CObj::setAngle(float Angle)
+{
+	this->Angle = Angle;
+}
+
+void CObj::setRotation_X(float x)
+{
+	this->Rotate.x = x;
+}
+
+void CObj::setRotation_Y(float y)
+{
+	this->Rotate.y = y;
+}
+
+void CObj::setRotation_Z(float z)
+{
+	this->Rotate.z = z;
+}
+
+// Get the roation of this obj
+float CObj::getRotationAngle(void)
+{
+	return Angle;
+}
+
+Vector3 CObj::getRotation(void)
+{
+	return Rotate;
+}
+
 // Set the scale of this obj
 void CObj::setScale(Vector3 Scale)
 {
