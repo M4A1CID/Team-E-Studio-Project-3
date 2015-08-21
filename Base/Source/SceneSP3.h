@@ -20,6 +20,7 @@
 #include "Map.h"
 #include "FrustrumCulling.h"
 #include "Warden.h"
+#include "Guard.h"
 #include "Enemy.h"
 #include <vector>
 #include <fstream>
@@ -251,7 +252,6 @@ public:
 	void RenderPassMain();
 	void RenderWorld();
 
-
 	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);
 	void UpdateEnemies();
@@ -289,8 +289,6 @@ private:
 	std::vector<CObj *> myObjList;
 	std::vector<CKey *> myKeyList;
 	std::vector<CEnemy *> myEnemyList;
-	//std::vector<Vector3> m_treeList;
-	
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];

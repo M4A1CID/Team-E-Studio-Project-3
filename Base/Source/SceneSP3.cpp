@@ -790,7 +790,16 @@ bool SceneSP3::LoadFromTextFileEnemy(const string mapString)
 					myEnemyList.push_back(ptr);
 				}
 				break;
-
+			case 2:
+				{
+					CGuard* ptr = new CGuard();
+					ptr->setPosition(Pos);
+					ptr->setPosition_Y(GetHeightMapY(Pos.x,Pos.z) + Pos.y);
+					ptr->setScale(Scale);
+					ptr->setActive(active);
+					myEnemyList.push_back(ptr);
+				}
+				break;
 
 			}
 
