@@ -297,7 +297,7 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 
 	// Jump
 	JumpVel = 0.0f;
-	JUMPMAXSPEED = 155.f;
+	JUMPMAXSPEED = 100.f;
 	JUMPACCEL = 200.0f;
 	GRAVITY = -175.f;
 	JumpOff = 5.f;
