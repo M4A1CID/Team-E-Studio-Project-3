@@ -386,7 +386,7 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_STOOL] = MeshBuilder::GenerateOBJ("GEO_STOOL", "Objects//stool.obj");
 	meshList[GEO_STOOL]->textureArray[0] = LoadTGA("Image//metal2.tga");
 
-	// Keys
+	//Keys
 	meshList[GEO_MIN] = MeshBuilder::GenerateOBJ("GEO_MIN_KEY", "Objects//min_sec_key.obj");
 	meshList[GEO_MIN]->textureArray[0] = LoadTGA("Image//min_sec_key.tga");
 
@@ -395,6 +395,11 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_MAX] = MeshBuilder::GenerateOBJ("GEO_MAX_KEY", "Objects//max_sec_key.obj");
 	meshList[GEO_MAX]->textureArray[0] = LoadTGA("Image//max_sec_key.tga");
+
+	// UI
+
+	meshList[GEO_CROSSHAIR_UI] = MeshBuilder::GenerateQuad("GEO_CROSSHAIR_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_CROSSHAIR_UI]->textureID = LoadTGA("Image//crosshair_ui.tga");
 
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_ITEM_UI]->textureID = LoadTGA("Image//item_ui.tga");
@@ -884,8 +889,49 @@ void SceneSP3::Render()
 	SetHUD(true);
 
 	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 32.f, 32.f, 32.f);
+	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
 	modelStack.PopMatrix();
+
+	for(unsigned int i = 0; i < 3; ++i)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
+		modelStack.PopMatrix();
+		//thePlayer->GetActive();
+		if(MinCollected = true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                    Min";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+		}
+		if(MedCollected = true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                        Med";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+		}
+		if(MaxCollected = true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                            Max";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+		}
+	}
 
 	std::ostringstream playerpos;
 	playerpos.precision(3);
@@ -1135,7 +1181,7 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 	//}
 
 		Mtx44 ortho;
-	ortho.SetToOrtho(0, 800, 0, 600, -10, 10);
+	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
