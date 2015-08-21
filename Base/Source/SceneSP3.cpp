@@ -510,23 +510,31 @@ void SceneSP3::checkPickUpItem()
 				{
 					thePlayer->setKeyList(myKeyList[i]);
 					myKeyList[i]->setActive(false);
-					if(myKeyList[i]->getGeoType() == 18)
+					switch(myKeyList[i]->getGeoType())
 					{
-						cout << "YOU GOT : MINIMUM SECURITY CARD" << endl;
-						myKeyList[i]->SetLevel(1); 
-						MinCollected = true;
-					}
-					if(myKeyList[i]->getGeoType() == 19)
-					{
-						cout << "YOU GOT : MEDIUM SECURITY CARD" << endl;
-						myKeyList[i]->SetLevel(2);
-						MedCollected = true;
-					}
-					if(myKeyList[i]->getGeoType() == 20)
-					{
-						cout << "YOU GOT : MAXIMUM SECURITY CARD" << endl;
-						myKeyList[i]->SetLevel(3);
-						MaxCollected = true;
+					case 18:
+						{
+							cout << "YOU GOT : MINIMUM SECURITY CARD" << endl;
+							myKeyList[i]->SetLevel(1); 
+							MinCollected = true;
+						}
+						break;
+					case 19:
+						{
+							cout << "YOU GOT : MEDIUM SECURITY CARD" << endl;
+							myKeyList[i]->SetLevel(2);
+							MedCollected = true;
+						}
+						break;
+					case 20:
+						{
+							cout << "YOU GOT : MAXIMUM SECURITY CARD" << endl;
+							myKeyList[i]->SetLevel(3);
+							MaxCollected = true;
+						}
+						break;
+					default:
+						break;
 					}
 				}
 			}
@@ -898,7 +906,7 @@ void SceneSP3::Render()
 		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
 		modelStack.PopMatrix();
 		//thePlayer->GetActive();
-		if(MinCollected = true)
+		if(MinCollected == true)
 		{
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
@@ -909,7 +917,7 @@ void SceneSP3::Render()
 			playerpos << "                    Min";
 			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
 		}
-		if(MedCollected = true)
+		if(MedCollected == true)
 		{
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
@@ -920,7 +928,7 @@ void SceneSP3::Render()
 			playerpos << "                        Med";
 			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
 		}
-		if(MaxCollected = true)
+		if(MaxCollected == true)
 		{
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
