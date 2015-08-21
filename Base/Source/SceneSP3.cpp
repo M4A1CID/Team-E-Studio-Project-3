@@ -14,6 +14,9 @@ SceneSP3::SceneSP3()
 	: m_cMinimap(NULL)
 	, thePlayer(NULL)
 	, m_cMap(NULL)
+	, MinCollected(false)
+	, MedCollected(false)
+	, MaxCollected(false)
 {
 
 }
@@ -572,7 +575,6 @@ void SceneSP3::Update(double dt)
 
 	m_fFps = (float)(1.f / dt);
 }
-
 void SceneSP3::UpdateSceneControls()
 {
 	if(Application::IsKeyPressed(VK_F1))
@@ -583,12 +585,10 @@ void SceneSP3::UpdateSceneControls()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if(Application::IsKeyPressed(VK_F4))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	if(Application::IsKeyPressed('F'))
 	{
 		checkPickUpItem();
 	}
-
 	if(Application::IsKeyPressed('8'))
 	{
 		m_bLightEnabled = true;
@@ -618,7 +618,6 @@ CObj* SceneSP3::FetchOBJ()
 	go->setActive(true);
 	return go;
 }
-
 CKey* SceneSP3::FetchKey()
 {
 	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
@@ -639,7 +638,6 @@ CKey* SceneSP3::FetchKey()
 	go->setActive(true);
 	return go;
 }
-
 bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 {
 	ifstream myfile (mapString);
@@ -672,7 +670,6 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 		cout << "Objs Loaded: FAILED!"; 
 	return false;
 }
-
 bool SceneSP3::LoadFromTextFileItem(const string mapString)
 {
 	ifstream myfile (mapString);
@@ -703,7 +700,6 @@ bool SceneSP3::LoadFromTextFileItem(const string mapString)
 		cout << "Items Loaded: FAILED!"; 
 	return false;
 }
-
 bool SceneSP3::LoadFromTextFileEnemy(const string mapString)
 {
 	ifstream myfile (mapString);
@@ -739,7 +735,6 @@ void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetR
 	 RenderMesh(meshList[GEO_SKYPLANE], false);
 	 modelStack.PopMatrix();
 }
-
 void SceneSP3::RenderDebugWireframe()
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -762,7 +757,6 @@ void SceneSP3::RenderDebugWireframe()
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
-
 void SceneSP3::RenderTerrain()
 {
 	modelStack.PushMatrix();  
