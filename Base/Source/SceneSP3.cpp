@@ -48,11 +48,66 @@ void SceneSP3::initPlayer()
 
 	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
+void SceneSP3::initTokenForEnemyPathfinding()
+{
+	ofstream fout( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" );
+	int tempArray[32][32];
+	for(int i = 0; i < myObjList.size(); ++i)
+	{
+		cout << "Taking 1 obj" << endl;
+		for(int x = 0; x < 32; ++x)
+		{
+			for(int z = 0; z < 32; ++z)
+			{
+
+				int checkPositionX = myObjList[i]->getPosition().x/128 + 16;
+				int checkPositionZ =  myObjList[i]->getPosition().z/128 + 15;
+				if(checkPositionX == x && checkPositionZ == z)
+				{
+					tempArray[z][x] = 1;
+				}
+				else
+				{
+					if(tempArray[z][x] != 1)
+					{
+						tempArray[z][x] = 0;
+					}
+				}
+			}
+		}
+	}
+
+	//Initialize the tokens for the map
+	fout << "//";
+	for(int i = 0; i < 32; ++i)
+	{
+		fout << i+1 << ',';
+	}
+	fout << '\n';
+	//Load in the buffer from tempArray into the file
+	for(int z = 0; z < 32; ++z)
+	{
+		for(int x = 0; x < 32; ++x)
+		{
+			if(x == 31)
+				fout << tempArray[z][x];
+			else
+				fout << tempArray[z][x] << ','; 
+		}
+		fout << '\n';
+	}
+	// Close the file after writing
+	fout.close();
+}
 void SceneSP3::initMap()
 {
+	initTokenForEnemyPathfinding();
+
+	//Base on the Enemy path finding, load the map
 	m_cMap = new CMap();
 	m_cMap->Init( 4096, 4096, 32, 32, 4096, 4096, 128,'1'); //Init level 1
-	m_cMap->LoadMap( "Variables/Level Sandbox/Level1.csv" ); // Load level 1
+	//m_cMap->LoadMap( "Variables/"+ m_fileBuffer[m_Current_Level] +"/Level1.csv" ); // Load level 1
+	m_cMap->LoadMap( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" ); // Load level 1
 }
 void SceneSP3::Init()
 {
@@ -343,7 +398,7 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("GEO_CUBE",Color(1,0,0),1.f);
-
+	meshList[GEO_DEBUG_AI] = MeshBuilder::GenerateCube("GEO_DEBUG_AI",Color(1,1,0),1.f);
 	// Terrain & Skyplane
 	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
 	meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky1.tga"); 
@@ -459,13 +514,13 @@ void SceneSP3::initVariables()
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
-	initMap();
+	
 	m_Current_Level = 0;
 	
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
 	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
 	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
-	
+	initMap();
 
 	
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
@@ -550,9 +605,9 @@ void SceneSP3::UpdateEnemies()
 		if(enemy->getActive())
 		{
 			
-			int checkPosition_X = (int) ((enemy->getPosition().x+ thePlayer->GetPositionX()) / m_cMap->GetTileSize() );
+			/*int checkPosition_X = (int) ((enemy->getPosition().x+ thePlayer->GetPositionX()) / m_cMap->GetTileSize() );
 			int checkPosition_Z = m_cMap->GetNumOfTiles_Width() - (int) ( (enemy->getPosition().z + m_cMap->GetTileSize()) / m_cMap->GetTileSize());
-
+*/
 
 		}
 
@@ -799,7 +854,7 @@ void SceneSP3::RenderTileMap()
 				float y = GetHeightMapY(x,z);
 				if(CubeInFrustumBool(x,y,z,m_cMap->GetTileSize()))
 				{
-					switch(m_cMap->theScreenMap[h][m])
+					switch(m_cMap->theScreenMap[m][h])
 					{
 					case 7:// Wall
 						{
@@ -817,12 +872,14 @@ void SceneSP3::RenderTileMap()
 							modelStack.PushMatrix();
 							modelStack.Translate(x,GetHeightMapY(x,z),z);
 							modelStack.Scale(m_cMap->GetTileSize(),m_cMap->GetTileSize(),m_cMap->GetTileSize());
-							RenderMesh(meshList[GEO_CUBE], false);
+							RenderMesh(meshList[GEO_DEBUG_AI], false);
 							modelStack.PopMatrix();
 							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 						}
 
 					default:
+						{
+						}
 						break;
 					}
 				}

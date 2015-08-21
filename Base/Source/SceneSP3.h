@@ -182,6 +182,7 @@ class SceneSP3 : public Scene
 
 		//Assignment1
 		GEO_LIGHT_DEPTH_QUAD,
+		GEO_DEBUG_AI,
 		NUM_GEOMETRY,
 	};
 
@@ -206,7 +207,9 @@ public:
 	void initUniforms();
 	void initVariables();
 	void initMap();
+	void initTokenForEnemyPathfinding();
 	void initMeshlist();
+	
 	void initLights();
 	
 	void checkPickUpItem();

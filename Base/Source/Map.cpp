@@ -52,7 +52,7 @@ bool CMap::LoadMap(const string mapName)
 		printf("Map (%s) has been successfully loaded!\n", mapName.c_str());
 		return true;
 	}
-
+	printf("Map (%s) has failed to load!\n", mapName.c_str());
 	return false;
 }
 
