@@ -396,11 +396,6 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_MAX] = MeshBuilder::GenerateOBJ("GEO_MAX_KEY", "Objects//max_sec_key.obj");
 	meshList[GEO_MAX]->textureArray[0] = LoadTGA("Image//max_sec_key.tga");
 
-
-	//UI
-	meshList[GEO_CROSSHAIR_UI] = MeshBuilder::GenerateQuad("GEO_CROSSHAIR_UI", Color(1, 1, 1), 1.f);
-	meshList[GEO_CROSSHAIR_UI]->textureID = LoadTGA("Image//crosshair_ui.tga");
-
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_ITEM_UI]->textureID = LoadTGA("Image//item_ui.tga");
 
@@ -643,6 +638,8 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	ifstream myfile (mapString);
 
 	Vector3 Pos;
+	float Angle;
+	Vector3 Rotate;
 	Vector3 Scale;
 	Vector3 Offset;
 	int geotype;
@@ -650,12 +647,13 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	CObj * obj;
 	if (myfile.is_open())
 	{
-		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z >>  Offset.x >> Offset.y >> Offset.z >> geotype >> active)
+		while ( myfile >> Pos.x >> Pos.y >> Pos.z >> Angle >> Rotate.x >> Rotate.y >> Rotate.z >> Scale.x >> Scale.y >> Scale.z >> Offset.x >> Offset.y >> Offset.z >> geotype >> active)
 		{
 
 			obj = FetchOBJ();
 			obj->setActive(active);
 			obj->setPosition(Pos);
+			obj->setRotation(Angle, Rotate);
 			obj->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			obj->setGeoType(geotype);
 			obj->setScale(Scale);
@@ -886,49 +884,8 @@ void SceneSP3::Render()
 	SetHUD(true);
 
 	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 32.f, 32.f, 32.f);
 	modelStack.PopMatrix();
-
-	for(unsigned int i = 0; i < 3; ++i)
-	{
-		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
-		modelStack.PopMatrix();
-		//thePlayer->GetActive();
-		if(MinCollected = true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                    Min";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
-		}
-		if(MedCollected = true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                        Med";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
-		}
-		if(MaxCollected = true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                            Max";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
-		}
-	}
 
 	std::ostringstream playerpos;
 	playerpos.precision(3);
@@ -1029,6 +986,7 @@ void SceneSP3::RenderObjList()
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			//modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
 			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 			modelStack.PopMatrix();
@@ -1176,8 +1134,8 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 	//	
 	//}
 
-	Mtx44 ortho;
-	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
+		Mtx44 ortho;
+	ortho.SetToOrtho(0, 800, 0, 600, -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
