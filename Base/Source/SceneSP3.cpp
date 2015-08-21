@@ -845,6 +845,89 @@ void SceneSP3::RenderEnemyList()
 		}
 	}
 }
+void SceneSP3::RenderUI()
+{
+	//============================= HUD displayed on screen ====================================
+	SetHUD(true);
+
+	modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
+	modelStack.PopMatrix();
+
+	for(unsigned int i = 0; i < 3; ++i)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
+		modelStack.PopMatrix();
+		//thePlayer->GetActive();
+		if(MinCollected == true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                    Min";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+
+			/*std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "YOU GOT : MINUMUM SECURITY KEY";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 36);*/
+		}
+		if(MedCollected == true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                        Med";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+
+			/*std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "YOU GOT : MEDIUM SECURITY KEY";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
+		}
+		if(MaxCollected == true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
+			modelStack.PopMatrix();
+
+			std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "                            Max";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+
+			/*std::ostringstream playerpos;
+			playerpos.precision(3);
+			playerpos << "YOU GOT : MAXIMUM SECURITY KEY";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
+		}
+	}
+
+	std::ostringstream playerpos;
+	playerpos.precision(3);
+	playerpos << "Pos_X: " << camera.position.x;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 54);
+
+	std::ostringstream playerposY;
+	playerposY.precision(3);
+	playerposY << "Pos_Y: " << camera.position.y;
+	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 1, 0), 2.5, 0.9, 51);
+
+	std::ostringstream ss;
+	ss.precision(3);
+	ss << "FPS: " << m_fFps;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 57.f);
+	
+	SetHUD(false);
+	
+}
 void SceneSP3::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -893,71 +976,7 @@ void SceneSP3::Render()
 		}
 	}
 	RenderDebugWireframe();
-	//============================= HUD displayed on screen ====================================
-	SetHUD(true);
-
-	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
-	modelStack.PopMatrix();
-
-	for(unsigned int i = 0; i < 3; ++i)
-	{
-		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
-		modelStack.PopMatrix();
-		//thePlayer->GetActive();
-		if(MinCollected == true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                    Min";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
-		}
-		if(MedCollected == true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                        Med";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
-		}
-		if(MaxCollected == true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                            Max";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
-		}
-	}
-
-	std::ostringstream playerpos;
-	playerpos.precision(3);
-	playerpos << "Pos_X: " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 54);
-
-	std::ostringstream playerposY;
-	playerposY.precision(3);
-	playerposY << "Pos_Y: " << camera.position.y;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 1, 0), 2.5, 0.9, 51);
-
-	std::ostringstream ss;
-	ss.precision(3);
-	ss << "FPS: " << m_fFps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 57.f);
-	
-	SetHUD(false);
-	
+	RenderUI();
 }
 void SceneSP3::RenderPassMain()
 {

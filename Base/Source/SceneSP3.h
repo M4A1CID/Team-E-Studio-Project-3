@@ -225,11 +225,12 @@ public:
 	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
 	void RenderMeshIn2D(Mesh *mesh, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderMeshUI(Mesh *mesh, float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
-	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile); 
+	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile);
 	void RenderTerrain();
 	void RenderObjList();
 	void RenderKeyList();
 	void RenderEnemyList();
+	void RenderUI();
 	void RenderDebugWireframe();
 
 	//Test render 2D Partitioning
