@@ -185,6 +185,23 @@ class SceneSP3 : public Scene
 		GEO_FORK,			// 41
 		GEO_SPOON,			// 42
 
+		GEO_BOOK_1,			// 43
+		GEO_BOOK_2,			// 44
+		GEO_BOOKSHELF,		// 45
+		GEO_COM_MON_1,		// 46
+		GEO_COM_MON_2,		// 47
+		GEO_CUPBOARD_1,		// 48
+		GEO_CUPBOARD_2,		// 49
+		GEO_HANGING_LIGHT,	// 50
+		GEO_PLYER,			// 51
+		GEO_POSTER_1,		// 52
+		GEO_POSTER_2,		// 53
+		GEO_RAILING,		// 54
+		GEO_REFRIGERATOR,	// 55
+		GEO_SCREWDRIVER,	// 56
+		GEO_TOILET_2,			// 57
+		GEO_WINDOW,			// 58
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,

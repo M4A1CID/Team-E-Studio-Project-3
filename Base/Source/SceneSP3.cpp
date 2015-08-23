@@ -538,6 +538,54 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_SPOON] = MeshBuilder::GenerateOBJ("GEO_SPOON", "Objects//spoon.obj");
 	meshList[GEO_SPOON]->textureArray[0] = LoadTGA("Image//wood_spoon.tga");
+
+	meshList[GEO_BOOK_1] = MeshBuilder::GenerateOBJ("GEO_BOOK_1", "Objects//book_1.obj");
+	meshList[GEO_BOOK_1]->textureArray[0] = LoadTGA("Image//book_1.tga");
+
+	meshList[GEO_BOOK_2] = MeshBuilder::GenerateOBJ("GEO_BOOK_2", "Objects//book_2.obj");
+	meshList[GEO_BOOK_2]->textureArray[0] = LoadTGA("Image//book_2.tga");
+
+	meshList[GEO_BOOKSHELF] = MeshBuilder::GenerateOBJ("GEO_BOOKSHELF", "Objects//bookshelf.obj");
+	meshList[GEO_BOOKSHELF]->textureArray[0] = LoadTGA("Image//wood_shelf.tga");
+
+	meshList[GEO_COM_MON_1] = MeshBuilder::GenerateOBJ("GEO_COM_MON_1", "Objects//computer_moniter_1.obj");
+	meshList[GEO_COM_MON_1]->textureArray[0] = LoadTGA("Image//computer_moniter_1.tga");
+
+	meshList[GEO_COM_MON_2] = MeshBuilder::GenerateOBJ("GEO_COM_MON_2", "Objects//computer_moniter_2.obj");
+	meshList[GEO_COM_MON_2]->textureArray[0] = LoadTGA("Image//computer_moniter_2.tga");
+
+	meshList[GEO_CUPBOARD_1] = MeshBuilder::GenerateOBJ("GEO_CUPBOARD_1", "Objects//cupboard_one_door.obj");
+	meshList[GEO_CUPBOARD_1]->textureArray[0] = LoadTGA("Image//wood_cupboard.tga");
+
+	meshList[GEO_CUPBOARD_2] = MeshBuilder::GenerateOBJ("GEO_CUPBOARD_2", "Objects//cupboard_two_door.obj");
+	meshList[GEO_CUPBOARD_2]->textureArray[0] = LoadTGA("Image//wood_cupboard.tga");
+
+	meshList[GEO_HANGING_LIGHT] = MeshBuilder::GenerateOBJ("GEO_HANGING_LIGHT", "Objects//hanging_light.obj");
+	meshList[GEO_HANGING_LIGHT]->textureArray[0] = LoadTGA("Image//hanging_light.tga");
+
+	meshList[GEO_PLYER] = MeshBuilder::GenerateOBJ("GEO_PLYER", "Objects//plyer.obj");
+	meshList[GEO_PLYER]->textureArray[0] = LoadTGA("Image//plyer.tga");
+
+	meshList[GEO_POSTER_1] = MeshBuilder::GenerateOBJ("GEO_POSTER_1", "Objects//poster_1.obj");
+	meshList[GEO_POSTER_1]->textureArray[0] = LoadTGA("Image//poster_1.tga");
+
+	meshList[GEO_POSTER_2] = MeshBuilder::GenerateOBJ("GEO_POSTER_2", "Objects//poster_2.obj");
+	meshList[GEO_POSTER_2]->textureArray[0] = LoadTGA("Image//poster_2.tga");
+
+	meshList[GEO_RAILING] = MeshBuilder::GenerateOBJ("GEO_RAILING", "Objects//railing.obj");
+	meshList[GEO_RAILING]->textureArray[0] = LoadTGA("Image//railing.tga");
+
+	meshList[GEO_REFRIGERATOR] = MeshBuilder::GenerateOBJ("GEO_REFRIGERATOR", "Objects//refrigerator.obj");
+	meshList[GEO_REFRIGERATOR]->textureArray[0] = LoadTGA("Image//refrigerator.tga");
+
+	meshList[GEO_SCREWDRIVER] = MeshBuilder::GenerateOBJ("GEO_SCREWDRIVER", "Objects//screwdriver.obj");
+	meshList[GEO_SCREWDRIVER]->textureArray[0] = LoadTGA("Image//screwdriver.tga");
+
+	meshList[GEO_TOILET_2] = MeshBuilder::GenerateOBJ("GEO_TOILET_2", "Objects//toilet.obj");
+	meshList[GEO_TOILET_2]->textureArray[0] = LoadTGA("Image//toilet.tga");
+
+	meshList[GEO_WINDOW] = MeshBuilder::GenerateOBJ("GEO_WINDOW", "Objects//window.obj");
+	meshList[GEO_WINDOW]->textureArray[0] = LoadTGA("Image//window.tga");
 }
 
 void SceneSP3::initVariables()

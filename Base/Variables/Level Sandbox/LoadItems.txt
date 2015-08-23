@@ -13,6 +13,23 @@
 -135	70		-150		5		5		5		41		1
 -150	70		-150		5		5		5		42		1
 
+-165	70		-150		5		5		5		43		1
+-180	70		-150		5		5		5		44		1
+-195	70		-150		5		5		5		45		1
+-210	70		-150		5		5		5		46		1
+-225	70		-150		5		5		5		47		1
+-240	70		-150		5		5		5		48		1
+-255	70		-150		5		5		5		49		1
+-270	70		-150		5		5		5		50		1
+-285	70		-150		5		5		5		51		1
+-300	70		-150		5		5		5		52		1
+-315	70		-150		5		5		5		53		1
+-330	70		-150		5		5		5		54		1
+-345	70		-150		5		5		5		55		1
+-360	70		-150		5		5		5		56		1
+-375	70		-150		5		5		5		57		1
+-390	70		-150		5		5		5		58		1
+
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
 //GEOTYPE 18 == MIN SECURITY
 //GEOTYPE 19 == MED SECURITY
@@ -28,3 +45,20 @@
 //Geotype 40	= RICE
 //Geotype 41	= FORK
 //Geotype 42	= SPOON
+
+//Geotype 43	= BOOK_1
+//Geotype 44	= BOOK_2
+//Geotype 45	= BOOKSHELF
+//Geotype 46	= COMPUTER MONITOR 1
+//Geotype 47	= COMPUTER MONITOR 2
+//Geotype 48	= CUPBOARD 1
+//Geotype 49	= CUPBOARD 2
+//Geotype 50	= HANGING LIGHT
+//Geotype 51	= PLYER
+//Geotype 52	= POSTER 1
+//Geotype 53	= POSTER 2
+//Geotype 54	= RAILING
+//Geotype 55	= REFRIGERATOR
+//Geotype 56	= SCREWDRIVER
+//Geotype 57	= TOILET
+//Geotype 58	= WINDOW
