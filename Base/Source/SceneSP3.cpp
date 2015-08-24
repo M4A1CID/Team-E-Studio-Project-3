@@ -14,6 +14,7 @@ SceneSP3::SceneSP3()
 	: m_cMinimap(NULL)
 	, thePlayer(NULL)
 	, m_cMap(NULL)
+	, m_cMenu(NULL)
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
@@ -37,6 +38,163 @@ SceneSP3::~SceneSP3()
 	{
 		delete m_cMap;
 		m_cMap = NULL;
+	}
+	if(m_cMenu)
+	{
+		delete m_cMenu;
+		m_cMenu = NULL;
+	}
+}
+void SceneSP3::initMenu()
+{	
+	m_bQuit = false;
+	m_Current_Game_State = GAME_MENU;
+	m_Menu_State = MENU_PLAY;
+	m_Pause_State = PAUSE_PLAY;
+}
+void SceneSP3::UpdatePauseMenu()
+{
+	//Using the down button
+	static bool bDownButton = false;
+	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
+	{
+		bDownButton = true;
+		//Check if player is at pause menu
+		if(m_Current_Game_State == PAUSE_MENU)
+		{
+			//check the pause state
+			if(m_Pause_State == PAUSE_PLAY)
+				m_Pause_State = PAUSE_RESTART;
+			else if(m_Pause_State == PAUSE_RESTART)
+				m_Pause_State = PAUSE_EXIT;
+			//reset the pointer
+			else
+				m_Pause_State = PAUSE_PLAY;
+		}
+	}
+	else if(bDownButton && !Application::IsKeyPressed(VK_DOWN))
+	{
+		bDownButton = false;
+	}
+
+	//Using the Up button
+	static bool bUpButton = false;
+	if(!bUpButton && Application::IsKeyPressed(VK_UP))
+	{
+		bUpButton = true;
+		//Check if player is at pause menu
+		if(m_Current_Game_State == PAUSE_MENU)
+		{
+			//check the pause state
+			if(m_Pause_State == PAUSE_PLAY)
+				m_Pause_State = PAUSE_RESTART;
+			else if(m_Pause_State == PAUSE_RESTART)
+				m_Pause_State = PAUSE_PLAY;
+			//reset the pointer
+			else
+				m_Pause_State = PAUSE_PLAY;
+		}
+	}
+	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
+	{
+		bUpButton = false;
+	}
+
+	//Handle the Enter Button
+	static bool bEnterButton = false;
+	if(!bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = true;
+
+		if(m_Pause_State == PAUSE_PLAY)
+		{
+			//let the player continue playing the game as it is
+			m_Current_Game_State = PLAY_GAME;
+		}
+		else if(m_Pause_State == PAUSE_RESTART)
+		{
+			//restart the level
+			m_Current_Game_State = PLAY_GAME;
+			initVariables();
+		}
+		else if(m_Pause_State == PAUSE_EXIT)
+		{
+			m_bQuit = true;
+		}
+	}
+	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = false;
+	}
+}
+void SceneSP3::UpdateMenu()
+{
+	//Using the down button
+	static bool bDownButton = false;
+	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
+	{
+		bDownButton = true;
+		//Check if player is at main menu
+		if(m_Current_Game_State == GAME_MENU)
+		{
+			//check the menu state
+			if(m_Menu_State == MENU_PLAY)
+				m_Menu_State = MENU_EXIT;
+			//reset the pointer
+			else
+				m_Menu_State = MENU_PLAY;
+		}
+	}
+	else if(bDownButton && !Application::IsKeyPressed(VK_DOWN))
+	{
+		bDownButton = false;
+	}
+
+	//Using the Up button
+	static bool bUpButton = false;
+	if(!bUpButton && Application::IsKeyPressed(VK_UP))
+	{
+		bUpButton = true;
+		//Check if player is at main menu
+		if(m_Current_Game_State == GAME_MENU)
+		{
+			//check the menu state
+			if(m_Menu_State == MENU_PLAY)
+				m_Menu_State = MENU_EXIT;
+			else
+				m_Menu_State = MENU_PLAY;
+		}
+	}
+	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
+	{
+		bUpButton = false;
+	}
+
+	//Handle the Enter Button
+	static bool bEnterButton = false;
+	if(!bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = true;
+
+		//player is playing game
+		if(m_Menu_State == MENU_PLAY)
+		{
+			m_Current_Game_State = PLAY_GAME;
+			initVariables();
+		}
+		else if(m_Menu_State == MENU_EXIT)
+		{
+			m_bQuit = true;
+		}
+		else if(m_Menu_State == MENU_BACK)
+		{
+			m_Current_Game_State = GAME_MENU;
+			m_Menu_State = MENU_PLAY;
+		}
+	}
+	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = false;
 	}
 }
 
@@ -111,6 +269,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
+	initMenu();
 	initUniforms(); // Init the standard Uniforms
 	initPlayer();
 	initMeshlist();
@@ -299,7 +458,6 @@ void SceneSP3::initLights()
 	glUniform1f(m_uiParameters[U_LIGHT4_COSINNER], lights[4].cosInner);
 	glUniform1f(m_uiParameters[U_LIGHT4_EXPONENT], lights[4].exponent);*/
 }
-
 void SceneSP3::initUniforms()
 {
 		// Black background
@@ -386,7 +544,6 @@ void SceneSP3::initUniforms()
 
 	
 }
-
 void SceneSP3::initMeshlist()
 {
 	for(int i = 0; i < NUM_GEOMETRY; ++i)
@@ -586,8 +743,16 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_WINDOW] = MeshBuilder::GenerateOBJ("GEO_WINDOW", "Objects//window.obj");
 	meshList[GEO_WINDOW]->textureArray[0] = LoadTGA("Image//window.tga");
-}
 
+	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("GEO_MENU", Color(1, 1, 1), 1.f);
+	meshList[GEO_MENU]->textureID = LoadTGA("Image//main_menu.tga");
+
+	meshList[GEO_MENU_BACKGROUND] = MeshBuilder::GenerateQuad("GEO_MENU_BACKGROUND", Color(1, 1, 1), 1.f);
+	meshList[GEO_MENU_BACKGROUND]->textureID = LoadTGA("Image//menu_background.tga");
+
+	meshList[GEO_PAUSE_BACKGROUND] = MeshBuilder::GenerateQuad("GEO_PAUSE_BACKGROUND", Color(1, 1, 1), 1.f);
+	meshList[GEO_PAUSE_BACKGROUND]->textureID = LoadTGA("Image//pause_menu.tga");
+}
 void SceneSP3::initVariables()
 {
 	Math::InitRNG();
@@ -692,7 +857,7 @@ void SceneSP3::UpdateEnemies()
 		}
 	}
 }
-void SceneSP3::Update(double dt)
+void SceneSP3::UpdatePlay(double dt)
 {
 	thePlayer->UpdatePosition(dt, camera);
 	if (Application::IsKeyPressed(VK_SPACE))
@@ -713,9 +878,26 @@ void SceneSP3::Update(double dt)
 			physicsEngine.collisionResponseBetweenOBJ(camera,thePlayer,go,dt);
 		}
 	}
-
-
 	m_fFps = (float)(1.f / dt);
+}
+void SceneSP3::Update(double dt)
+{
+	if(Application::IsKeyPressed(VK_ESCAPE))
+	{
+		m_Current_Game_State = PAUSE_MENU;
+	}
+
+	switch(m_Current_Game_State)
+	{
+	case PLAY_GAME:
+		UpdatePlay(dt);
+		break;
+	case PAUSE_MENU:
+		UpdatePauseMenu();
+		break;
+	default:
+		UpdateMenu();
+	}
 }
 void SceneSP3::UpdateSceneControls()
 {
@@ -1124,28 +1306,100 @@ void SceneSP3::RenderUI()
 	SetHUD(false);
 	
 }
-void SceneSP3::Render()
+void SceneSP3::RenderMainMenu()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	Mtx44 perspective;
-	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
-	projectionStack.LoadMatrix(perspective);
+	//============================PRE RENDER PASS =============================
+	RenderPassGPass();
+	//============================ MAIN RENDER PASS ===========================
+	RenderPassMain();
+	//============================= HUD displayed on screen ====================================
+	SetHUD(true);
 	
-	// Camera matrix
-	viewStack.LoadIdentity();
-	viewStack.LookAt(
-						camera.position.x, camera.position.y, camera.position.z,
-						camera.target.x, camera.target.y, camera.target.z,
-						camera.up.x, camera.up.y, camera.up.z
-					);
-	// Model matrix : an identity matrix (model will be at the origin)
-	modelStack.LoadIdentity();
-	//glUniform1i(m_uiParameters[U_FOG_ENABLE], 0);
+	modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_MENU_BACKGROUND], 160.f, 0, 0);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_MENU], 80.f, 0, 0);
+	modelStack.PopMatrix();
+
+	if(m_Current_Game_State == GAME_MENU)
+	{
+		if(m_Menu_State == MENU_PLAY)
+		{
+			cout << "Play" << endl;
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
+		}
+		else
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
+		}
+		
+		if(m_Menu_State == MENU_EXIT)
+		{
+			cout << "Exit" << endl;
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 27);
+		}
+		else
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 27);
+		}
+	}
+	SetHUD(false);
+}
+void SceneSP3::RenderPauseMenu()
+{
+	//============================PRE RENDER PASS =============================
+	RenderPassGPass();
+	//============================ MAIN RENDER PASS ===========================
+	RenderPassMain();
+	//============================= HUD displayed on screen ====================================
+	SetHUD(true);
 	
-	
-	Mtx44 modelView = viewStack.Top() * modelStack.Top(); 
-	ExtractFrustum(perspective,modelView);
+	modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_PAUSE_BACKGROUND], 160.f, 0, 0);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMeshIn2D(meshList[GEO_MENU], 80.f, 0, 0);
+	modelStack.PopMatrix();
+
+	if(m_Current_Game_State == PAUSE_MENU)
+	{
+		if(m_Pause_State == PAUSE_PLAY)
+		{
+			cout << "Play" << endl;
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
+		}
+		else
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
+		}
+		
+		if(m_Pause_State == PAUSE_RESTART)
+		{
+			cout << "Restart" << endl;
+			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 1, 0), 7, 28, 27);
+		}
+		else
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(0, 1, 0), 7, 28, 27);
+		}
+
+		if(m_Pause_State == PAUSE_EXIT)
+		{
+			cout << "Exit" << endl;
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 14);
+		}
+		else
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 14);
+		}
+	}
+	SetHUD(false);
+}
+void SceneSP3::RenderGamePlay()
+{
 	//============================PRE RENDER PASS =============================
 	
 	RenderPassGPass();
@@ -1174,6 +1428,51 @@ void SceneSP3::Render()
 	RenderDebugWireframe();
 	RenderUI();
 }
+void SceneSP3::RenderWinOrLose()
+{
+
+}
+void SceneSP3::Render()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Mtx44 perspective;
+	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
+	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
+	projectionStack.LoadMatrix(perspective);
+	
+	// Camera matrix
+	viewStack.LoadIdentity();
+	viewStack.LookAt(
+						camera.position.x, camera.position.y, camera.position.z,
+						camera.target.x, camera.target.y, camera.target.z,
+						camera.up.x, camera.up.y, camera.up.z
+					);
+	// Model matrix : an identity matrix (model will be at the origin)
+	modelStack.LoadIdentity();
+	//glUniform1i(m_uiParameters[U_FOG_ENABLE], 0);
+	
+	
+	Mtx44 modelView = viewStack.Top() * modelStack.Top(); 
+	ExtractFrustum(perspective,modelView);
+	
+	switch(m_Current_Game_State)
+	{
+	case GAME_MENU:
+		//The main menu
+		cout << "MAIN MENU" << endl;
+		RenderMainMenu();
+		break;
+	case PAUSE_MENU:
+		cout << "PAUSE MENU" << endl;
+		RenderPauseMenu();
+		break;
+	case PLAY_GAME:
+		//Render gameplay
+		cout << "GAME PLAY" << endl;
+		RenderGamePlay();
+		break;
+	}
+}
 void SceneSP3::RenderPassMain()
 {
 	m_renderPass = RENDER_PASS_MAIN;
@@ -1193,7 +1492,8 @@ void SceneSP3::RenderPassMain()
 
 	//... old stuffs
 
-	RenderWorld();
+	if(m_Current_Game_State == PLAY_GAME)
+		RenderWorld();
 	//Render GEO_LIGHT_DEPTH_QUAD
 
 	//RenderMesh(meshList[GEO_LIGHT_DEPTH_QUAD],false);
@@ -1403,7 +1703,7 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 	//	
 	//}
 
-		Mtx44 ortho;
+	Mtx44 ortho;
 	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);

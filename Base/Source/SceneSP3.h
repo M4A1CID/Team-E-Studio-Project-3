@@ -22,6 +22,7 @@
 #include "Warden.h"
 #include "Guard.h"
 #include "Enemy.h"
+#include "Menu_States.h"
 #include <vector>
 #include <fstream>
 
@@ -199,7 +200,7 @@ class SceneSP3 : public Scene
 		GEO_RAILING,		// 54
 		GEO_REFRIGERATOR,	// 55
 		GEO_SCREWDRIVER,	// 56
-		GEO_TOILET_2,			// 57
+		GEO_TOILET_2,		// 57
 		GEO_WINDOW,			// 58
 
 		//to render out the item UI on the bottom of screen
@@ -208,6 +209,11 @@ class SceneSP3 : public Scene
 		GEO_MIN_UI,
 		GEO_MED_UI,
 		GEO_MAX_UI,
+
+		//Menu system
+		GEO_MENU_BACKGROUND,
+		GEO_MENU,
+		GEO_PAUSE_BACKGROUND,
 
 		//TSL
 		GEO_SKYPLANE,
@@ -226,6 +232,35 @@ class SceneSP3 : public Scene
 		RENDER_PASS_PRE,
 		RENDER_PASS_MAIN,
 	};
+
+protected:
+	//Handler for the menu states
+	int m_Current_Game_State;		//for the game
+	int m_Menu_State;				//for the menu
+	int m_Pause_State;				//for the pause menu
+public:
+
+	enum MENU_BUTTONS
+	{
+		MENU_PLAY = 0,
+		MENU_BACK,
+		MENU_EXIT
+	};
+	enum PAUSE_BUTTONS
+	{
+		PAUSE_PLAY = 0,
+		PAUSE_RESTART,
+		PAUSE_EXIT
+	};
+	enum GAME_STATES
+	{
+		GAME_MENU = 0,
+		PAUSE_MENU,
+		PLAY_GAME,
+		WIN_LOSE_MENU,
+		NUM_GAME_STATES
+	};
+
 public:
 	SceneSP3();
 	~SceneSP3();
@@ -237,7 +272,22 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
-	void initPlayer();			//initialize player class info here. this is done to make the code more organized
+	/*** Experimental stuff ***/
+	void initMenu();
+
+	void UpdatePlay(double dt);
+	void UpdateMenu();
+	void UpdatePauseMenu();
+
+	void RenderMainMenu();
+	void RenderPauseMenu();
+	void RenderGamePlay();
+	void RenderWinOrLose();
+
+	bool m_bQuit;
+	/*** Experimental stuff ***/
+
+	void initPlayer();
 	void initEnemies();
 	void initUniforms();
 	void initVariables();
@@ -351,6 +401,9 @@ private:
 
 	//Handle to the player class
 	CPlayer* thePlayer;
+
+	//Handle to the menu state class
+	CMenu_States* m_cMenu;
 
 	//Bools to render in UI; can be modified or removed if too expensive
 	bool MinCollected;
