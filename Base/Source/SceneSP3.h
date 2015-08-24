@@ -238,35 +238,6 @@ class SceneSP3 : public Scene
 		RENDER_PASS_PRE,
 		RENDER_PASS_MAIN,
 	};
-
-protected:
-	//Handler for the menu states
-	int m_Current_Game_State;		//for the game
-	int m_Menu_State;				//for the menu
-	int m_Pause_State;				//for the pause menu
-public:
-
-	enum MENU_BUTTONS
-	{
-		MENU_PLAY = 0,
-		MENU_BACK,
-		MENU_EXIT
-	};
-	enum PAUSE_BUTTONS
-	{
-		PAUSE_PLAY = 0,
-		PAUSE_RESTART,
-		PAUSE_EXIT
-	};
-	enum GAME_STATES
-	{
-		GAME_MENU = 0,
-		PAUSE_MENU,
-		PLAY_GAME,
-		WIN_LOSE_MENU,
-		NUM_GAME_STATES
-	};
-
 public:
 	SceneSP3();
 	~SceneSP3();
@@ -277,22 +248,9 @@ public:
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
-
-	/*** Experimental stuff ***/
+	
 	void initMenu();
-
-	void UpdatePlay(double dt);
-	void UpdateMenu();
-	void UpdatePauseMenu();
-
-	void RenderMainMenu();
-	void RenderPauseMenu();
-	void RenderGamePlay();
-	void RenderWinOrLose();
-
-	bool m_bQuit;
-	/*** Experimental stuff ***/
-
+	void initGameData();		//trigger this when restarting
 	void initPlayer();
 	void initEnemies();
 	void initUniforms();
@@ -330,6 +288,9 @@ public:
 	void RenderKeyList();
 	void RenderEnemyList();
 	void RenderUI();
+	void RenderMainMenu();
+	void RenderPauseMenu();
+	void RenderGamePlay();
 	
 	void RenderDebugWireframe();
 
@@ -344,6 +305,7 @@ public:
 
 	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);
+	void UpdatePlay(double dt);
 	void UpdateEnemies();
 	void UpdateSceneControls();
 
@@ -373,7 +335,10 @@ public:
 	};
 	Particle* FetchParticle();
 
-
+	//Handle to the menu state class
+	CMenu_States* m_cStates;
+protected:
+	
 private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
@@ -413,9 +378,6 @@ private:
 
 	//Handle to the player class
 	CPlayer* thePlayer;
-
-	//Handle to the menu state class
-	CMenu_States* m_cMenu;
 
 	//Bools to render in UI; can be modified or removed if too expensive
 	bool MinCollected;

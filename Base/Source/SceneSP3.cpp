@@ -14,7 +14,7 @@ SceneSP3::SceneSP3()
 	: m_cMinimap(NULL)
 	, thePlayer(NULL)
 	, m_cMap(NULL)
-	, m_cMenu(NULL)
+	, m_cStates(NULL)
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
@@ -39,165 +39,21 @@ SceneSP3::~SceneSP3()
 		delete m_cMap;
 		m_cMap = NULL;
 	}
-	if(m_cMenu)
+	if(m_cStates)
 	{
-		delete m_cMenu;
-		m_cMenu = NULL;
+		delete m_cStates;
+		m_cStates = NULL;
 	}
 }
 void SceneSP3::initMenu()
 {	
-	m_bQuit = false;
-	m_Current_Game_State = GAME_MENU;
-	m_Menu_State = MENU_PLAY;
-	m_Pause_State = PAUSE_PLAY;
-}
-void SceneSP3::UpdatePauseMenu()
-{
-	//Using the down button
-	static bool bDownButton = false;
-	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
+	//the singleton approach ensure that this isn't initialized more than once
+	if(m_cStates == NULL)
 	{
-		bDownButton = true;
-		//Check if player is at pause menu
-		if(m_Current_Game_State == PAUSE_MENU)
-		{
-			//check the pause state
-			if(m_Pause_State == PAUSE_PLAY)
-				m_Pause_State = PAUSE_RESTART;
-			else if(m_Pause_State == PAUSE_RESTART)
-				m_Pause_State = PAUSE_EXIT;
-			//reset the pointer
-			else
-				m_Pause_State = PAUSE_PLAY;
-		}
-	}
-	else if(bDownButton && !Application::IsKeyPressed(VK_DOWN))
-	{
-		bDownButton = false;
-	}
-
-	//Using the Up button
-	static bool bUpButton = false;
-	if(!bUpButton && Application::IsKeyPressed(VK_UP))
-	{
-		bUpButton = true;
-		//Check if player is at pause menu
-		if(m_Current_Game_State == PAUSE_MENU)
-		{
-			//check the pause state
-			if(m_Pause_State == PAUSE_PLAY)
-				m_Pause_State = PAUSE_RESTART;
-			else if(m_Pause_State == PAUSE_RESTART)
-				m_Pause_State = PAUSE_PLAY;
-			//reset the pointer
-			else
-				m_Pause_State = PAUSE_PLAY;
-		}
-	}
-	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
-	{
-		bUpButton = false;
-	}
-
-	//Handle the Enter Button
-	static bool bEnterButton = false;
-	if(!bEnterButton && Application::IsKeyPressed(VK_RETURN))
-	{
-		bEnterButton = true;
-
-		if(m_Pause_State == PAUSE_PLAY)
-		{
-			//let the player continue playing the game as it is
-			m_Current_Game_State = PLAY_GAME;
-		}
-		else if(m_Pause_State == PAUSE_RESTART)
-		{
-			//restart the level
-			m_Current_Game_State = PLAY_GAME;
-			initVariables();
-		}
-		else if(m_Pause_State == PAUSE_EXIT)
-		{
-			m_bQuit = true;
-		}
-	}
-	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
-	{
-		bEnterButton = false;
+		//an overloaded constructor is unnecessary as the default constructor already covers all that is needed here.
+		m_cStates = new CMenu_States();
 	}
 }
-void SceneSP3::UpdateMenu()
-{
-	//Using the down button
-	static bool bDownButton = false;
-	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
-	{
-		bDownButton = true;
-		//Check if player is at main menu
-		if(m_Current_Game_State == GAME_MENU)
-		{
-			//check the menu state
-			if(m_Menu_State == MENU_PLAY)
-				m_Menu_State = MENU_EXIT;
-			//reset the pointer
-			else
-				m_Menu_State = MENU_PLAY;
-		}
-	}
-	else if(bDownButton && !Application::IsKeyPressed(VK_DOWN))
-	{
-		bDownButton = false;
-	}
-
-	//Using the Up button
-	static bool bUpButton = false;
-	if(!bUpButton && Application::IsKeyPressed(VK_UP))
-	{
-		bUpButton = true;
-		//Check if player is at main menu
-		if(m_Current_Game_State == GAME_MENU)
-		{
-			//check the menu state
-			if(m_Menu_State == MENU_PLAY)
-				m_Menu_State = MENU_EXIT;
-			else
-				m_Menu_State = MENU_PLAY;
-		}
-	}
-	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
-	{
-		bUpButton = false;
-	}
-
-	//Handle the Enter Button
-	static bool bEnterButton = false;
-	if(!bEnterButton && Application::IsKeyPressed(VK_RETURN))
-	{
-		bEnterButton = true;
-
-		//player is playing game
-		if(m_Menu_State == MENU_PLAY)
-		{
-			m_Current_Game_State = PLAY_GAME;
-			initVariables();
-		}
-		else if(m_Menu_State == MENU_EXIT)
-		{
-			m_bQuit = true;
-		}
-		else if(m_Menu_State == MENU_BACK)
-		{
-			m_Current_Game_State = GAME_MENU;
-			m_Menu_State = MENU_PLAY;
-		}
-	}
-	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
-	{
-		bEnterButton = false;
-	}
-}
-
 void SceneSP3::initPlayer()
 {
 	//initialize the player class using the overloaded constructor
@@ -758,6 +614,22 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_PAUSE_BACKGROUND] = MeshBuilder::GenerateQuad("GEO_PAUSE_BACKGROUND", Color(1, 1, 1), 1.f);
 	meshList[GEO_PAUSE_BACKGROUND]->textureID = LoadTGA("Image//pause_menu.tga");
 }
+void SceneSP3::initGameData()
+{
+	Math::InitRNG();
+	m_bLightEnabled = true;
+	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
+	
+	m_Current_Level = 0;
+	
+	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
+	
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
+	Mtx44 perspective;
+	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
+	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
+	projectionStack.LoadMatrix(perspective);
+}
 void SceneSP3::initVariables()
 {
 	Math::InitRNG();
@@ -961,19 +833,24 @@ void SceneSP3::Update(double dt)
 {
 	if(Application::IsKeyPressed(VK_ESCAPE))
 	{
-		m_Current_Game_State = PAUSE_MENU;
+		m_cStates->SetGameState(m_cStates->PAUSE_MENU); //m_Current_Game_State = PAUSE_MENU;
+	}
+	if(m_cStates->GetRestartState())
+	{
+		initGameData();
+		m_cStates->SetRestartState(false);
 	}
 
-	switch(m_Current_Game_State)
+	switch(m_cStates->GetGameState())//m_Current_Game_State)
 	{
-	case PLAY_GAME:
+	case m_cStates->PLAY_GAME:
 		UpdatePlay(dt);
 		break;
-	case PAUSE_MENU:
-		UpdatePauseMenu();
+	case m_cStates->PAUSE_MENU:
+		m_cStates->UpdatePauseMenu();
 		break;
 	default:
-		UpdateMenu();
+		m_cStates->UpdateMenu();
 	}
 }
 void SceneSP3::UpdateSceneControls()
@@ -1454,27 +1331,18 @@ void SceneSP3::RenderMainMenu()
 	RenderMeshIn2D(meshList[GEO_MENU], 80.f, 0, 0);
 	modelStack.PopMatrix();
 
-	if(m_Current_Game_State == GAME_MENU)
+	if(m_cStates->GetGameState() == m_cStates->GAME_MENU)
 	{
-		if(m_Menu_State == MENU_PLAY)
-		{
-			cout << "Play" << endl;
+		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_PLAY)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
-		}
 		else
-		{
 			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
-		}
-		
-		if(m_Menu_State == MENU_EXIT)
-		{
-			cout << "Exit" << endl;
+
+		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_EXIT)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 27);
-		}
 		else
-		{
 			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 27);
-		}
+
 	}
 	SetHUD(false);
 }
@@ -1495,37 +1363,22 @@ void SceneSP3::RenderPauseMenu()
 	RenderMeshIn2D(meshList[GEO_MENU], 80.f, 0, 0);
 	modelStack.PopMatrix();
 
-	if(m_Current_Game_State == PAUSE_MENU)
+	if(m_cStates->GetGameState() == m_cStates->PAUSE_MENU)
 	{
-		if(m_Pause_State == PAUSE_PLAY)
-		{
-			cout << "Play" << endl;
+		if(m_cStates->GetPauseState() == m_cStates->PAUSE_PLAY)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
-		}
 		else
-		{
 			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
-		}
 		
-		if(m_Pause_State == PAUSE_RESTART)
-		{
-			cout << "Restart" << endl;
+		if(m_cStates->GetPauseState() == m_cStates->PAUSE_RESTART)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 1, 0), 7, 28, 27);
-		}
 		else
-		{
 			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(0, 1, 0), 7, 28, 27);
-		}
 
-		if(m_Pause_State == PAUSE_EXIT)
-		{
-			cout << "Exit" << endl;
+		if(m_cStates->GetPauseState() == m_cStates->PAUSE_EXIT)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 14);
-		}
 		else
-		{
 			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 14);
-		}
 	}
 	SetHUD(false);
 }
@@ -1559,10 +1412,6 @@ void SceneSP3::RenderGamePlay()
 	RenderDebugWireframe();
 	RenderUI();
 }
-void SceneSP3::RenderWinOrLose()
-{
-
-}
 void SceneSP3::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1586,20 +1435,17 @@ void SceneSP3::Render()
 	Mtx44 modelView = viewStack.Top() * modelStack.Top(); 
 	ExtractFrustum(perspective,modelView);
 	
-	switch(m_Current_Game_State)
+	switch(m_cStates->GetGameState())
 	{
-	case GAME_MENU:
+	case m_cStates->GAME_MENU:
 		//The main menu
-		cout << "MAIN MENU" << endl;
 		RenderMainMenu();
 		break;
-	case PAUSE_MENU:
-		cout << "PAUSE MENU" << endl;
+	case m_cStates->PAUSE_MENU:
 		RenderPauseMenu();
 		break;
-	case PLAY_GAME:
+	case m_cStates->PLAY_GAME:
 		//Render gameplay
-		cout << "GAME PLAY" << endl;
 		RenderGamePlay();
 		break;
 	}
@@ -1623,7 +1469,7 @@ void SceneSP3::RenderPassMain()
 
 	//... old stuffs
 
-	if(m_Current_Game_State == PLAY_GAME)
+	if(m_cStates->GetGameState() == m_cStates->PLAY_GAME)
 		RenderWorld();
 	//Render GEO_LIGHT_DEPTH_QUAD
 
