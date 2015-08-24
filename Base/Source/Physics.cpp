@@ -5,7 +5,7 @@ CPhysics::CPhysics(void)
 {
 	m_Gravity = Vector3(0,-9.8,0);
 	m_fOffset = 160.f;
-	
+	m_fLaserDetectionRange = 5.f;
 }
 
 CPhysics::~CPhysics(void)
@@ -124,6 +124,25 @@ void CPhysics::collisionResponseBetweenKey(Camera3 &camera,CPlayer* &thePlayer, 
 		camera.position -= diffVec * dt;
 		camera.target -= diffVec * dt;
 	}
+}
+
+// Collision with laser
+bool CPhysics::checkCollisionBetweenLaser(CPlayer* player, CLaser* laser)
+{
+	Vector3 obj1 = player->GetPosition();
+	Vector3 obj2 = laser->getPosition();
+	Vector3 dVec = obj1 - obj2;
+
+	if (dVec.Length() < m_fLaserDetectionRange)
+	{
+		return true;
+	}
+	return false;
+}
+
+void CPhysics::collisionResponseBetweenLaser(Camera3& camera, CPlayer* &player, CLaser* &laser, double dt)
+{
+	std::cout << "Pew pew." << std::endl;
 }
 
 // Check height of terrain

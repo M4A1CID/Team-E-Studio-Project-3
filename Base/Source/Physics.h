@@ -42,4 +42,5 @@ public:
 private:
 	Vector3 m_Gravity;
 	float m_fOffset;
+	float m_fLaserDetectionRange;
 };

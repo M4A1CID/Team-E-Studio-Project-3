@@ -24,6 +24,7 @@
 #include "Enemy.h"
 #include "Menu_States.h"
 #include "Door.h"
+#include "Laser.h"
 #include <vector>
 #include <fstream>
 
@@ -424,6 +425,9 @@ private:
 	ISoundEngine* engine;
 	ISound* music ;
 	ISound* fire;
+
+	// Laser
+	CLaser* laser;
 
 	//Fog
 	Color fogColor;

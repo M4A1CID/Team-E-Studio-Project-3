@@ -748,7 +748,6 @@ void SceneSP3::initMeshlist()
 
 	// Laser
 	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
-}
 
 	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("GEO_MENU", Color(1, 1, 1), 1.f);
 	meshList[GEO_MENU]->textureID = LoadTGA("Image//main_menu.tga");
@@ -2007,6 +2006,11 @@ void SceneSP3::Exit()
 	{
 		if(myEnemyList[i] != NULL)
 			delete myEnemyList[i];
+	}
+	for(unsigned int i = 0; i < myDoorList.size(); ++i)
+	{
+		if(myDoorList[i] != NULL)
+			delete myDoorList[i];
 	}
 	if(m_cMap != NULL)
 	{
