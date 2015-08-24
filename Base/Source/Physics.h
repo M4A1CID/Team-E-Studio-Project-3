@@ -3,7 +3,6 @@
 #include "Vector2.h"
 #include "Obj.h"
 #include "Player.h"
-#include "Obj.h"
 #include "Camera3.h"
 #include "LoadHmap.h"
 
@@ -26,6 +25,10 @@ public:
 
 	bool checkCollisionBetweenKey(CPlayer*, CKey*);
 	void collisionResponseBetweenKey(Camera3&, CPlayer*&, CKey*&, double);
+
+	bool checkCollisionBetweenLaser(CPlayer*, CLaser*);
+	void collisionResponseBetweenLaser(Camera3&, CPlayer*&, CLaser*&, double);
+
 
 	// Check height of terrain
 	const float GetHeightMapY(float x, float z, std::vector<unsigned char> &heightMap,const Vector3& terrainSize);

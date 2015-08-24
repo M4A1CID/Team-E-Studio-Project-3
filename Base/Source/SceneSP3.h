@@ -204,6 +204,9 @@ class SceneSP3 : public Scene
 		GEO_TOILET_2,		// 57
 		GEO_WINDOW,			// 58
 
+		// Laser
+		GEO_LASER,			
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,
@@ -215,6 +218,7 @@ class SceneSP3 : public Scene
 		GEO_MENU_BACKGROUND,
 		GEO_MENU,
 		GEO_PAUSE_BACKGROUND,
+		
 
 		//TSL
 		GEO_SKYPLANE,

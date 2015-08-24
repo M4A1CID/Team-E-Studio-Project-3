@@ -554,6 +554,7 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("GEO_CUBE",Color(1,0,0),1.f);
 	meshList[GEO_DEBUG_AI] = MeshBuilder::GenerateCube("GEO_DEBUG_AI",Color(1,1,0),1.f);
 	// Terrain & Skyplane
@@ -610,7 +611,7 @@ void SceneSP3::initMeshlist()
 
 	// UI
 
-	meshList[GEO_CROSSHAIR_UI] = MeshBuilder::GenerateQuad("GEO_CROSSHAIR_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_CROSSHAIR_UI] = MeshBuilder::GenerateQuad("GEO_CROSSHAIR_UI", Color(1, 1, 1), 0.5f);
 	meshList[GEO_CROSSHAIR_UI]->textureID = LoadTGA("Image//crosshair_ui.tga");
 
 	meshList[GEO_ITEM_UI] = MeshBuilder::GenerateQuad("GEO_ITEM_UI", Color(1, 1, 1), 1.f);
@@ -743,6 +744,11 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_WINDOW] = MeshBuilder::GenerateOBJ("GEO_WINDOW", "Objects//window.obj");
 	meshList[GEO_WINDOW]->textureArray[0] = LoadTGA("Image//window.tga");
+
+
+	// Laser
+	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
+}
 
 	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("GEO_MENU", Color(1, 1, 1), 1.f);
 	meshList[GEO_MENU]->textureID = LoadTGA("Image//main_menu.tga");
@@ -1655,9 +1661,14 @@ void SceneSP3::RenderWorld()
 	}
 
 
-	RenderTileMap();
+	//RenderTileMap();
 
 	RenderMesh(meshList[GEO_AXES], false);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-586, 67, -400);
+	RenderMesh(meshList[GEO_LASER], false);
+	modelStack.PopMatrix();
 
 	RenderTerrain();
 

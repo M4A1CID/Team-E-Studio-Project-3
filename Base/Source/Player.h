@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "Key.h"
 #include "Obj.h"
+#include "Laser.h"
 
 class CPlayer
 {

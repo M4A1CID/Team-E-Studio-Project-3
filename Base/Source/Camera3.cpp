@@ -220,6 +220,34 @@ void Camera3::Crouch(const double dt)
 }
 void Camera3::UpdateCrouch(const double dt)
 {
+	//float CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
+
+	//if(m_bCrouching)
+	//{
+	//	CrouchSpeed += GRAVITY * dt;
+
+	//	position.y += CrouchSpeed * (float)dt;
+	//	target.y += CrouchSpeed * (float)dt;
+	//}
+
+	//if(position.y > CrouchHeight)
+	//{
+	//	float movedt = CrouchHeight - position.y;
+	//	m_bCrouching = false;
+	//	position.y = CrouchHeight;
+	//	target.y -= movedt;
+	//	CrouchSpeed = 0.f;
+	//}
+	//if(position.y < CrouchHeight)
+	//{
+	//	//Factor in gravity
+	//	CrouchSpeed += GRAVITY * dt;
+
+	//	//Update the camera and target position
+	//	position.y += CrouchSpeed * (float)dt;
+	//	target.y += CrouchSpeed * (float)dt;
+	//}
+
 	if(m_bCrouching)
 	{
 		if(position.y > CrouchOff)
@@ -231,7 +259,7 @@ void Camera3::UpdateCrouch(const double dt)
 	}
 	else
 	{
-		if(position.y < CrouchOff && !m_bProne)
+		if (position.y < CrouchOff && !m_bProne)
 		{
 			position.y += CrouchSpeed;
 			target.y += CrouchSpeed;
@@ -310,7 +338,7 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	// Crouch
 	CrouchOff = 60.f;
 	//CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
-	CrouchSpeed = 20.f;
+	CrouchSpeed = 15.f;
 
 	//Initialise the camera movement flags
 	for(int i = 0; i < 255; i++)

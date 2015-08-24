@@ -32,6 +32,7 @@ public:
 	static Mesh* GenerateMinimap(const std::string &meshName, Color color, float length = 1.f);
 	static Mesh* GenerateMinimapBorder(const std::string &meshName, Color color, float length = 1.f);
 	static Mesh* GenerateMinimapAvatar(const std::string &meshName, Color color, float length = 1.f);
+	static Mesh* GenerateLaser(const std::string &meshName, float length);
 };
 
 #endif
