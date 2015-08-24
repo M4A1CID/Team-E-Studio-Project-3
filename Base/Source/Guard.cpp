@@ -7,9 +7,9 @@ CGuard::CGuard(void)
 	setGeoBodyType(27);
 	setGeoHeadType(28);
 
-	setOffsetArm(Vector3(1.f,-1.f,-0.2f));
-	setOffsetHead(Vector3(0.f,0.0f,0.f));
-	setOffsetLeg(Vector3(0.3f,-3.f,0.f));
+	setOffsetArm(Vector3(1.f,-0.7f,-0.2f));
+	setOffsetHead(Vector3(0.0f,1.6f,0.0f));
+	setOffsetLeg(Vector3(0.4f,-1.5f,0.f));
 
 	setRotationBody(0);
 	setRotationHead(0);
