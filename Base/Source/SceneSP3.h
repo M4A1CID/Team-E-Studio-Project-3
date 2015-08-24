@@ -23,6 +23,7 @@
 #include "Guard.h"
 #include "Enemy.h"
 #include "Menu_States.h"
+#include "Door.h"
 #include <vector>
 #include <fstream>
 
@@ -34,7 +35,7 @@ using namespace irrklang;
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
-	const static int INTERACTION_DISTANCE = 10;
+	const static int INTERACTION_DISTANCE = 15;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
@@ -298,15 +299,19 @@ public:
 	void initLights();
 	
 	void checkPickUpItem();
+	void checkOpenDoor();
 
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
 	bool LoadFromTextFileItem(const string mapString);
 	bool LoadFromTextFileEnemy(const string mapString);
+	//try to clean this as soon as possible!
+	bool LoadFromTextFileDoor(const string mapString);
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
 	CObj* FetchOBJ();
 	CKey* FetchKey();
+	CDoor* FetchDoor();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -316,6 +321,7 @@ public:
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile);
 	void RenderTerrain();
 	void RenderObjList();
+	void RenderDoorList();
 	void RenderKeyList();
 	void RenderEnemyList();
 	void RenderUI();
@@ -366,6 +372,7 @@ public:
 private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
+	std::vector<CDoor *> myDoorList;
 	std::vector<CKey *> myKeyList;
 	std::vector<CEnemy *> myEnemyList;
 

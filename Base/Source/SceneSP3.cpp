@@ -764,6 +764,7 @@ void SceneSP3::initVariables()
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
 	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
 	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
+	LoadFromTextFileDoor("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoor.txt");
 	initMap();
 
 	
@@ -840,6 +841,77 @@ void SceneSP3::checkPickUpItem()
 		}
 	}
 }
+
+void SceneSP3::checkOpenDoor()
+{
+	float magnitudeFromTarget = 0.f;
+	float magnitudeFromPosition = 0.f;
+	float previous = 99.0f;
+	int chosen = 0;
+	for(unsigned int i = 0; i < myDoorList.size(); ++i)
+	{
+		if(myDoorList[i]->GetLocked()) //If Door is locked
+		{
+			//Distance between Camera Target and Item position = Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+			magnitudeFromTarget = sqrt((camera.target.x - myDoorList[i]->getPosition().x) * (camera.target.x - myDoorList[i]->getPosition().x) + 
+									   (camera.target.y - myDoorList[i]->getPosition().y) * (camera.target.y - myDoorList[i]->getPosition().y) +
+									   (camera.target.z - myDoorList[i]->getPosition().z) * (camera.target.z - myDoorList[i]->getPosition().z));
+
+			//Get lowest magnitude of Item from target
+			if(previous > magnitudeFromTarget)
+			{
+				previous = magnitudeFromTarget;
+				//Distance between Camera Position and Item position= Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+				magnitudeFromPosition = sqrt((camera.target.x - myDoorList[i]->getPosition().x) * (camera.target.x - myDoorList[i]->getPosition().x) + 
+											(camera.target.y - myDoorList[i]->getPosition().y) * (camera.target.y - myDoorList[i]->getPosition().y) +
+											(camera.target.z - myDoorList[i]->getPosition().z) * (camera.target.z - myDoorList[i]->getPosition().z));
+
+				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
+				{
+					switch(myDoorList[i]->GetLevel())
+					{
+					case 1:
+						{
+							//check for minimum keycard, find better long term solution later.
+							if(MinCollected == true)
+							{
+								myDoorList[i]->SetLocked(false);
+								//disappearing doors... spooky, if I can even get the doors up.
+							}
+						}
+						break;
+					case 2:
+						{
+							//check for medium keycard, find better long term solution later.
+							if(MedCollected == true)
+							{
+								myDoorList[i]->SetLocked(false);
+								//disappearing doors... spooky, if I can even get the doors up.
+							}
+						}
+						break;
+					case 3:
+						{
+							//check for maximum keycard, find better long term solution later.
+							if(MaxCollected == true)
+							{
+								myDoorList[i]->SetLocked(false);
+								//disappearing doors... spooky, if I can even get the doors up.
+							}
+						}
+						break;
+					default:
+						{
+							cout << "You don't have the right card..." << endl;
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 void SceneSP3::UpdateEnemies()
 {
 	for(std::vector<CEnemy *>::iterator it = myEnemyList.begin(); it != myEnemyList.end(); ++it)
@@ -912,6 +984,7 @@ void SceneSP3::UpdateSceneControls()
 	if(Application::IsKeyPressed('F'))
 	{
 		checkPickUpItem();
+		checkOpenDoor();
 	}
 	if(Application::IsKeyPressed('8'))
 	{
@@ -962,6 +1035,26 @@ CKey* SceneSP3::FetchKey()
 	go->setActive(true);
 	return go;
 }
+CDoor* SceneSP3::FetchDoor()
+{
+	for(std::vector<CDoor *>::iterator it = myDoorList.begin(); it != myDoorList.end(); ++it)
+	{
+		CDoor *go = (CDoor *)*it;
+		if(!go->getActive())
+		{
+			go->setActive(true);
+			return go;
+		}
+	}
+	for(unsigned i = 0; i < 10; ++i)
+	{
+		CDoor *go = new CDoor();
+		myDoorList.push_back(go);
+	}
+	CDoor *go = myDoorList.back();
+	go->setActive(true);
+	return go;
+}
 bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 {
 	ifstream myfile (mapString);
@@ -995,6 +1088,39 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	}
 	else 
 		cout << "Objs Loaded: FAILED!"; 
+	return false;
+}
+bool SceneSP3::LoadFromTextFileDoor(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Scale;
+	char LockLevel;
+	int geotype;
+	bool active;
+	CDoor * door;
+	if (myfile.is_open())
+	{
+		//BUG: something wrong inside the while loop, can't tell what. It is causing the while loop to disregard everything inside.
+		while( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> LockLevel >> geotype >> active)
+		{
+
+			door = FetchDoor();
+			door->setActive(active);
+			door->setPosition(Pos);
+			door->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			door->setGeoType(geotype);
+			door->SetLevel(LockLevel);
+			door->setScale(Scale);
+			cout << "Doors Loaded: SUCCESS!" << endl;
+			
+		}
+		myfile.close();
+		return true;
+	}
+	else 
+		cout << "Doors Loaded: FAILED!" << endl; 
 	return false;
 }
 bool SceneSP3::LoadFromTextFileItem(const string mapString)
@@ -1540,6 +1666,7 @@ void SceneSP3::RenderWorld()
 	modelStack.PopMatrix();
 
 	RenderObjList();
+	RenderDoorList();
 	RenderKeyList();
 	RenderEnemyList();
 
@@ -1567,6 +1694,22 @@ void SceneSP3::RenderKeyList()
 	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
 	{
 		CKey *go = (CKey *)*it;
+
+		if(go->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
+			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
+			modelStack.PopMatrix();
+		}
+	}
+}
+void SceneSP3::RenderDoorList()
+{
+	for(std::vector<CDoor *>::iterator it = myDoorList.begin(); it != myDoorList.end(); ++it)
+	{
+		CDoor *go = (CDoor *)*it;
 
 		if(go->getActive() == true)
 		{
