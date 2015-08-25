@@ -747,6 +747,10 @@ void SceneSP3::checkOpenDoor()
 					if(myDoorList[i]->GetLevel() == myKeyList[i]->GetLevel())
 					{
 						myDoorList[i]->SetLocked(false);
+						myDoorList[i]->setActive(false);
+						myDoorList[i]->setOffset_X(0);
+						myDoorList[i]->setOffset_Y(0);
+						myDoorList[i]->setOffset_Z(0);
 						cout << "Door unlocked!" << endl;
 					}
 					else
