@@ -647,6 +647,7 @@ void SceneSP3::initVariables()
 	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
 	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
 	LoadFromTextFileDoor("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoor.txt");
+	LoadFromTextFileLaser("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadLaser.txt");
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
@@ -811,6 +812,14 @@ void SceneSP3::UpdatePlay(double dt)
 			physicsEngine.collisionResponseBetweenOBJ(camera,thePlayer,go,dt);
 		}
 	}
+	for(std::vector<CLaser *>::iterator it = myLaserList.begin(); it != myLaserList.end(); ++it)
+	{
+		CLaser *go = (CLaser *)*it;
+		if(physicsEngine.checkCollisionBetweenLaser(thePlayer,go))
+		{
+			physicsEngine.collisionResponseBetweenLaser(camera,thePlayer,go,dt);
+		}
+	}
 	m_fFps = (float)(1.f / dt);
 }
 void SceneSP3::Update(double dt)
@@ -925,6 +934,26 @@ CDoor* SceneSP3::FetchDoor()
 	go->setActive(true);
 	return go;
 }
+CLaser* SceneSP3::FetchLaser()
+{
+	for(std::vector<CLaser *>::iterator it = myLaserList.begin(); it != myLaserList.end(); ++it)
+	{
+		CLaser *go = (CLaser *)*it;
+		if(!go->getActive())
+		{
+			go->setActive(true);
+			return go;
+		}
+	}
+	for(unsigned i = 0; i < 10; ++i)
+	{
+		CLaser *go = new CLaser();
+		myLaserList.push_back(go);
+	}
+	CLaser *go = myLaserList.back();
+	go->setActive(true);
+	return go;
+}
 bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 {
 	ifstream myfile (mapString);
@@ -992,6 +1021,36 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 	}
 	else 
 		cout << "Doors Loaded: FAILED!" << endl; 
+	return false;
+}
+bool SceneSP3::LoadFromTextFileLaser(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Scale;
+	int geotype;
+	bool active;
+	CLaser * laser;
+	if (myfile.is_open())
+	{
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> geotype >> active)
+		{
+
+			laser = FetchLaser();
+			laser->setActive(active);
+			laser->setPosition(Pos);
+			laser->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			laser->setGeoType(geotype);
+			laser->setScale(Scale);
+			cout << "Laser Loaded: SUCCESS!" << endl;
+		}
+		myfile.close();
+		
+		return true;
+	}
+	else 
+		cout << "Laser Loaded: FAILED!"; 
 	return false;
 }
 bool SceneSP3::LoadFromTextFileItem(const string mapString)
@@ -1538,6 +1597,8 @@ void SceneSP3::RenderWorld()
 	RenderWayPoints();
 	//RenderMesh(meshList[GEO_AXES], false);
 
+	RenderMesh(meshList[GEO_AXES], false);
+
 	RenderTerrain();
 
 	modelStack.PushMatrix();
@@ -1548,6 +1609,7 @@ void SceneSP3::RenderWorld()
 	RenderDoorList();
 	RenderKeyList();
 	RenderEnemyList();
+	RenderLaserList();
 
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 }
@@ -1589,6 +1651,22 @@ void SceneSP3::RenderDoorList()
 	for(std::vector<CDoor *>::iterator it = myDoorList.begin(); it != myDoorList.end(); ++it)
 	{
 		CDoor *go = (CDoor *)*it;
+
+		if(go->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
+			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
+			modelStack.PopMatrix();
+		}
+	}
+}
+void SceneSP3::RenderLaserList()
+{
+	for(std::vector<CLaser *>::iterator it = myLaserList.begin(); it != myLaserList.end(); ++it)
+	{
+		CLaser *go = (CLaser *)*it;
 
 		if(go->getActive() == true)
 		{

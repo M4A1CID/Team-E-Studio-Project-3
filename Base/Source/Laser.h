@@ -1,7 +1,7 @@
 #pragma once
 #include "Obj.h"
 
-class CLaser
+class CLaser : public CObj
 {
 public:
 	CLaser(void);

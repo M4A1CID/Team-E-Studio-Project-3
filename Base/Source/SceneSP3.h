@@ -206,7 +206,7 @@ class SceneSP3 : public Scene
 		GEO_WINDOW,			// 58
 
 		// Laser
-		GEO_LASER,			
+		GEO_LASER,			// 59
 
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
@@ -268,6 +268,7 @@ public:
 	bool LoadFromTextFileOBJ(const string mapString);
 	bool LoadFromTextFileItem(const string mapString);
 	bool LoadFromTextFileEnemy(const string mapString);
+	bool LoadFromTextFileLaser(const string mapString);
 	//try to clean this as soon as possible!
 	bool LoadFromTextFileDoor(const string mapString);
 	bool LoadFromTextFileWaypoints(const string mapString);
@@ -276,6 +277,7 @@ public:
 	CObj* FetchOBJ();
 	CKey* FetchKey();
 	CDoor* FetchDoor();
+	CLaser* FetchLaser();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -288,6 +290,7 @@ public:
 	void RenderDoorList();
 	void RenderKeyList();
 	void RenderEnemyList();
+	void RenderLaserList();
 	void RenderUI();
 	void RenderMainMenu();
 	void RenderPauseMenu();
@@ -345,6 +348,7 @@ private:
 	std::vector<CKey *> myKeyList;
 	std::vector<CEnemy *> myEnemyList;
 	std::vector<Vector3> myWaypointList;
+	std::vector<CLaser *> myLaserList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
