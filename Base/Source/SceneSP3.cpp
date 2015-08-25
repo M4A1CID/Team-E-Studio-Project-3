@@ -793,6 +793,26 @@ void SceneSP3::UpdateEnemies(double dt)
 }
 void SceneSP3::UpdatePlay(double dt)
 {
+	
+	static bool bESCButton2 = false;
+	cout << m_cStates->GetPauseActive() << endl;
+
+	if(!bESCButton2 && Application::IsKeyPressed(VK_ESCAPE) && !m_cStates->GetPauseActive()) // if ESC pressed and not in pause - make sure only when pressed then update
+	{
+		bESCButton2 = true;
+		m_cStates->SetPauseActive(true);  //m_bPauseActive = true;	
+	}
+	//if key release
+	else if(bESCButton2 && !Application::IsKeyPressed(VK_ESCAPE)) // when release , prevent holding down bug
+	{
+		//update to pause menu here
+		bESCButton2 = false;
+	}
+	if(m_cStates->GetPauseActive())
+	{
+		m_cStates->SetGameState(m_cStates->PAUSE_MENU);
+	}
+
 	thePlayer->UpdatePosition(dt, camera);
 	if (Application::IsKeyPressed(VK_SPACE))
 	{
@@ -824,16 +844,12 @@ void SceneSP3::UpdatePlay(double dt)
 }
 void SceneSP3::Update(double dt)
 {
-	//when player wants to pause the game
-	if(Application::IsKeyPressed(VK_ESCAPE))
-	{
-		m_cStates->SetGameState(m_cStates->PAUSE_MENU); //m_Current_Game_State = PAUSE_MENU;
-	}
 	//when restart button is triggered
 	if(m_cStates->GetRestartState())
 	{
 		initGameData();
 		m_cStates->SetRestartState(false);
+		m_cStates->SetPauseActive(false);
 	}
 
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
@@ -843,10 +859,11 @@ void SceneSP3::Update(double dt)
 		UpdatePlay(dt);
 		break;
 	case m_cStates->PAUSE_MENU:
-		m_cStates->UpdatePauseMenu();
+		m_cStates->UpdatePauseMenu(dt);
 		break;
 	default:
-		m_cStates->UpdateMenu();
+		m_cStates->UpdateMenu(dt);
+		break;
 	}
 }
 void SceneSP3::UpdateSceneControls()

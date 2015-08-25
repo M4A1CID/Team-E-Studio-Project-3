@@ -41,15 +41,23 @@ public:
 	void SetRestartState(bool m_bRestart);
 	bool GetRestartState(void);
 
-	void UpdatePauseMenu();
-	void UpdateMenu();
+	void SetPauseActive(bool m_bPauseActive);
+	bool GetPauseActive(void);
+
+	void SetTimer(double dTimer);
+	double GetTimer(void);
+
+	void UpdatePauseMenu(double&);
+	void UpdateMenu(double&);
 private:
 	//Handler for the menu states
 	CMenu_States::GAME_STATES m_Current_Game_State;		//for the game
 	CMenu_States::MENU_BUTTONS m_Menu_State;				//for the menu
 	CMenu_States::PAUSE_BUTTONS m_Pause_State;				//for the pause menu
 	bool m_bQuit;					//trigger for exiting application
-	bool m_bRestart;				//trigger for restarting the game
+	bool m_bRestart;				//trigger for restarting the game		
+	bool m_bPauseActive;			//trigger true if pause button is triggered.
+	double dTimer;					//timer of pause to prevent flickering of screens
 
 	CMenu_States::MENU_BUTTONS MenuState;
 	CMenu_States::PAUSE_BUTTONS PauseState;

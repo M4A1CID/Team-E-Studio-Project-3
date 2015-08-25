@@ -1,8 +1,5 @@
 #include "Menu_States.h"
 #include "Application.h"
-#include "SceneSP3.h"
-
-static SceneSP3* ptr;
 
 CMenu_States::CMenu_States(void)
 	: m_Current_Game_State(GAME_MENU)
@@ -10,6 +7,8 @@ CMenu_States::CMenu_States(void)
 	, m_Pause_State(PAUSE_PLAY)
 	, m_bQuit(false)
 	, m_bRestart(false)
+	, m_bPauseActive(false)
+	, dTimer(0.5)
 {
 }
 CMenu_States::~CMenu_States(void)
@@ -55,7 +54,23 @@ bool CMenu_States::GetRestartState(void)
 {
 	return m_bRestart;
 }
-void CMenu_States::UpdatePauseMenu()
+void CMenu_States::SetPauseActive(bool m_bPauseActive)
+{
+	this->m_bPauseActive = m_bPauseActive;
+}
+bool CMenu_States::GetPauseActive(void)
+{
+	return m_bPauseActive;
+}
+void CMenu_States::SetTimer(double dTimer)
+{
+	this->dTimer = dTimer;
+}
+double CMenu_States::GetTimer(void)
+{
+	return dTimer;
+}
+void CMenu_States::UpdatePauseMenu(double &dt)
 {
 	//Using the down button
 	static bool bDownButton = false;
@@ -113,6 +128,7 @@ void CMenu_States::UpdatePauseMenu()
 		{
 			//let the player continue playing the game as it is
 			m_Current_Game_State = PLAY_GAME;
+			m_bPauseActive = false;
 		}
 		else if(m_Pause_State == PAUSE_RESTART)
 		{
@@ -120,6 +136,7 @@ void CMenu_States::UpdatePauseMenu()
 			m_Current_Game_State = PLAY_GAME;
 			m_Pause_State = PAUSE_PLAY;
 			m_bRestart = true;
+			m_bPauseActive = false;
 		}
 		else if(m_Pause_State == PAUSE_EXIT)
 		{
@@ -130,8 +147,30 @@ void CMenu_States::UpdatePauseMenu()
 	{
 		bEnterButton = false;
 	}
+
+	static bool bESCButton = false;
+	if(m_bPauseActive)
+	{
+		dTimer -= dt;
+	}
+	if(Application::IsKeyPressed(VK_ESCAPE) && !bESCButton && m_bPauseActive && dTimer < 0) // if ESC pressed and not in pause - make sure only when pressed then update
+	{
+		bESCButton = true;
+		m_bPauseActive = false;	
+	}
+	//if key release
+	else if((!Application::IsKeyPressed(VK_ESCAPE)) && bESCButton) // when release , prevent holding down bug
+	{
+		//update to pause menu here
+		bESCButton = false;
+	}
+	if(!m_bPauseActive)
+	{
+		m_Current_Game_State = PLAY_GAME;
+		dTimer = 0.5;
+	}
 }
-void CMenu_States::UpdateMenu()
+void CMenu_States::UpdateMenu(double &dt)
 {
 	//Using the down button
 	static bool bDownButton = false;
@@ -198,5 +237,11 @@ void CMenu_States::UpdateMenu()
 	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
 	{
 		bEnterButton = false;
+	}
+
+	//Handle the escape key. Ensure that it doesn't trigger pause menu
+	if(Application::IsKeyPressed(VK_ESCAPE))
+	{
+		//do nothing
 	}
 }
