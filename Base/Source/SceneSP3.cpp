@@ -1611,7 +1611,7 @@ void SceneSP3::RenderWorld()
 
 
 	//RenderTileMap();
-	RenderWayPoints();
+	//RenderWayPoints();
 	//RenderMesh(meshList[GEO_AXES], false);
 
 	RenderMesh(meshList[GEO_AXES], false);
