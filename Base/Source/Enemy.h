@@ -1,15 +1,25 @@
 #pragma once
 #include "Vector3.h"
-#include "Strategy.h"
 #include "Map.h"
 #include "Player.h"
 
 class CEnemy
 {
+	static const int ENEMY_VIEW_DISTANCE = 100;
 public:
 	CEnemy(void);
 	CEnemy(Vector3 Pos, Vector3 Scale, int GeoType, bool Active);
 	virtual ~CEnemy(void);
+
+	enum CURRENT_STATE
+	{
+		STATE_PATROL,
+		STATE_IDLE,
+		STATE_WANDER,
+		STATE_AVOID,
+		STATE_CHASE,
+		NUM_STATE
+	};
 
 	//Set the position of this Enemy
 	void setPosition(Vector3);
@@ -55,12 +65,18 @@ public:
 	// Get the directional vector of this Enemy
 	Vector3 getDirectionalVector(void);
 
+	void setIsAlert(bool);
+	bool getIsAlert(void);
+
 	// Animations
 	void Walking();
 	void Idle();
 
 	//Update the enemy
 	void Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z);
+	void Update(const vector<Vector3> & waypoints, CPlayer* thePlayer);
+	Vector3 RotateByDegree(int degree);
+	void checkWithinLineOfSight(CPlayer* thePlayer);
 
 	/***************************************
 		Get/Set functions for Animations 
@@ -127,12 +143,21 @@ public:
 	// Get rotation value for Head
 	float getRotationHead(void);
 
+	// Set current state
+	void setCurrentState(int);
+	// Get current state
+	int getCurrentState(void);
+
+
 private:
 	Vector3 Pos;			// Enemy's position
 	Vector3 Scale;			// Enemy's scale
 	Vector3 DirectionFacing;// Enemy's look-at directional vector
 	Vector3 destination;	// Enemy's Destination
+	Vector3 prev;
 	bool active;			// Enemy's active
+	bool isAlerted;			// Enemy's detection of the player
+	int currentState;		// Enemy's current state
 
 	/**************************
 		GeoTypes values
@@ -168,6 +193,6 @@ private:
 	float RotationHead;
 
 
-	CStrategy* theStrategy;	// Enemy's strategy
+	//CStrategy* theStrategy;	// Enemy's strategy
 
 };

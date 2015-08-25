@@ -270,6 +270,7 @@ public:
 	bool LoadFromTextFileEnemy(const string mapString);
 	//try to clean this as soon as possible!
 	bool LoadFromTextFileDoor(const string mapString);
+	bool LoadFromTextFileWaypoints(const string mapString);
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
 	CObj* FetchOBJ();
@@ -291,7 +292,7 @@ public:
 	void RenderMainMenu();
 	void RenderPauseMenu();
 	void RenderGamePlay();
-	
+	void RenderWayPoints();
 	void RenderDebugWireframe();
 
 	//Test render 2D Partitioning
@@ -306,7 +307,7 @@ public:
 	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);
 	void UpdatePlay(double dt);
-	void UpdateEnemies();
+	void UpdateEnemies(double dt);
 	void UpdateSceneControls();
 
 	const float GetCameraCurrentY(void);
@@ -343,6 +344,7 @@ private:
 	std::vector<CDoor *> myDoorList;
 	std::vector<CKey *> myKeyList;
 	std::vector<CEnemy *> myEnemyList;
+	std::vector<Vector3> myWaypointList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
@@ -360,7 +362,7 @@ private:
 	Light lights[5];
 
 	float m_fFps;
-	
+	float m_AI_Update_Timer;
 	//Current level of scene
 	short int m_Current_Level;
 

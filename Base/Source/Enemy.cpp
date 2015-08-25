@@ -1,9 +1,10 @@
 #include "Enemy.h"
 
-CEnemy::CEnemy(void) :
-	theStrategy(NULL)
+CEnemy::CEnemy(void)
 {
-
+	this->isAlerted = false;
+	prev.SetZero();
+	currentState = STATE_IDLE;
 }
 CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
 {
@@ -11,17 +12,15 @@ CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
 	this->Scale = Scale;
 	//this->geoType = geoType;
 	this->active = active;
-	theStrategy = NULL;
 	this->DirectionFacing = Vector3(1,0,0); // Facing along the X axis
+	this->isAlerted = false;
+	prev.SetZero();
+	currentState = STATE_IDLE;
 }
 
 CEnemy::~CEnemy(void)
 {
-	if (theStrategy != NULL)
-	{
-		delete theStrategy;
-		theStrategy = NULL;
-	}
+	
 }
 
 //Set the position of this Enemy
@@ -159,6 +158,7 @@ void CEnemy::Idle()
 {
 
 }
+//A* Update
 void CEnemy::Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z)
 {
 	//Update the enemy
@@ -233,7 +233,165 @@ void CEnemy::Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, 
 	//	cout << "Player is not detected!" << endl;
 	//}
 }
+void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
+{
+	Vector3 LeftView = RotateByDegree(-45); // 45 + 45 = 90 degree detection
+	Vector3 RightView = RotateByDegree(45);
+	Vector3 temp =  thePlayer->GetPosition() - Pos;
 
+	
+	
+
+	if( temp.Length() < ENEMY_VIEW_DISTANCE) // If player is close enough to the enemy
+	{
+		LeftView.Normalize();
+		RightView.Normalize();
+		temp.Normalize();
+
+
+		if(LeftView.Dot(temp) > 0 && RightView.Dot(temp) > 0)
+		{
+			cout << "Player detected!" << endl;
+			currentState = STATE_CHASE;
+		}
+	}
+
+	
+}
+
+Vector3 CEnemy::RotateByDegree(int degree)
+{
+	//z' = z*cos q - x*sin q
+	//x' = z*sin q + x*cos q
+
+
+	Vector3 temp;
+	temp.x = this->DirectionFacing.z * sin(Math::DegreeToRadian((float)degree)) + this->DirectionFacing.x * cos(Math::DegreeToRadian((float)degree));
+	temp.y = 0.f;
+	temp.z = this->DirectionFacing.z * cos(Math::DegreeToRadian((float)degree)) - this->DirectionFacing.x * sin(Math::DegreeToRadian((float)degree));
+	return temp;
+}
+//Waypoint update
+void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer)
+{
+	switch(currentState)
+	{
+	case STATE_WANDER:
+		{
+			vector<Vector3> tempList;
+			Vector3 test = destination-Pos;
+			prev = destination; // Set this enemy's previous to current location
+
+			if(test.Length() < 2) // If the AI reached it's destination
+			{
+
+				for(int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
+				{
+					Vector3 temp = waypoints[i] - Pos;
+					if(temp.Length() <= 192)
+					{
+
+						if(prev != waypoints[i]) // if new possible waypoint is not the same as the prev destination
+							tempList.push_back(waypoints[i]); // Store the possible waypoints
+					}
+				}
+
+				if(tempList.size() != 0)	// If there is at least one new possible location
+				{
+
+					int RNG = rand() % tempList.size();
+					destination = tempList[RNG];//Set new random destination
+				}
+				else // If entered a deadzone with no other waypoints
+				{
+					destination = prev;
+				}
+			}// If test.Length() < 2
+			if(Pos != destination) // If the AI isn't at it's destination
+			{
+				//Move it to it's destination
+				DirectionFacing = destination - Pos;
+				DirectionFacing.Normalize();
+				Pos += DirectionFacing;
+			}
+
+		}
+		break;
+		
+
+	case STATE_IDLE:
+		{
+			destination = Vector3(0,0,-900);
+			DirectionFacing = destination - Pos;
+			DirectionFacing.Normalize();
+		}
+		break;
+
+	case STATE_CHASE:
+		{
+			prev = destination; // Set this enemy's previous to current location
+
+			if( (thePlayer->GetPosition() - Pos).Length() < 128)
+			{
+				destination = thePlayer->GetPosition();
+				DirectionFacing = destination - Pos;
+				DirectionFacing.Normalize();
+				Pos += DirectionFacing;
+			}
+			else
+			{
+				vector<Vector3> tempList;
+				if( (destination - Pos).Length() < 2)
+				{
+					for(int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
+					{
+						Vector3 temp = waypoints[i] - Pos;
+						if(temp.Length() <= 192)
+						{
+
+							if(prev != waypoints[i]) // if new possible waypoint is not the same as the prev destination
+								tempList.push_back(waypoints[i]); // Store the possible waypoints
+						}
+
+					}
+					if(tempList.size() != 0)	// If there is at least one new possible location
+					{
+						float distanceAway = (thePlayer->GetPosition() - Pos).Length();
+						int choosen = 0;
+						
+						for(unsigned int i = 0; i < tempList.size(); ++i)
+						{
+							Vector3 diffinVector = (thePlayer->GetPosition() - Pos) - (tempList[i] - Pos); 
+							if( diffinVector.Length() < distanceAway)
+							{
+								distanceAway = diffinVector.Length();
+								choosen = i;
+							}
+						}
+						destination = tempList[choosen];//Set new random destination
+					}
+					else // If entered a deadzone with no other waypoints
+					{
+						destination = prev;
+					}
+
+				}
+				if(Pos != destination) // If the AI isn't at it's destination
+			{
+				//Move it to it's destination
+				DirectionFacing = destination - Pos;
+				DirectionFacing.Normalize();
+				Pos += DirectionFacing;
+			}
+
+			}
+		}
+		break;
+	}
+
+	
+	checkWithinLineOfSight(thePlayer);
+}
 /***************************************
 	Get/Set functions for Animations 
 ****************************************/
@@ -375,4 +533,23 @@ float CEnemy::getRotationBody(void)
 float CEnemy::getRotationHead(void)
 {
 	return RotationHead;
+}
+
+void CEnemy::setIsAlert(bool isAlerted)
+{
+	this->isAlerted = isAlerted;
+}
+bool CEnemy::getIsAlert(void)
+{
+	return isAlerted;
+}
+// Set current state
+void CEnemy::setCurrentState(int currentState)
+{
+	this->currentState = currentState;
+}
+// Get current state
+int CEnemy::getCurrentState(void)
+{
+	return currentState;
 }
