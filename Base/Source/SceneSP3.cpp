@@ -805,10 +805,12 @@ void SceneSP3::UpdatePlay(double dt)
 }
 void SceneSP3::Update(double dt)
 {
+	//when player wants to pause the game
 	if(Application::IsKeyPressed(VK_ESCAPE))
 	{
 		m_cStates->SetGameState(m_cStates->PAUSE_MENU); //m_Current_Game_State = PAUSE_MENU;
 	}
+	//when restart button is triggered
 	if(m_cStates->GetRestartState())
 	{
 		initGameData();
@@ -817,6 +819,7 @@ void SceneSP3::Update(double dt)
 
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
 	{
+	//update the game if not paused/ in menu
 	case m_cStates->PLAY_GAME:
 		UpdatePlay(dt);
 		break;
@@ -872,6 +875,7 @@ CObj* SceneSP3::FetchOBJ()
 	return go;
 }
 CKey* SceneSP3::FetchKey()
+
 {
 	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
 	{

@@ -335,10 +335,8 @@ public:
 	};
 	Particle* FetchParticle();
 
-	//Handle to the menu state class
-	CMenu_States* m_cStates;
-protected:
-	
+	//Handle to the menu state class - this is accessed in application so it is in public.
+	CMenu_States* m_cStates;	
 private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
@@ -373,6 +371,7 @@ private:
 
 	//Handle to the minimap
 	CMinimap* m_cMinimap;
+
 	//Maps to 2D paritioning
 	CMap* m_cMap;
 
