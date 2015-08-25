@@ -1336,12 +1336,16 @@ void SceneSP3::RenderWayPoints()
 	for(std::vector<Vector3>::iterator it = myWaypointList.begin(); it != myWaypointList.end(); ++it)
 	{
 		Vector3 waypoint = (Vector3)*it;
-		modelStack.PushMatrix();
-		modelStack.Translate(waypoint.x,0,waypoint.z);
-		modelStack.Scale(1,1,1);
-		RenderMesh(meshList[GEO_AXES],false);
 
-		modelStack.PopMatrix();
+		if(PointInFrustum( waypoint.x, waypoint.y, waypoint.z ))
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(waypoint.x,0,waypoint.z);
+			modelStack.Scale(1,1,1);
+			RenderMesh(meshList[GEO_AXES],false);
+
+			modelStack.PopMatrix();
+		}
 	}
 }
 void SceneSP3::RenderEnemyList()
@@ -1704,12 +1708,15 @@ void SceneSP3::RenderObjList()
 
 		if(go->getActive() == true)
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
-			//modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
-			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
-			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
-			modelStack.PopMatrix();
+			if(CubeInFrustumBool(go->getPosition().x,go->getPosition().y,go->getPosition().z,go->getScale() + go->getOffset()))
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+				//modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
+				modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
+				RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
+				modelStack.PopMatrix();
+			}
 		}
 	}
 }

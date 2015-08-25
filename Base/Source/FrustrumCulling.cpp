@@ -200,6 +200,33 @@ bool CubeInFrustumBool( float x, float y, float z, float size )
    }
    return true;
 }
+
+bool CubeInFrustumBool( float x, float y, float z, Vector3 size )
+{
+   int p;
+
+   for( p = 0; p < 6; p++ )
+   {
+	   if( frustum[p][0] * (x - size.x) + frustum[p][1] * (y - size.y) + frustum[p][2] * (z - size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x + size.x) + frustum[p][1] * (y - size.y) + frustum[p][2] * (z - size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x - size.x) + frustum[p][1] * (y + size.y) + frustum[p][2] * (z - size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x + size.x) + frustum[p][1] * (y + size.y) + frustum[p][2] * (z - size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x - size.x) + frustum[p][1] * (y - size.y) + frustum[p][2] * (z + size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x + size.x) + frustum[p][1] * (y - size.y) + frustum[p][2] * (z + size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x - size.x) + frustum[p][1] * (y + size.y) + frustum[p][2] * (z + size.z) + frustum[p][3] > 0 )
+         continue;
+      if( frustum[p][0] * (x + size.x) + frustum[p][1] * (y + size.y) + frustum[p][2] * (z + size.z) + frustum[p][3] > 0 )
+         continue;
+      return false;
+   }
+   return true;
+}
 int CubeInFrustumInt( float x, float y, float z, float size )
 {
    int p;

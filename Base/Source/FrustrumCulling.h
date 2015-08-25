@@ -14,5 +14,6 @@ float SphereInFrustumFloat( float x, float y, float z, float radius );
 int SphereInFrustumInt( float x, float y, float z, float radius );
 
 bool CubeInFrustumBool( float x, float y, float z, float size );
+bool CubeInFrustumBool( float x, float y, float z, Vector3 size );
 int CubeInFrustumInt( float x, float y, float z, float size );
 #endif
