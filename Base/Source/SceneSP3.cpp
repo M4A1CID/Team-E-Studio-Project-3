@@ -742,46 +742,16 @@ void SceneSP3::checkOpenDoor()
 				magnitudeFromPosition = sqrt((camera.target.x - myDoorList[i]->getPosition().x) * (camera.target.x - myDoorList[i]->getPosition().x) + 
 											(camera.target.y - myDoorList[i]->getPosition().y) * (camera.target.y - myDoorList[i]->getPosition().y) +
 											(camera.target.z - myDoorList[i]->getPosition().z) * (camera.target.z - myDoorList[i]->getPosition().z));
-
 				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
 				{
-					switch(myDoorList[i]->GetLevel())
+					if(myDoorList[i]->GetLevel() == myKeyList[i]->GetLevel())
 					{
-					case 1:
-						{
-							//check for minimum keycard, find better long term solution later.
-							if(MinCollected == true)
-							{
-								myDoorList[i]->SetLocked(false);
-								//disappearing doors... spooky, if I can even get the doors up.
-							}
-						}
-						break;
-					case 2:
-						{
-							//check for medium keycard, find better long term solution later.
-							if(MedCollected == true)
-							{
-								myDoorList[i]->SetLocked(false);
-								//disappearing doors... spooky, if I can even get the doors up.
-							}
-						}
-						break;
-					case 3:
-						{
-							//check for maximum keycard, find better long term solution later.
-							if(MaxCollected == true)
-							{
-								myDoorList[i]->SetLocked(false);
-								//disappearing doors... spooky, if I can even get the doors up.
-							}
-						}
-						break;
-					default:
-						{
-							cout << "You don't have the right card..." << endl;
-						}
-						break;
+						myDoorList[i]->SetLocked(false);
+						cout << "Door unlocked!" << endl;
+					}
+					else
+					{
+						cout << "You don't have the key!" << endl;
 					}
 				}
 			}
@@ -978,14 +948,15 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 
 	Vector3 Pos;
 	Vector3 Scale;
+	Vector3 Offset;
 	char LockLevel;
 	int geotype;
 	bool active;
+	bool LockBool;
 	CDoor * door;
 	if (myfile.is_open())
 	{
-		//BUG: something wrong inside the while loop, can't tell what. It is causing the while loop to disregard everything inside.
-		while( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> LockLevel >> geotype >> active)
+		while( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> Offset.x >> Offset.y >> Offset.z >> LockLevel >> LockBool >> geotype >> active)
 		{
 
 			door = FetchDoor();
@@ -994,9 +965,9 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 			door->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			door->setGeoType(geotype);
 			door->SetLevel(LockLevel);
+			door->SetLocked(LockBool);
 			door->setScale(Scale);
 			cout << "Doors Loaded: SUCCESS!" << endl;
-			
 		}
 		myfile.close();
 		return true;
