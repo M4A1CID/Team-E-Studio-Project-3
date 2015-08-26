@@ -608,7 +608,7 @@ void SceneSP3::initMeshlist()
 
 	// Doll
 	meshList[GEO_DOLL] = MeshBuilder::GenerateOBJ("GEO_DOLL", "Objects//doll.obj");
-	meshList[GEO_DOLL]->textureArray[0] = LoadTGA("Image//doll.tga");
+	meshList[GEO_DOLL]->textureArray[0] = LoadTGA("Image//fabric.tga");
 
 
 	// Laser
