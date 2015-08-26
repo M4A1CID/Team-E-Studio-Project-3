@@ -643,6 +643,41 @@ void SceneSP3::initGameData()
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
+
+	//reset the keys and doors
+	for(unsigned int i = 0; i < myKeyList.size(); ++i)
+	{
+		//if the items have been picked up previously, drop all items from inventory
+		if(!myKeyList[i]->getActive()) 
+		{
+			//reset it to be actively rendered out in the environment
+			myKeyList[i]->setActive(true);
+
+			switch(myKeyList[i]->getGeoType())
+			{
+			case 18:
+				{
+					myKeyList[i]->SetLevel(1); 
+					MinCollected = false;
+				}
+				break;
+			case 19:
+				{
+					myKeyList[i]->SetLevel(2);
+					MedCollected = false;
+				}
+				break;
+			case 20:
+				{
+					myKeyList[i]->SetLevel(3);
+					MaxCollected = false;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 void SceneSP3::initVariables()
 {
@@ -825,9 +860,7 @@ void SceneSP3::UpdateEnemies(double dt)
 }
 void SceneSP3::UpdatePlay(double dt)
 {
-	
 	static bool bESCButton2 = false;
-	//cout << m_cStates->GetPauseActive() << endl;
 
 	if(!bESCButton2 && Application::IsKeyPressed(VK_ESCAPE) && !m_cStates->GetPauseActive()) // if ESC pressed and not in pause - make sure only when pressed then update
 	{
@@ -1702,7 +1735,7 @@ void SceneSP3::RenderDoorList()
 	{
 		CDoor *go = (CDoor *)*it;
 
-		if(go->getActive() == true)
+		if(go->getActive())
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
@@ -2018,6 +2051,17 @@ void SceneSP3::Exit()
 		delete m_cMap;
 		m_cMap = NULL;
 	}
+	if(thePlayer != NULL)
+	{
+		delete thePlayer;
+		thePlayer = NULL;
+	}
+	if(m_cStates != NULL)
+	{
+		delete m_cStates;
+		m_cStates = NULL;
+	}
+
 	//if (music)
 	//	music->drop(); // release music stream.
 	//if(fire)
