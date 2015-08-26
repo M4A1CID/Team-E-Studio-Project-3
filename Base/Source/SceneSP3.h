@@ -26,6 +26,7 @@
 #include "Door.h"
 #include "Laser.h"
 #include "Doll.h"
+#include "Invisibility.h"
 #include <vector>
 #include <fstream>
 
@@ -309,6 +310,7 @@ public:
 	void RenderEnemyList();
 	void RenderLaserList();
 	void RenderDollList();
+	void RenderInvisibilityList();
 	void RenderUI();
 	void RenderMainMenu();
 	void RenderPauseMenu();
@@ -361,12 +363,6 @@ public:
 
 	//Handle to the menu state class - this is accessed in application so it is in public.
 	CMenu_States* m_cStates;	
-
-	/* Experimental features */
-	bool bInvisible;			// if invisible, enemies wont follow you.
-	double dTimer;				// if this timer reaches 0, the invisibility will no longer work
-
-	void UpdateInvisible(double dt);
 private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
@@ -376,6 +372,7 @@ private:
 	std::vector<Vector3> myWaypointList;
 	std::vector<CLaser *> myLaserList;
 	std::vector<CDoll *> myDollList;
+	std::vector<CInvisibility *> myInvisibilityList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
