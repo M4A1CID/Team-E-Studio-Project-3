@@ -42,6 +42,7 @@ class SceneSP3 : public Scene
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
 	const static int MAP_BOX_SIZE = 128;
+	const static int DETECT_ENEMY_DISTANCE = 368;
 	
 	enum UNIFORM_TYPE
 	{
@@ -223,6 +224,9 @@ class SceneSP3 : public Scene
 		GEO_MIN_UI,
 		GEO_MED_UI,
 		GEO_MAX_UI,
+		GEO_COMPASS_UI,
+		GEO_COMPASS_NEEDLE_UI,
+		GEO_WARNING_UI,
 
 		//Menu system
 		GEO_MENU_BACKGROUND,
@@ -295,7 +299,7 @@ public:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight, bool enableFog = false);
-	void RenderMeshIn2D(Mesh *mesh, float size = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
+	void RenderMeshIn2D(Mesh *mesh, float size = 1.0f, float x = 0.f, float y = 0.f, bool rotate = false, float rotateAngle = 0);
 	void RenderMeshUI(Mesh *mesh, float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f, float x = 0.0f, float y = 0.0f, bool rotate = false, bool m_rotate = false);
 	void RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius,float AtmosphereRadius, float hTile, float vTile);
 	void RenderTerrain();
@@ -311,6 +315,8 @@ public:
 	void RenderGamePlay();
 	void RenderWayPoints();
 	void RenderDebugWireframe();
+	void RenderCompass();
+	void RenderWarning();
 
 	//Test render 2D Partitioning
 	void RenderTileMap();

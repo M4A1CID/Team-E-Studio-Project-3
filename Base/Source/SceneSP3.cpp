@@ -635,6 +635,15 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_PAUSE_BACKGROUND] = MeshBuilder::GenerateQuad("GEO_PAUSE_BACKGROUND", Color(1, 1, 1), 1.f);
 	meshList[GEO_PAUSE_BACKGROUND]->textureID = LoadTGA("Image//pause_menu.tga");
+
+	meshList[GEO_COMPASS_UI] = MeshBuilder::GenerateQuad("GEO_COMPASS_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_COMPASS_UI]->textureID = LoadTGA("Image//compass.tga");
+
+	meshList[GEO_COMPASS_NEEDLE_UI] = MeshBuilder::GenerateQuad("GEO_COMPASS_NEEDLE_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_COMPASS_NEEDLE_UI]->textureID = LoadTGA("Image//compass_needle.tga");
+
+	meshList[GEO_WARNING_UI] = MeshBuilder::GenerateQuad("GEO_WARNING_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_WARNING_UI]->textureID = LoadTGA("Image//warningEnemy.tga");
 }
 void SceneSP3::initGameData()
 {
@@ -1430,7 +1439,7 @@ void SceneSP3::RenderTerrain()
 	modelStack.PushMatrix();  
 	modelStack.Translate(0, -30, 0);
 	modelStack.Scale(TERRAIN_SCALE.x, TERRAIN_SCALE.y, TERRAIN_SCALE.z); // values varies.
-	RenderMesh(meshList[GEO_TERRAIN2], false);  
+	RenderMesh(meshList[GEO_TERRAIN2], m_bLightEnabled);  
 	modelStack.PopMatrix();
 }
 /********************************************************************************
@@ -1549,24 +1558,48 @@ void SceneSP3::RenderEnemyList()
 		}
 	}
 }
+void SceneSP3::RenderWarning()
+{
+	for(unsigned int i = 0; i < myEnemyList.size(); ++i)
+	{
+		Vector3 temp =   camera.position - myEnemyList[i]->getPosition();
+		
+		if( temp.Length() < DETECT_ENEMY_DISTANCE)
+		{
+			Vector3 temp2 = camera.position-camera.target;
+			float theta1 = -Math::RadianToDegree(atan2(temp.x,temp.z));
+			float theta2 = -Math::RadianToDegree(atan2(temp2.x,temp2.z));
+
+			RenderMeshIn2D(meshList[GEO_WARNING_UI],30,0,0,true,theta2 - theta1);
+		}
+	}
+}
+void SceneSP3::RenderCompass()
+{
+	RenderMeshIn2D(meshList[GEO_COMPASS_UI],20,60,10);
+	Vector3 temp = camera.position-camera.target ;
+	float theta = Math::RadianToDegree(atan2(temp.x,temp.z));
+	RenderMeshIn2D(meshList[GEO_COMPASS_NEEDLE_UI],20,60,10,true,-theta);
+}
 void SceneSP3::RenderUI()
 {
 	//============================= HUD displayed on screen ====================================
 	SetHUD(true);
 
-	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
-	modelStack.PopMatrix();
+	
+	RenderCompass();
+	RenderWarning();
 
-		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 50);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
-		modelStack.PopMatrix();
+
+	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
+
+
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 50);
+
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
+
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
+
 		//thePlayer->GetActive();
 		
 		if(NVM == true)
@@ -2054,30 +2087,9 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 
 	mesh->Render();
 }
-void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rotate, bool m_rotate)
+void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rotate, float rotateAngle)
 {
-	//if(m_rotate)
-	//{
-	//	//modelStack.PushMatrix();
-	//	
-	//	modelStack.Translate(67,45,0);
-
-	//	modelStack.Rotate(-camera.m_Yaw,0,0,1);
-	//	
-	//	
-	//	modelStack.Translate(x/64,y/64,0);
-	//	//modelStack.PopMatrix();
-	//}
-	//else
-	//{
-	//modelStack.Translate(x, y, 0);
-	//}
-	//modelStack.Scale(size, size, size);
-	//if(rotate)
-	//{
-	//	modelStack.Rotate(-camera.m_Yaw,0,0,1);
-	//	
-	//}
+	
 
 	Mtx44 ortho;
 	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
@@ -2089,8 +2101,8 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
 	modelStack.Scale(size, size, size);
-	/*if (rotate)
-		modelStack.Rotate(rotateAngle, 0, 0, 1);*/
+	if (rotate)
+		modelStack.Rotate(rotateAngle, 0, 0, 1);
 
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
