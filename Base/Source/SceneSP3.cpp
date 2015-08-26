@@ -19,8 +19,9 @@ SceneSP3::SceneSP3()
 	, MedCollected(false)
 	, MaxCollected(false)
 	, m_speed(1)
+	, bInvisible(true)
+	, dTimer(15)
 {
-
 }
 
 SceneSP3::~SceneSP3()
@@ -744,7 +745,21 @@ void SceneSP3::initVariables()
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
 }
-
+/* Experimental feature*/
+void SceneSP3::UpdateInvisible(double dt)
+{
+	cout << dTimer << endl;
+	if(bInvisible)
+	{
+		dTimer -= dt;
+	}
+	if(dTimer < 0)
+	{
+		dTimer = 0;
+		bInvisible = false;
+	}
+}
+/* Experimental feature*/
 void SceneSP3::UpdatePlayerStatus(const unsigned char key)
 {
 	thePlayer->UpdateCameraStatus(key, camera);
@@ -926,8 +941,6 @@ void SceneSP3::checkOpenDoor()
 }
 void SceneSP3::UpdateEnemies(double dt)
 {
-	
-	
 	for(std::vector<CEnemy *>::iterator it = myEnemyList.begin(); it != myEnemyList.end(); ++it)
 	{
 		CEnemy *enemy = (CEnemy *)*it;
@@ -942,6 +955,10 @@ void SceneSP3::UpdateEnemies(double dt)
 			//else
 				enemy->Update(myWaypointList,thePlayer,dt);
 
+				if(!bInvisible)
+				{
+					enemy->checkWithinLineOfSight(thePlayer);
+				}
 		}
 	}
 
@@ -1001,6 +1018,8 @@ void SceneSP3::UpdatePlay(double dt)
 	physicsEngine.UpdateSun(lights[0], dt);
 	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
 	m_fFps = (float)(1.f / dt);
+
+	UpdateInvisible(dt);
 }
 void SceneSP3::Update(double dt)
 {
@@ -2238,6 +2257,11 @@ void SceneSP3::Exit()
 	{
 		if(myDoorList[i] != NULL)
 			delete myDoorList[i];
+	}
+	for(unsigned int i = 0; i < myLaserList.size(); ++i)
+	{
+		if(myLaserList[i] != NULL)
+			delete myLaserList[i];
 	}
 	for(unsigned int i = 0; i < myWaypointList.size(); ++i)
 	{

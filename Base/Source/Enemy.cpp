@@ -390,7 +390,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 	}
 
 	
-	checkWithinLineOfSight(thePlayer);
+	//checkWithinLineOfSight(thePlayer);
 }
 /***************************************
 	Get/Set functions for Animations 

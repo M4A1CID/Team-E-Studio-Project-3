@@ -354,6 +354,12 @@ public:
 
 	//Handle to the menu state class - this is accessed in application so it is in public.
 	CMenu_States* m_cStates;	
+
+	/* Experimental features */
+	bool bInvisible;			// if invisible, enemies wont follow you.
+	double dTimer;				// if this timer reaches 0, the invisibility will no longer work
+
+	void UpdateInvisible(double dt);
 private:
 	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
