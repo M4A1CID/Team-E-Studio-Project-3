@@ -2,10 +2,10 @@
 
 CWarden::CWarden()
 {
-	setGeoArmType(29);
-	setGeoLegType(30);
-	setGeoBodyType(31);
-	setGeoHeadType(32);
+	setGeoArmType(31);
+	setGeoLegType(32);
+	setGeoBodyType(33);
+	setGeoHeadType(34);
 
 	setOffsetArm(Vector3(1.f,-0.7f,-0.2f));
 	setOffsetHead(Vector3(0.0f,1.6f,0.0f));

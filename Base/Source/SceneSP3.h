@@ -148,66 +148,68 @@ class SceneSP3 : public Scene
 		GEO_CCTV,		// 12
 		GEO_DESK,		// 13
 		GEO_CELL_DOOR,	// 14
-		GEO_SEC_DOOR,	// 15
-		GEO_BED,		// 16
-		GEO_STOOL,		// 17
+		GEO_MIN_SEC_DOOR,	// 15
+		GEO_MED_SEC_DOOR,	// 16
+		GEO_MAX_SEC_DOOR,	// 17
+		GEO_BED,		// 18
+		GEO_STOOL,		// 19
 
 		// Keys
-		GEO_MIN,		// 18
-		GEO_MED,		// 19
-		GEO_MAX,		// 20
+		GEO_MIN,		// 20
+		GEO_MED,		// 21
+		GEO_MAX,		// 22
 
 		// Character parts
 		// Inmate
-		GEO_INMATE_ARM,		// 21
-		GEO_INMATE_LEG,		// 22
-		GEO_INMATE_BODY,	// 23
-		GEO_INMATE_HEAD,	// 24
-
+		GEO_INMATE_ARM,		// 23
+		GEO_INMATE_LEG,		// 24
+		GEO_INMATE_BODY,	// 25
+		GEO_INMATE_HEAD,	// 26
+	
 		// Guard
-		GEO_GUARD_ARM,		// 25
-		GEO_GUARD_LEG,		// 26
-		GEO_GUARD_BODY,		// 27
-		GEO_GUARD_HEAD,		// 28
+		GEO_GUARD_ARM,		// 27
+		GEO_GUARD_LEG,		// 28
+		GEO_GUARD_BODY,		// 29
+		GEO_GUARD_HEAD,		// 30
 
 		// Warden
-		GEO_WARDEN_ARM,		// 29
-		GEO_WARDEN_LEG,		// 30
-		GEO_WARDEN_BODY,	// 31
-		GEO_WARDEN_HEAD,	// 32
+		GEO_WARDEN_ARM,		// 31
+		GEO_WARDEN_LEG,		// 32
+		GEO_WARDEN_BODY,	// 33
+		GEO_WARDEN_HEAD,	// 34
 
 		// New objects
-		GEO_BATON,			// 33
-		GEO_CHAIR,			// 34
-		GEO_FLASHLIGHT,		// 35
-		GEO_FOOD_CARROT,	// 36
-		GEO_FOOD_CONTAINER,	// 37
-		GEO_FOOD_DONUT,		// 38
-		GEO_FOOD_ORANGE,	// 39
-		GEO_FOOD_RICE,		// 40
-		GEO_FORK,			// 41
-		GEO_SPOON,			// 42
+		GEO_BATON,			// 35
+		GEO_CHAIR,			// 36
+		GEO_FLASHLIGHT,		// 37
+		GEO_FOOD_CARROT,	// 38
+		GEO_FOOD_CONTAINER,	// 39
+		GEO_FOOD_DONUT,		// 40
+		GEO_FOOD_ORANGE,	// 41
+		GEO_FOOD_RICE,		// 42
+		GEO_FORK,			// 43
+		GEO_SPOON,			// 44
 
-		GEO_BOOK_1,			// 43
-		GEO_BOOK_2,			// 44
-		GEO_BOOKSHELF,		// 45
-		GEO_COM_MON_1,		// 46
-		GEO_COM_MON_2,		// 47
-		GEO_CUPBOARD_1,		// 48
-		GEO_CUPBOARD_2,		// 49
-		GEO_HANGING_LIGHT,	// 50
-		GEO_PLYER,			// 51
-		GEO_POSTER_1,		// 52
-		GEO_POSTER_2,		// 53
-		GEO_RAILING,		// 54
-		GEO_REFRIGERATOR,	// 55
-		GEO_SCREWDRIVER,	// 56
-		GEO_TOILET_2,		// 57
-		GEO_WINDOW,			// 58
-		GEO_DOLL,			// 59
+		GEO_BOOK_1,			// 45
+		GEO_BOOK_2,			// 46
+		GEO_BOOKSHELF,		// 47
+		GEO_COM_MON_1,		// 48
+		GEO_COM_MON_2,		// 49
+		GEO_CUPBOARD_1,		// 50
+		GEO_CUPBOARD_2,		// 51
+		GEO_HANGING_LIGHT,	// 52
+		GEO_PLYER,			// 53
+		GEO_POSTER_1,		// 54
+		GEO_POSTER_2,		// 55
+		GEO_RAILING,		// 56
+		GEO_REFRIGERATOR,	// 57
+		GEO_SCREWDRIVER,	// 58
+		GEO_TOILET_2,		// 59
+		GEO_WINDOW,			// 60
+		GEO_DOLL,			// 61
 
 		// Laser
-		GEO_LASER,			// 60
+		GEO_LASER,			// 62
 
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,

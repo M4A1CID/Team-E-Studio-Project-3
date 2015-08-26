@@ -1,4 +1,4 @@
--586 		67 			-400		1			1			1			60				1
+-586 		67 		-400		1			1			1			62				1
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,		Active
 
-// Geotype 60	= Laser
+// Geotype 62	= Laser

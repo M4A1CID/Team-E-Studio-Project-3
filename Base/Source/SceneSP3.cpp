@@ -451,8 +451,14 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_CELL_DOOR] = MeshBuilder::GenerateOBJ("GEO_CELL_DOOR", "Objects//cell_door.obj");
 	meshList[GEO_CELL_DOOR]->textureArray[0] = LoadTGA("Image//metal2.tga");
 
-	meshList[GEO_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_SEC_DOOR", "Objects//sec_door.obj");
-	meshList[GEO_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+	meshList[GEO_MIN_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MIN_SEC_DOOR", "Objects//sec_door.obj");
+	meshList[GEO_MIN_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+
+	meshList[GEO_MED_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MED_SEC_DOOR", "Objects//sec_door.obj");
+	meshList[GEO_MED_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+
+	meshList[GEO_MAX_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MAX_SEC_DOOR", "Objects//sec_door.obj");
+	meshList[GEO_MAX_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
 
 	meshList[GEO_BED] = MeshBuilder::GenerateOBJ("GEO_BED", "Objects//bed.obj");
 	meshList[GEO_BED]->textureArray[0] = LoadTGA("Image//bed.tga");
@@ -610,11 +616,8 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_DOLL] = MeshBuilder::GenerateOBJ("GEO_DOLL", "Objects//doll.obj");
 	meshList[GEO_DOLL]->textureArray[0] = LoadTGA("Image//fabric.tga");
 
-
 	// Laser
 	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
-
-
 
 	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("GEO_MENU", Color(1, 1, 1), 1.f);
 	meshList[GEO_MENU]->textureID = LoadTGA("Image//main_menu.tga");
@@ -702,21 +705,21 @@ void SceneSP3::checkPickUpItem()
 					myKeyList[i]->setActive(false);
 					switch(myKeyList[i]->getGeoType())
 					{
-					case 18:
+					case 20:
 						{
 							cout << "YOU GOT : MINIMUM SECURITY CARD" << endl;
 							myKeyList[i]->SetLevel(1); 
 							MinCollected = true;
 						}
 						break;
-					case 19:
+					case 21:
 						{
 							cout << "YOU GOT : MEDIUM SECURITY CARD" << endl;
 							myKeyList[i]->SetLevel(2);
 							MedCollected = true;
 						}
 						break;
-					case 20:
+					case 22:
 						{
 							cout << "YOU GOT : MAXIMUM SECURITY CARD" << endl;
 							myKeyList[i]->SetLevel(3);
@@ -740,7 +743,7 @@ void SceneSP3::checkOpenDoor()
 	int chosen = 0;
 	for(unsigned int i = 0; i < myDoorList.size(); ++i)
 	{
-		if(myDoorList[i]->GetLocked()) //If Door is locked
+		if(myDoorList[i]->getActive()) //If Door is locked
 		{
 			//Distance between Camera Target and Item position = Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
 			magnitudeFromTarget = sqrt((camera.target.x - myDoorList[i]->getPosition().x) * (camera.target.x - myDoorList[i]->getPosition().x) + 
@@ -757,17 +760,40 @@ void SceneSP3::checkOpenDoor()
 											(camera.target.z - myDoorList[i]->getPosition().z) * (camera.target.z - myDoorList[i]->getPosition().z));
 				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
 				{
-					if(myDoorList[i]->GetLevel() == myKeyList[i]->GetLevel())
+					switch(myDoorList[i]->getGeoType())
 					{
-						myDoorList[i]->SetLocked(false);
-						myDoorList[i]->setActive(false);
-						myDoorList[i]->setOffset_X(0);
-						myDoorList[i]->setOffset_Y(0);
-						myDoorList[i]->setOffset_Z(0);
-						cout << "Door unlocked!" << endl;
-					}
-					else
-					{
+
+					case 15:
+						if(MinCollected == true)
+						{
+							myDoorList[i]->SetLocked(false);
+							myDoorList[i]->setActive(false);
+							myDoorList[i]->setOffset_X(0);
+							myDoorList[i]->setOffset_Y(0);
+							myDoorList[i]->setOffset_Z(0);
+							cout << "Door unlocked!" << endl;
+						}
+					case 16:
+						if(MedCollected == true)
+						{
+							myDoorList[i]->SetLocked(false);
+							myDoorList[i]->setActive(false);
+							myDoorList[i]->setOffset_X(0);
+							myDoorList[i]->setOffset_Y(0);
+							myDoorList[i]->setOffset_Z(0);
+							cout << "Door unlocked!" << endl;
+						}
+					case 17:
+						if(MaxCollected == true)
+						{
+							myDoorList[i]->SetLocked(false);
+							myDoorList[i]->setActive(false);
+							myDoorList[i]->setOffset_X(0);
+							myDoorList[i]->setOffset_Y(0);
+							myDoorList[i]->setOffset_Z(0);
+							cout << "Door unlocked!" << endl;
+						}
+					default:
 						cout << "You don't have the key!" << endl;
 					}
 				}
@@ -801,7 +827,7 @@ void SceneSP3::UpdatePlay(double dt)
 {
 	
 	static bool bESCButton2 = false;
-	cout << m_cStates->GetPauseActive() << endl;
+	//cout << m_cStates->GetPauseActive() << endl;
 
 	if(!bESCButton2 && Application::IsKeyPressed(VK_ESCAPE) && !m_cStates->GetPauseActive()) // if ESC pressed and not in pause - make sure only when pressed then update
 	{
@@ -1019,14 +1045,13 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 	Vector3 Pos;
 	Vector3 Scale;
 	Vector3 Offset;
-	char LockLevel;
 	int geotype;
 	bool active;
 	bool LockBool;
 	CDoor * door;
 	if (myfile.is_open())
 	{
-		while( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> Offset.x >> Offset.y >> Offset.z >> LockLevel >> LockBool >> geotype >> active)
+		while( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> Offset.x >> Offset.y >> Offset.z >> LockBool >> geotype >> active)
 		{
 
 			door = FetchDoor();
@@ -1034,7 +1059,6 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 			door->setPosition(Pos);
 			door->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			door->setGeoType(geotype);
-			door->SetLevel(LockLevel);
 			door->SetLocked(LockBool);
 			door->setScale(Scale);
 			cout << "Doors Loaded: SUCCESS!" << endl;
@@ -1350,10 +1374,14 @@ void SceneSP3::RenderUI()
 	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
 	modelStack.PopMatrix();
 
-	for(unsigned int i = 0; i < 3; ++i)
-	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30 + (i*20), 50);
+		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 50);
+		modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
+		modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
 		modelStack.PopMatrix();
 		//thePlayer->GetActive();
 		if(MinCollected == true)
@@ -1375,7 +1403,7 @@ void SceneSP3::RenderUI()
 		if(MedCollected == true)
 		{
 			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 30 + (1*20), 50);
+			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 50, 50);
 			modelStack.PopMatrix();
 
 			std::ostringstream playerpos;
@@ -1391,7 +1419,7 @@ void SceneSP3::RenderUI()
 		if(MaxCollected == true)
 		{
 			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 30 + (2*20), 50);
+			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 70, 50);
 			modelStack.PopMatrix();
 
 			std::ostringstream playerpos;
@@ -1404,7 +1432,6 @@ void SceneSP3::RenderUI()
 			playerpos << "YOU GOT : MAXIMUM SECURITY KEY";
 			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
 		}
-	}
 
 	std::ostringstream playerpos;
 	playerpos.precision(3);
