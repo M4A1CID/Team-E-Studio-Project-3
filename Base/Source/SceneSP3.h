@@ -213,8 +213,8 @@ class SceneSP3 : public Scene
 		GEO_LASER,			// 62
 
 		// Power UPs for player
-		GEO_GOGGLES,		// 60
-		GEO_INVISIBILITY,	// 61
+		GEO_GOGGLES,		// 63
+		GEO_INVISIBILITY,	// 64
 
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,

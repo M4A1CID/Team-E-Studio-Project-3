@@ -61,6 +61,8 @@ void SceneSP3::initPlayer()
 	//initialize the player class using the overloaded constructor
 	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
 	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5), 0, 2);
+
+	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
 void SceneSP3::initTokenForEnemyPathfinding()
 {
@@ -644,52 +646,7 @@ void SceneSP3::initGameData()
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 
-	//reset the door here
-	for(unsigned int i = 0; i < myDoorList.size(); ++i)
-	{
-		//if the door has been unlocked previously, lock it again
-		if(!myDoorList[i]->getActive())
-		{
-			switch(myDoorList[i]->getGeoType())
-			{
-
-			case 15:
-				if(MinCollected == true)
-				{
-					myDoorList[i]->SetLocked(true);
-					myDoorList[i]->setActive(true);
-					myDoorList[i]->setOffset_X(0);
-					myDoorList[i]->setOffset_Y(0);
-					myDoorList[i]->setOffset_Z(0);
-					cout << "Door locked!" << endl;
-				}
-			case 16:
-				if(MedCollected == true)
-				{
-					myDoorList[i]->SetLocked(true);
-					myDoorList[i]->setActive(true);
-					myDoorList[i]->setOffset_X(0);
-					myDoorList[i]->setOffset_Y(0);
-					myDoorList[i]->setOffset_Z(0);
-					cout << "Door locked!" << endl;
-				}
-			case 17:
-				if(MaxCollected == true)
-				{
-					myDoorList[i]->SetLocked(true);
-					myDoorList[i]->setActive(true);
-					myDoorList[i]->setOffset_X(0);
-					myDoorList[i]->setOffset_Y(0);
-					myDoorList[i]->setOffset_Z(0);
-					cout << "Door locked!" << endl;
-				}
-			default:
-				cout << "You don't have the key!" << endl;
-			}
-		}
-	}
-
-	//reset the keys
+	//reset the keys and doors
 	for(unsigned int i = 0; i < myKeyList.size(); ++i)
 	{
 		//if the items have been picked up previously, drop all items from inventory
@@ -700,19 +657,19 @@ void SceneSP3::initGameData()
 
 			switch(myKeyList[i]->getGeoType())
 			{
-			case 20:
+			case 18:
 				{
 					myKeyList[i]->SetLevel(1); 
 					MinCollected = false;
 				}
 				break;
-			case 21:
+			case 19:
 				{
 					myKeyList[i]->SetLevel(2);
 					MedCollected = false;
 				}
 				break;
-			case 22:
+			case 20:
 				{
 					myKeyList[i]->SetLevel(3);
 					MaxCollected = false;
@@ -2266,11 +2223,6 @@ void SceneSP3::Exit()
 	for(unsigned int i = 0; i < myWaypointList.size(); ++i)
 	{
 		myWaypointList.pop_back();
-	}
-	for(unsigned int i = 0; i < myLaserList.size(); ++i)
-	{
-		if(myLaserList[i] != NULL)
-			delete myLaserList[i];
 	}
 	for(unsigned int i = 0; i < myDollList.size(); ++i)
 	{

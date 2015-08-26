@@ -1,7 +1,7 @@
 #pragma once
 #include "Item.h"
-
-class CInvisibility : public CItem
+class CInvisibility :
+	public CItem
 {
 public:
 	CInvisibility(void);
@@ -16,6 +16,6 @@ public:
 	void UpdateInvisibility(double &dt);
 private:
 	bool bInvisible;	//true when invisible
-	double dTimer;		//countdown when invisible is active
+	double dTimer;		//countdown when invisible is active.
 };
 
