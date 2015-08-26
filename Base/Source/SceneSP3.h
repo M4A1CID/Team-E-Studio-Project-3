@@ -204,9 +204,10 @@ class SceneSP3 : public Scene
 		GEO_SCREWDRIVER,	// 56
 		GEO_TOILET_2,		// 57
 		GEO_WINDOW,			// 58
+		GEO_DOLL,			// 59
 
 		// Laser
-		GEO_LASER,			// 59
+		GEO_LASER,			// 60
 
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,

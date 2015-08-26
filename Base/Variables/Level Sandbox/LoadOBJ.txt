@@ -154,3 +154,4 @@
 //Geotype 56	= SCREWDRIVER
 //Geotype 57	= TOILET
 //Geotype 58	= WINDOW
+//GeoType 59	= DOLL

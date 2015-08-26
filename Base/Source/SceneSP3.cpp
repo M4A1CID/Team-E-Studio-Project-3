@@ -606,9 +606,15 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_WINDOW] = MeshBuilder::GenerateOBJ("GEO_WINDOW", "Objects//window.obj");
 	meshList[GEO_WINDOW]->textureArray[0] = LoadTGA("Image//window.tga");
 
+	// Doll
+	meshList[GEO_DOLL] = MeshBuilder::GenerateOBJ("GEO_DOLL", "Objects//doll.obj");
+	meshList[GEO_DOLL]->textureArray[0] = LoadTGA("Image//doll.tga");
+
 
 	// Laser
 	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
+
+
 
 	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("GEO_MENU", Color(1, 1, 1), 1.f);
 	meshList[GEO_MENU]->textureID = LoadTGA("Image//main_menu.tga");
