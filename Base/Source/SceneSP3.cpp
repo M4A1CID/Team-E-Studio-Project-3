@@ -60,8 +60,6 @@ void SceneSP3::initPlayer()
 	//initialize the player class using the overloaded constructor
 	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
 	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5), 0, 2);
-
-	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
 void SceneSP3::initTokenForEnemyPathfinding()
 {
@@ -452,14 +450,14 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_CELL_DOOR] = MeshBuilder::GenerateOBJ("GEO_CELL_DOOR", "Objects//cell_door.obj");
 	meshList[GEO_CELL_DOOR]->textureArray[0] = LoadTGA("Image//metal2.tga");
 
-	meshList[GEO_MIN_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MIN_SEC_DOOR", "Objects//sec_door.obj");
-	meshList[GEO_MIN_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+	meshList[GEO_MIN_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MIN_SEC_DOOR", "Objects//min_sec_door.obj");
+	meshList[GEO_MIN_SEC_DOOR]->textureArray[0] = LoadTGA("Image//min_sec_door.tga");
 
-	meshList[GEO_MED_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MED_SEC_DOOR", "Objects//sec_door.obj");
-	meshList[GEO_MED_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+	meshList[GEO_MED_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MED_SEC_DOOR", "Objects//med_sec_door.obj");
+	meshList[GEO_MED_SEC_DOOR]->textureArray[0] = LoadTGA("Image//med_sec_door.tga");
 
-	meshList[GEO_MAX_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MAX_SEC_DOOR", "Objects//sec_door.obj");
-	meshList[GEO_MAX_SEC_DOOR]->textureArray[0] = LoadTGA("Image//sec_door.tga");
+	meshList[GEO_MAX_SEC_DOOR] = MeshBuilder::GenerateOBJ("GEO_MAX_SEC_DOOR", "Objects//max_sec_door.obj");
+	meshList[GEO_MAX_SEC_DOOR]->textureArray[0] = LoadTGA("Image//max_sec_door.tga");
 
 	meshList[GEO_BED] = MeshBuilder::GenerateOBJ("GEO_BED", "Objects//bed.obj");
 	meshList[GEO_BED]->textureArray[0] = LoadTGA("Image//bed.tga");
@@ -645,7 +643,52 @@ void SceneSP3::initGameData()
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 
-	//reset the keys and doors
+	//reset the door here
+	for(unsigned int i = 0; i < myDoorList.size(); ++i)
+	{
+		//if the door has been unlocked previously, lock it again
+		if(!myDoorList[i]->getActive())
+		{
+			switch(myDoorList[i]->getGeoType())
+			{
+
+			case 15:
+				if(MinCollected == true)
+				{
+					myDoorList[i]->SetLocked(true);
+					myDoorList[i]->setActive(true);
+					myDoorList[i]->setOffset_X(0);
+					myDoorList[i]->setOffset_Y(0);
+					myDoorList[i]->setOffset_Z(0);
+					cout << "Door locked!" << endl;
+				}
+			case 16:
+				if(MedCollected == true)
+				{
+					myDoorList[i]->SetLocked(true);
+					myDoorList[i]->setActive(true);
+					myDoorList[i]->setOffset_X(0);
+					myDoorList[i]->setOffset_Y(0);
+					myDoorList[i]->setOffset_Z(0);
+					cout << "Door locked!" << endl;
+				}
+			case 17:
+				if(MaxCollected == true)
+				{
+					myDoorList[i]->SetLocked(true);
+					myDoorList[i]->setActive(true);
+					myDoorList[i]->setOffset_X(0);
+					myDoorList[i]->setOffset_Y(0);
+					myDoorList[i]->setOffset_Z(0);
+					cout << "Door locked!" << endl;
+				}
+			default:
+				cout << "You don't have the key!" << endl;
+			}
+		}
+	}
+
+	//reset the keys
 	for(unsigned int i = 0; i < myKeyList.size(); ++i)
 	{
 		//if the items have been picked up previously, drop all items from inventory
@@ -656,19 +699,19 @@ void SceneSP3::initGameData()
 
 			switch(myKeyList[i]->getGeoType())
 			{
-			case 18:
+			case 20:
 				{
 					myKeyList[i]->SetLevel(1); 
 					MinCollected = false;
 				}
 				break;
-			case 19:
+			case 21:
 				{
 					myKeyList[i]->SetLevel(2);
 					MedCollected = false;
 				}
 				break;
-			case 20:
+			case 22:
 				{
 					myKeyList[i]->SetLevel(3);
 					MaxCollected = false;
