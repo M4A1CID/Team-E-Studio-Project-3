@@ -5,6 +5,9 @@
 #include "Player.h"
 #include "Camera3.h"
 #include "LoadHmap.h"
+#include "Light.h"
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -39,8 +42,25 @@ public:
 	//Barymetric Terrain Collision
 	float barryCentric(Vector3 & p1, Vector3 & p2, Vector3 & p3, Vector2 & pos);
 	void getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer );
+
+	// Dynamic Light based on time
+	void UpdateSun(Light &, double & dt);
+
+	// Get the current world time
+	float GetWorldTime(void);
+	// Set the current world time
+	void SetWorldTime(float);
+
+	string GetHourTime(void);
+	string GetMinuteTime(void);
+
+
 private:
 	Vector3 m_Gravity;
 	float m_fOffset;
 	float m_fLaserDetectionRange;
+	float m_In_World_Time;
+	float m_time_interval;
+	Vector3 diff;
+	Vector3 current;
 };

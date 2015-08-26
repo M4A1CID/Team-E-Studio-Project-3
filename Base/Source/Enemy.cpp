@@ -272,7 +272,7 @@ Vector3 CEnemy::RotateByDegree(int degree)
 	return temp;
 }
 //Waypoint update
-void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer)
+void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double & dt)
 {
 	switch(currentState)
 	{
@@ -312,7 +312,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer)
 				//Move it to it's destination
 				DirectionFacing = destination - Pos;
 				DirectionFacing.Normalize();
-				Pos += DirectionFacing;
+				Pos += DirectionFacing *dt * ENEMY_MOVE_SPEED;
 			}
 
 		}
@@ -336,7 +336,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer)
 				destination = thePlayer->GetPosition();
 				DirectionFacing = destination - Pos;
 				DirectionFacing.Normalize();
-				Pos += DirectionFacing;
+				Pos += DirectionFacing *dt * ENEMY_MOVE_SPEED;
 			}
 			else
 			{
@@ -381,7 +381,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer)
 				//Move it to it's destination
 				DirectionFacing = destination - Pos;
 				DirectionFacing.Normalize();
-				Pos += DirectionFacing;
+				Pos += DirectionFacing * dt * ENEMY_MOVE_SPEED;
 			}
 
 			}

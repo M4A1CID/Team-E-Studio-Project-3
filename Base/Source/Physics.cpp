@@ -6,6 +6,7 @@ CPhysics::CPhysics(void)
 	m_Gravity = Vector3(0,-9.8,0);
 	m_fOffset = 160.f;
 	m_fLaserDetectionRange = 5.f;
+	m_time_interval= 0;
 }
 
 CPhysics::~CPhysics(void)
@@ -236,9 +237,129 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	
  }
 
+ // Dynamic Light based on time
+ void CPhysics::UpdateSun(Light & light, double & dt)
+ {
+	 // Real life vs In-game time
+	 //		1sec	:	1min		
+	 //		1min	:	1hour
+	 //		60sec	:	60min
+	 //		720sec  :   12:00
+	 //		1440sec	:   24:00
+	
+	 m_In_World_Time += dt;
+	 m_time_interval += dt;
+	 //If it hits 24:00, set it back to 00:00 
+	 if(m_In_World_Time > 1440)
+	 {
+		 m_In_World_Time = 0;
+	 }
+
+	 // 20:00 ~ 06:00         Night Time
+	 if(m_In_World_Time > 1200 || m_In_World_Time <= 360)
+	 {
+		 if(m_time_interval >= 1) // for each second that pass
+		 {
+			 diff = Vector3(0.164f,0.145f,0.207f) -current;
+			 diff =  diff.Normalize() * dt * 0.01;
+			 current += diff;
+			 m_time_interval = 0;
+		 }
+
+	 }
+	 //06:00 ~ 08:00		Morning Time
+	 else if(m_In_World_Time >360 && m_In_World_Time <= 480)
+	 {
+		 if(m_time_interval >= 1) // for each second that pass
+		 {
+			 diff = Vector3(1.f,0.572f,0.f) -current;
+			 diff =  diff.Normalize() * dt * 0.01;
+			 current += diff;
+			 m_time_interval = 0;
+		 }
+	 }
+	 // 08:00 ~ 10:00		Going to afternoon time
+	 else if(m_In_World_Time > 480 && m_In_World_Time <= 600)
+	 {
+		  if(m_time_interval >= 1) // for each second that pass
+		 {
+			 diff = Vector3(1.f,0.85f,0.f) -current;
+			 diff =  diff.Normalize() * dt * 0.01;
+			 current += diff;
+			 m_time_interval = 0;
+		 }
+	 }
+	 // 10:00 ~ 18:00	Afternoon time
+	 else if(m_In_World_Time > 600 && m_In_World_Time <= 1080)
+	 {
+		  if(m_time_interval >= 1) // for each second that pass
+		 {
+			  diff = Vector3(1.f,0.85f,0.f) -current;
+			  diff =  diff.Normalize() * dt * 0.01;
+			  current += diff;
+			  m_time_interval = 0;
+
+		 }
+	 }
+	 // 18:00 ~ 20:00	Evening time
+	 else if(m_In_World_Time > 1080 && m_In_World_Time <= 1200)
+	 {
+		  if(m_time_interval >= 1) // for each second that pass
+		  {
+			  diff = Vector3(0.164f,0.145f,0.207f) -current;
+			  diff =  diff.Normalize() * dt * 0.01;
+			  current += diff;
+			  m_time_interval = 0;
+		  }
+	  }
 
 
+	 light.color.Set(current.x ,current.y,current.z);
+	
+ }
 
+ // Get the current world time
+ float CPhysics::GetWorldTime(void)
+ {
+	 return m_In_World_Time;
+ }
+ // Set the current world time
+ void CPhysics::SetWorldTime(float time)
+ {
+	 this->m_In_World_Time = time;
+ }
+
+ string CPhysics::GetHourTime(void)
+ {
+	 int temp = m_In_World_Time / 60;
+	  std::ostringstream ss;
+	 if(temp < 10)
+	 {
+		
+		 ss << "0" << temp;
+	 }
+	 else
+	 {
+		 ss << temp;
+	 }
+	 return ss.str();
+ }
+ string CPhysics::GetMinuteTime(void)
+ {
+	 int temp = m_In_World_Time;
+	 temp = temp % 60;
+	  std::ostringstream ss;
+	 if(temp < 10)
+	 {
+		
+		 ss << "0" << temp;
+	 }
+	 else
+	 {
+		 ss << temp;
+	 }
+	 return ss.str();
+ }
 
 //Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )
 //{

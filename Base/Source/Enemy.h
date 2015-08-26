@@ -6,6 +6,7 @@
 class CEnemy
 {
 	static const int ENEMY_VIEW_DISTANCE = 100;
+	static const int ENEMY_MOVE_SPEED = 60;
 public:
 	CEnemy(void);
 	CEnemy(Vector3 Pos, Vector3 Scale, int GeoType, bool Active);
@@ -74,7 +75,7 @@ public:
 
 	//Update the enemy
 	void Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z);
-	void Update(const vector<Vector3> & waypoints, CPlayer* thePlayer);
+	void Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double &);
 	Vector3 RotateByDegree(int degree);
 	void checkWithinLineOfSight(CPlayer* thePlayer);
 

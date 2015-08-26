@@ -18,6 +18,7 @@ SceneSP3::SceneSP3()
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
+	, m_speed(1)
 {
 
 }
@@ -695,7 +696,7 @@ void SceneSP3::initVariables()
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
-	
+	physicsEngine.SetWorldTime(335);
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
 }
@@ -852,7 +853,7 @@ void SceneSP3::UpdateEnemies(double dt)
 			//if(enemy->getIsAlert()) // If this enemy detected the player
 			//	enemy->Update(m_cMap,thePlayer,AI_PATH_OFFSET_X,AI_PATH_OFFSET_Z);
 			//else
-				enemy->Update(myWaypointList,thePlayer);
+				enemy->Update(myWaypointList,thePlayer,dt);
 
 		}
 	}
@@ -860,6 +861,9 @@ void SceneSP3::UpdateEnemies(double dt)
 }
 void SceneSP3::UpdatePlay(double dt)
 {
+	
+	dt *= m_speed;
+
 	static bool bESCButton2 = false;
 
 	if(!bESCButton2 && Application::IsKeyPressed(VK_ESCAPE) && !m_cStates->GetPauseActive()) // if ESC pressed and not in pause - make sure only when pressed then update
@@ -905,6 +909,10 @@ void SceneSP3::UpdatePlay(double dt)
 			physicsEngine.collisionResponseBetweenLaser(camera,thePlayer,go,dt);
 		}
 	}
+
+	//Update the sun
+	physicsEngine.UpdateSun(lights[0], dt);
+	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
 	m_fFps = (float)(1.f / dt);
 }
 void SceneSP3::Update(double dt)
@@ -946,6 +954,16 @@ void SceneSP3::UpdateSceneControls()
 		checkPickUpItem();
 		checkOpenDoor();
 	}
+
+	if(Application::IsKeyPressed(VK_F5))
+	{
+		m_speed = Math::Max(0.f, m_speed - 0.1f);
+	}
+	if(Application::IsKeyPressed(VK_F6))
+	{
+		m_speed += 0.1f;
+	}
+
 	if(Application::IsKeyPressed('8'))
 	{
 		m_bLightEnabled = true;
@@ -1425,7 +1443,7 @@ void SceneSP3::RenderUI()
 		{
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
-			modelStack.PopMatrix();
+		modelStack.PopMatrix();
 
 			std::ostringstream playerpos;
 			playerpos.precision(3);
@@ -1464,26 +1482,39 @@ void SceneSP3::RenderUI()
 			playerpos << "                            Max";
 			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
 
+			playerpos.str(std::string());
+			playerpos.precision(3);
+			playerpos << "                            Max";
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+
 			/*std::ostringstream playerpos;
 			playerpos.precision(3);
 			playerpos << "YOU GOT : MAXIMUM SECURITY KEY";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
-		}
-
-	std::ostringstream playerpos;
-	playerpos.precision(3);
-	playerpos << "Pos_X: " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 54);
-
-	std::ostringstream playerposY;
-	playerposY.precision(3);
-	playerposY << "Pos_Y: " << camera.position.y;
-	RenderTextOnScreen(meshList[GEO_TEXT], playerposY.str(), Color(0, 1, 0), 2.5, 0.9, 51);
+		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
+	}
 
 	std::ostringstream ss;
 	ss.precision(3);
 	ss << "FPS: " << m_fFps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 57.f);
+
+	ss.str(std::string());
+	ss.precision(3);
+	ss << "Pos_X: " << camera.position.x;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 54);
+
+	ss.str(std::string());
+	ss.precision(3);
+	ss << "Pos_Y: " << camera.position.y;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 51);
+
+	ss.str(std::string());
+	ss << "Time: " << physicsEngine.GetHourTime() << ":" << physicsEngine.GetMinuteTime();
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+
+	ss.str(std::string());
+	ss << "Speed: " << m_speed;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 45);
 	
 	SetHUD(false);
 	
