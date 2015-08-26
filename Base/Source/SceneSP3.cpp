@@ -618,6 +618,12 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_DOLL] = MeshBuilder::GenerateOBJ("GEO_DOLL", "Objects//doll.obj");
 	meshList[GEO_DOLL]->textureArray[0] = LoadTGA("Image//doll.tga");
 
+	meshList[GEO_GOGGLES] = MeshBuilder::GenerateOBJ("GEO_GOGGLES", "Objects//goggles.obj");
+	meshList[GEO_GOGGLES]->textureArray[0] = LoadTGA("Image//goggles.tga");
+
+	meshList[GEO_GREEN] = MeshBuilder::GenerateQuad("GEO_GREEN", Color(0,1,1), 1);
+	meshList[GEO_GREEN]->textureID = LoadTGA("Image//green.tga");
+
 	// Laser
 	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
 
@@ -705,7 +711,7 @@ void SceneSP3::initVariables()
 /* Experimental feature*/
 void SceneSP3::UpdateInvisible(double dt)
 {
-	cout << dTimer << endl;
+	//cout << dTimer << endl;
 	if(bInvisible)
 	{
 		dTimer -= dt;
@@ -759,10 +765,6 @@ void SceneSP3::checkDollFlip()
 						myDollList[i]->setRotation_X(1);
 						myDollList[i]->setFlipped(true);
 						cout << "Doll flipped" << endl;
-					}
-					else
-					{
-						cout << "You don't have the key!" << endl;
 					}
 				}
 			}
@@ -821,6 +823,12 @@ void SceneSP3::checkPickUpItem()
 							MaxCollected = true;
 						}
 						break;
+					case 63:
+						{
+							cout << "YOU GOT : NIGHT VISION GOGGLES" << endl;
+							NVM = true;
+						}
+						break;
 					default:
 						break;
 					}
@@ -868,6 +876,7 @@ void SceneSP3::checkOpenDoor()
 							myDoorList[i]->setOffset_Z(0);
 							cout << "Door unlocked!" << endl;
 						}
+						break;
 					case 16:
 						if(MedCollected == true)
 						{
@@ -878,6 +887,7 @@ void SceneSP3::checkOpenDoor()
 							myDoorList[i]->setOffset_Z(0);
 							cout << "Door unlocked!" << endl;
 						}
+						break;
 					case 17:
 						if(MaxCollected == true)
 						{
@@ -888,8 +898,10 @@ void SceneSP3::checkOpenDoor()
 							myDoorList[i]->setOffset_Z(0);
 							cout << "Door unlocked!" << endl;
 						}
+						break;
 					default:
 						cout << "You don't have the key!" << endl;
+						break;
 					}
 				}
 			}
@@ -1556,11 +1568,19 @@ void SceneSP3::RenderUI()
 		RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
 		modelStack.PopMatrix();
 		//thePlayer->GetActive();
+		
+		if(NVM == true)
+		{
+			modelStack.PushMatrix();
+			RenderMeshUI(meshList[GEO_GREEN], 190,150,150,1,1);
+			modelStack.PopMatrix();
+		}
+
 		if(MinCollected == true)
 		{
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
-		modelStack.PopMatrix();
+			modelStack.PopMatrix();
 
 			std::ostringstream playerpos;
 			playerpos.precision(3);

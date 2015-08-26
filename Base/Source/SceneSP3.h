@@ -37,7 +37,7 @@ using namespace irrklang;
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
-	const static int INTERACTION_DISTANCE = 500;
+	const static int INTERACTION_DISTANCE = 10;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
@@ -215,6 +215,7 @@ class SceneSP3 : public Scene
 		// Power UPs for player
 		GEO_GOGGLES,		// 63
 		GEO_INVISIBILITY,	// 64
+		GEO_GREEN,			// 65
 
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
@@ -408,6 +409,7 @@ private:
 	bool MinCollected;
 	bool MedCollected;
 	bool MaxCollected;
+	bool NVM;
 
 	ISoundEngine* engine;
 	ISound* music ;
