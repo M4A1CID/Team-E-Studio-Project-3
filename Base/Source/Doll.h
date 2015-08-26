@@ -9,11 +9,14 @@ public:
 
 	// Set functions
 	void setFlipped(bool);
+	void setAltFlipped(bool);
 	
 	// Get functions
 	bool getFlipped(void);
+	bool getAltFlipped(void);
 
 private:
-	bool flipped;
+	bool m_bFlipped;
+	bool m_bAltFlipped;
 };
 

@@ -46,6 +46,15 @@ public:
 	// Dynamic Light based on time
 	void UpdateSun(Light &, double & dt);
 
+	// Weather
+	void UpdateWeather(double& dt);
+
+	// Set enable weather
+	void SetEnableWeather(bool enableWeather);
+
+	// Get enable weather
+	bool GetEnableWeather();
+
 	// Get the current world time
 	float GetWorldTime(void);
 	// Set the current world time
@@ -63,4 +72,7 @@ private:
 	float m_time_interval;
 	Vector3 diff;
 	Vector3 current;
+
+	// Weather
+	bool m_bEnableWeather;
 };

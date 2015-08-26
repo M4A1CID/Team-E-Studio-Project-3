@@ -329,6 +329,18 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	 this->m_In_World_Time = time;
  }
 
+ // Set enable weather
+ void CPhysics::SetEnableWeather(bool enableWeather)
+ {
+	 this->m_bEnableWeather = enableWeather;
+ }
+
+ // Get enable weather
+ bool CPhysics::GetEnableWeather()
+ {
+	 return m_bEnableWeather;
+ }
+
  string CPhysics::GetHourTime(void)
  {
 	 int temp = m_In_World_Time / 60;
@@ -359,6 +371,11 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 ss << temp;
 	 }
 	 return ss.str();
+ }
+
+ void CPhysics::UpdateWeather(double& dt)
+ {
+
  }
 
 //Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )

@@ -768,12 +768,21 @@ void SceneSP3::checkDollFlip()
 											(camera.target.z - myDollList[i]->getPosition().z) * (camera.target.z - myDollList[i]->getPosition().z));
 				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
 				{
-					if(myDollList[i]->getFlipped() == false)
+					if(myDollList[i]->getFlipped() == false && myDollList[i]->getAltFlipped() == true)
 					{
 						myDollList[i]->setAngle(180);
 						myDollList[i]->setRotation_X(1);
 						myDollList[i]->setFlipped(true);
+						myDollList[i]->setAltFlipped(false);
 						cout << "Doll flipped" << endl;
+					}
+					if (myDollList[i]->getFlipped() == true && myDollList[i]->getAltFlipped() == false)
+					{
+						myDollList[i]->setAngle(180);
+						myDollList[i]->setRotation_X(1);
+						myDollList[i]->setFlipped(false);
+						myDollList[i]->setAltFlipped(true);
+						cout << "Doll flipped back" << endl;
 					}
 				}
 			}
