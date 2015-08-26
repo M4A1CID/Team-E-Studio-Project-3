@@ -18,6 +18,9 @@ SceneSP3::SceneSP3()
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
+	, NVM(false)
+	, Invis(false)
+	, InvisTime(15)
 	, m_speed(1)
 {
 }
@@ -625,6 +628,7 @@ void SceneSP3::initMeshlist()
 	// Laser
 	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
 
+	//invisible item
 	meshList[GEO_INVISIBILITY] = MeshBuilder::GenerateOBJ("GEO_INVISIBILITY", "Objects//invisibility.obj");
 	meshList[GEO_INVISIBILITY]->textureArray[0] = LoadTGA("Image//invisibility.tga");
 
@@ -833,6 +837,12 @@ void SceneSP3::checkPickUpItem()
 							NVM = true;
 						}
 						break;
+					case 64:
+						{
+							cout << "YOU GOT : INVISIBILITY" << endl;
+							Invis = true;
+						}
+						break;
 					default:
 						break;
 					}
@@ -912,6 +922,20 @@ void SceneSP3::checkOpenDoor()
 		}
 	}
 }
+void SceneSP3::UpdateInvisibility(double dt)
+{
+	//cout << InvisTime << endl;
+	if(Invis)
+	{
+		InvisTime -= dt;
+
+		if(InvisTime < 0)
+		{
+			Invis = false;
+			InvisTime = 15;
+		}
+	}
+}
 void SceneSP3::UpdateEnemies(double dt)
 {
 	for(std::vector<CEnemy *>::iterator it = myEnemyList.begin(); it != myEnemyList.end(); ++it)
@@ -927,14 +951,19 @@ void SceneSP3::UpdateEnemies(double dt)
 			//	enemy->Update(m_cMap,thePlayer,AI_PATH_OFFSET_X,AI_PATH_OFFSET_Z);
 			//else
 				enemy->Update(myWaypointList,thePlayer,dt);
-
+			
+			if(!Invis)
+			{
+				enemy->checkWithinLineOfSight(thePlayer);
+			}
 		}
 	}
 
 }
 void SceneSP3::UpdatePlay(double dt)
 {
-	
+	UpdateInvisibility(dt);
+
 	dt *= m_speed;
 
 	static bool bESCButton2 = false;

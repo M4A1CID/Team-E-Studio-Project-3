@@ -2,6 +2,7 @@
 -30		75		-110		2		2		2		21		1
 -10		75		-110		2		2		2		22		1
 10		75		-110		2		2		2		63		1
+30		75		-110		2		2		2		64		1
 
 -15		70		-150		5		5		5		35		1
 -30		70		-150		5		5		5		36		1
@@ -30,6 +31,9 @@
 -850	70		-150		5		5		5		58		1
 -900	70		-150		5		5		5		59		1
 -950	70		-150		5		5		5		60		1
+
+
+
 
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
 //GEOTYPE 20 == MIN SECURITY
@@ -65,3 +69,4 @@
 //Geotype 60	= WINDOW
 
 //Geotype 63	= GOGGLES
+//Geotype 64	= INVISIBILITY

@@ -334,6 +334,7 @@ public:
 	void UpdatePlay(double dt);
 	void UpdateEnemies(double dt);
 	void UpdateSceneControls();
+	void UpdateInvisibility(double dt);
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);
@@ -413,6 +414,8 @@ private:
 	bool MedCollected;
 	bool MaxCollected;
 	bool NVM;
+	bool Invis;
+	double InvisTime;
 
 	ISoundEngine* engine;
 	ISound* music ;
