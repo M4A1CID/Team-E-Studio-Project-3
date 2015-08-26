@@ -25,6 +25,7 @@
 #include "Menu_States.h"
 #include "Door.h"
 #include "Laser.h"
+#include "Doll.h"
 #include <vector>
 #include <fstream>
 
@@ -36,7 +37,7 @@ using namespace irrklang;
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
-	const static int INTERACTION_DISTANCE = 15;
+	const static int INTERACTION_DISTANCE = 500;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
@@ -268,14 +269,17 @@ public:
 	
 	void initLights();
 	
+	// Interactions
 	void checkPickUpItem();
 	void checkOpenDoor();
+	void checkDollFlip();
 
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
 	bool LoadFromTextFileItem(const string mapString);
 	bool LoadFromTextFileEnemy(const string mapString);
 	bool LoadFromTextFileLaser(const string mapString);
+	bool LoadFromTextFileDoll(const string mapString);
 	//try to clean this as soon as possible!
 	bool LoadFromTextFileDoor(const string mapString);
 	bool LoadFromTextFileWaypoints(const string mapString);
@@ -285,6 +289,7 @@ public:
 	CKey* FetchKey();
 	CDoor* FetchDoor();
 	CLaser* FetchLaser();
+	CDoll* FetchDoll();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -298,6 +303,7 @@ public:
 	void RenderKeyList();
 	void RenderEnemyList();
 	void RenderLaserList();
+	void RenderDollList();
 	void RenderUI();
 	void RenderMainMenu();
 	void RenderPauseMenu();
@@ -356,6 +362,7 @@ private:
 	std::vector<CEnemy *> myEnemyList;
 	std::vector<Vector3> myWaypointList;
 	std::vector<CLaser *> myLaserList;
+	std::vector<CDoll *> myDollList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
@@ -402,6 +409,9 @@ private:
 
 	// Laser
 	CLaser* laser;
+
+	// Doll
+	CDoll* doll;
 
 	//Fog
 	Color fogColor;

@@ -736,6 +736,7 @@ void SceneSP3::initVariables()
 	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
 	LoadFromTextFileDoor("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoor.txt");
 	LoadFromTextFileLaser("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadLaser.txt");
+	LoadFromTextFileDoll("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoll.txt");
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
@@ -752,6 +753,49 @@ void SceneSP3::UpdatePlayerStatus(const unsigned char key)
 void SceneSP3::UpdateCameraStatus(const unsigned char key)
 {
 	camera.UpdateStatus(key);
+}
+
+void SceneSP3::checkDollFlip()
+{
+	float magnitudeFromTarget = 0.f;
+	float magnitudeFromPosition = 0.f;
+	float previous = 99.0f;
+	int chosen = 0;
+	Vector3 rotateVector(1, 0, 0);
+	for(unsigned int i = 0; i < myDollList.size(); ++i)
+	{
+		if(myDollList[i]->getFlipped() == false) //If Doll is upright
+		{
+			//Distance between Camera Target and Item position = Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+			magnitudeFromTarget = sqrt((camera.target.x - myDollList[i]->getPosition().x) * (camera.target.x - myDollList[i]->getPosition().x) + 
+									   (camera.target.y - myDollList[i]->getPosition().y) * (camera.target.y - myDollList[i]->getPosition().y) +
+									   (camera.target.z - myDollList[i]->getPosition().z) * (camera.target.z - myDollList[i]->getPosition().z));
+
+			//Get lowest magnitude of Item from target
+			if(previous > magnitudeFromTarget)
+			{
+				previous = magnitudeFromTarget;
+				//Distance between Camera Position and Item position= Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+				magnitudeFromPosition = sqrt((camera.target.x - myDollList[i]->getPosition().x) * (camera.target.x - myDollList[i]->getPosition().x) + 
+											(camera.target.y - myDollList[i]->getPosition().y) * (camera.target.y - myDollList[i]->getPosition().y) +
+											(camera.target.z - myDollList[i]->getPosition().z) * (camera.target.z - myDollList[i]->getPosition().z));
+				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
+				{
+					if(myDollList[i]->getFlipped() == false)
+					{
+						myDollList[i]->setAngle(180);
+						myDollList[i]->setRotation_X(1);
+						myDollList[i]->setFlipped(true);
+						cout << "Doll flipped" << endl;
+					}
+					else
+					{
+						cout << "You don't have the key!" << endl;
+					}
+				}
+			}
+		}
+	}
 }
 
 void SceneSP3::checkPickUpItem()
@@ -996,6 +1040,7 @@ void SceneSP3::UpdateSceneControls()
 	{
 		checkPickUpItem();
 		checkOpenDoor();
+		checkDollFlip();
 	}
 
 	if(Application::IsKeyPressed(VK_F5))
@@ -1094,6 +1139,27 @@ CLaser* SceneSP3::FetchLaser()
 		myLaserList.push_back(go);
 	}
 	CLaser *go = myLaserList.back();
+	go->setActive(true);
+	return go;
+}
+
+CDoll* SceneSP3::FetchDoll()
+{
+	for(std::vector<CDoll *>::iterator it = myDollList.begin(); it != myDollList.end(); ++it)
+	{
+		CDoll *go = (CDoll *)*it;
+		if(!go->getActive())
+		{
+			go->setActive(true);
+			return go;
+		}
+	}
+	for(unsigned i = 0; i < 1; ++i)
+	{
+		CDoll *go = new CDoll();
+		myDollList.push_back(go);
+	}
+	CDoll *go = myDollList.back();
 	go->setActive(true);
 	return go;
 }
@@ -1281,10 +1347,44 @@ bool SceneSP3::LoadFromTextFileEnemy(const string mapString)
 		cout << "Enemies Loaded: FAILED!"; 
 	return false;
 }
+bool SceneSP3::LoadFromTextFileDoll(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	float Angle;
+	Vector3 Rotate;
+	Vector3 Scale;
+	int geotype;
+	bool active;
+	CDoll * doll;
+	if (myfile.is_open())
+	{
+		while ( myfile >> Pos.x >> Pos.y >> Pos.z >> Angle >> Rotate.x >> Rotate.y >> Rotate.z >> Scale.x >> Scale.y >> Scale.z >> geotype >> active)
+		{
+
+			doll = FetchDoll();
+			doll->setActive(active);
+			doll->setPosition(Pos);
+			doll->setAngle(Angle);
+			doll->setRotation_X(Rotate.x);
+			doll->setRotation_Y(Rotate.y);
+			doll->setRotation_Z(Rotate.z);
+			doll->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			doll->setGeoType(geotype);
+			doll->setScale(Scale);
+			cout << "Doll Loaded: SUCCESS!" << endl;
+			
+		}
+		myfile.close();
+		return true;
+	}
+	else 
+		cout << "Doll Loaded: FAILED!"; 
+	return false;
+}
 bool SceneSP3::LoadFromTextFileWaypoints(const string mapString)
 {
-	
-
 	for(int i = 0; i < m_cMap->GetNumOfTiles_Height(); i ++)
 	{
 		for(int k = 0; k < m_cMap->GetNumOfTiles_Width(); k ++)
@@ -1302,8 +1402,6 @@ bool SceneSP3::LoadFromTextFileWaypoints(const string mapString)
 	}
 	cout << "Waypoints generated!" << endl;
 	return true;
-
-	
 }
 void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius, float AtmosphereRadius, float hTile, float vTile)
 {
@@ -1771,6 +1869,7 @@ void SceneSP3::RenderWorld()
 	RenderKeyList();
 	RenderEnemyList();
 	RenderLaserList();
+	RenderDollList();
 
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 }
@@ -1836,6 +1935,23 @@ void SceneSP3::RenderLaserList()
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
+			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
+			modelStack.PopMatrix();
+		}
+	}
+}
+void SceneSP3::RenderDollList()
+{
+	for(std::vector<CDoll *>::iterator it = myDollList.begin(); it != myDollList.end(); ++it)
+	{
+		CDoll *go = (CDoll *)*it;
+
+		if(go->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
 			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 			modelStack.PopMatrix();
@@ -2126,6 +2242,16 @@ void SceneSP3::Exit()
 	for(unsigned int i = 0; i < myWaypointList.size(); ++i)
 	{
 		myWaypointList.pop_back();
+	}
+	for(unsigned int i = 0; i < myLaserList.size(); ++i)
+	{
+		if(myLaserList[i] != NULL)
+			delete myLaserList[i];
+	}
+	for(unsigned int i = 0; i < myDollList.size(); ++i)
+	{
+		if(myDollList[i] != NULL)
+			delete myDollList[i];
 	}
 	if(m_cMap != NULL)
 	{

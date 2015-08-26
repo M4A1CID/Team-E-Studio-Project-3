@@ -103,15 +103,14 @@
 19			63		-120		0		0		0		0			5		5		5			0			0			0			29		1
 19			72		-120		0		0		0		0			5		5		5			0			0			0			30		1
 
--6			61		-121		0		0		0		0			5		5		5			0			0			0			31		1
-5			61		-121		0		0		0		0			5		5		5			0			0			0			31		1
-1			56		-120		0		0		0		0			5		5		5			0			0			0			32		1
--2.5		56		-120		0		0		0		0			5		5		5			0			0			0			32		1
--0.4		63.5	-120		0		0		0		0			5		5		5			0			0			0			33		1
--0.6		71.5	-120		0		0		0		0			5		5		5			0			0			0			34		1
--589		76			-450		0		0		0		0			5		5			5				0				0			0			61				1					
+-6			61			-121			0		0		0		0			5		5		5			0			0			0			29		1
+5			61			-121			0		0		0		0			5		5		5			0			0			0			29		1
+1			56			-120			0		0		0		0			5		5		5			0			0			0			30		1
+-2.5		56			-120			0		0		0		0			5		5		5			0			0			0			30		1
+-0.4		63.5		-120			0		0		0		0			5		5		5			0			0			0			31		1
+-0.6		71.5		-120			0		0		0		0			5		5		5			0			0			0			32		1					
 
-//PosX,		PosY,   	PosZ,		 Angle,		 RotateX,	RotateY,	RotateZ,		ScaleX, 	ScaleY, 	ScaleZ,			OffsetX,    		OffsetY,    		OffsetZ,    		GeoType,  	Active
+//PosX,		PosY,   	PosZ,		 Angle,		 RotateX,	RotateY,	RotateZ,		ScaleX, 	ScaleY, 	ScaleZ,			OffsetX,    	OffsetY, 	OffsetZ,    	GeoType,  	Active
 
 //Geotype 7 	= WALL
 //Geotype 8 	= DOOR
@@ -121,40 +120,37 @@
 //Geotype 12	= CCTV
 //Geotype 13	= DESK
 //Geotype 14	= CELL_DOOR
-//Geotype 15	= MIN_SEC_DOOR
-//Geotype 16	= MED_SEC_DOOR
-//Geotype 17	= MAX_SEC_DOOR
-//Geotype 18	= BED
-//Geotype 19	= STOOL
-//Geotype 20	= MIN_SEC_KEY
-//Geotype 21	= MED_SEC_KEY
-//Geotype 22	= MAX_SEC_KEY
-//Geotype 23	= INMATE_ARM
-//Geotype 24	= INMATE_LEG
-//Geotype 25	= INMATE_BODY
-//Geotype 26	= INMATE_HEAD
-//Geotype 27	= GUARD_ARM
-//Geotype 28	= GUARD_LEG
-//Geotype 29	= GUARD_BODY
-//Geotype 30	= GUARD_HEAD
-//Geotype 31	= WARDEN_ARM
-//Geotype 32	= WARDEN_LEG
-//Geotype 43	= WARDEN_BODY
-//Geotype 44	= WARDEN_HEAD
-//Geotype 45	= BOOK_1
-//Geotype 46	= BOOK_2
-//Geotype 47	= BOOKSHELF
-//Geotype 48	= COMPUTER MONITOR 1
-//Geotype 49	= COMPUTER MONITOR 2
-//Geotype 50	= CUPBOARD 1
-//Geotype 51	= CUPBOARD 2
-//Geotype 52	= HANGING LIGHT
-//Geotype 53	= PLYER
-//Geotype 54	= POSTER 1
-//Geotype 55	= POSTER 2
-//Geotype 56	= RAILING
-//Geotype 57	= REFRIGERATOR
-//Geotype 58	= SCREWDRIVER
-//Geotype 59	= TOILET
-//Geotype 60	= WINDOW
-//Geotype 61	= DOLL
+//Geotype 15	= SEC_DOOR
+//Geotype 16	= BED
+//Geotype 17	= STOOL
+//Geotype 18	= MIN_SEC_KEY
+//Geotype 19	= MED_SEC_KEY
+//Geotype 20	= MAX_SEC_KEY
+//Geotype 21	= INMATE_ARM
+//Geotype 22	= INMATE_LEG
+//Geotype 23	= INMATE_BODY
+//Geotype 24	= INMATE_HEAD
+//Geotype 25	= GUARD_ARM
+//Geotype 26	= GUARD_LEG
+//Geotype 27	= GUARD_BODY
+//Geotype 28	= GUARD_HEAD
+//Geotype 29	= WARDEN_ARM
+//Geotype 30	= WARDEN_LEG
+//Geotype 31	= WARDEN_BODY
+//Geotype 32	= WARDEN_HEAD
+//Geotype 43	= BOOK_1
+//Geotype 44	= BOOK_2
+//Geotype 45	= BOOKSHELF
+//Geotype 46	= COMPUTER MONITOR 1
+//Geotype 47	= COMPUTER MONITOR 2
+//Geotype 48	= CUPBOARD 1
+//Geotype 49	= CUPBOARD 2
+//Geotype 50	= HANGING LIGHT
+//Geotype 51	= PLYER
+//Geotype 52	= POSTER 1
+//Geotype 53	= POSTER 2
+//Geotype 54	= RAILING
+//Geotype 55	= REFRIGERATOR
+//Geotype 56	= SCREWDRIVER
+//Geotype 57	= TOILET
+//Geotype 58	= WINDOW
