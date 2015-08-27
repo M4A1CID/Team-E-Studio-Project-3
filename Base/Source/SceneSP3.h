@@ -31,7 +31,7 @@
 #include <fstream>
 
 //Modify this to load your level via string
-const static string m_fileBuffer[5] = {"Level Sandbox"};
+const static string m_fileBuffer[5] = {"Level Glenn"};
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 
@@ -371,6 +371,12 @@ public:
 	//Handle to the menu state class - this is accessed in application so it is in public.
 	CMenu_States* m_cStates;	
 
+	/** Experimental features **/
+	bool bPeeing;		//trigger true if player is pissing
+
+	void UpdatePeeingStatus(double dt);	
+
+	/** Experimental features **/
 private:
 	std::vector<CObj *> myObjList;
 	std::vector<CDoor *> myDoorList;

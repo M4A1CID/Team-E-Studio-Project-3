@@ -1001,6 +1001,7 @@ void SceneSP3::UpdatePlay(double dt)
 		bubbleSort(myKeyList,camera.position,myKeyList.size());
 		m_Z_Buffer_timer= 0;
 	}
+	UpdatePeeingStatus(dt);
 	dt *= m_speed;
 
 	static bool bESCButton2 = false;
@@ -1105,6 +1106,21 @@ void SceneSP3::Update(double dt)
 	default:
 		m_cStates->UpdateMenu(dt);
 		break;
+	}
+}
+void SceneSP3::UpdatePeeingStatus(double dt)
+{
+	static bool bQButtonState = false;
+	//Q button Selection
+	if(!bQButtonState && Application::IsKeyPressed('Q'))
+	{
+		bQButtonState = true;
+		std::cout << "Q BUTTON DOWN" << std::endl;
+	}
+	else if(bQButtonState && !Application::IsKeyPressed('Q'))
+	{
+		bQButtonState = false;
+		std::cout << "Q BUTTON UP" << std::endl;
 	}
 }
 void SceneSP3::UpdateSceneControls()
@@ -1790,6 +1806,13 @@ void SceneSP3::RenderUI()
 		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
 	}
 
+	if(Invis)
+	{
+		std::ostringstream ss;
+		ss.precision(3);
+		ss << "Invis Time: " << InvisTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 42.f);
+	}
 	std::ostringstream ss;
 	ss.precision(3);
 	ss << "FPS: " << m_fFps;
@@ -1802,7 +1825,7 @@ void SceneSP3::RenderUI()
 
 	ss.str(std::string());
 	ss.precision(3);
-	ss << "Pos_Y: " << camera.position.y;
+	ss << "Pos_Z: " << camera.position.z;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 51);
 
 	ss.str(std::string());
