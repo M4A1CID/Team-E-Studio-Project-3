@@ -16,7 +16,9 @@ struct Animation
 	int repeatCount;
 	float animTime;
 	bool ended;
-}; class SpriteAnimation : public Mesh
+}; 
+
+class SpriteAnimation : public Mesh
 {
 public:
 	SpriteAnimation(const std::string &meshName, int row, int col);

@@ -352,9 +352,9 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	 return ss.str();
  }
 
- void CPhysics::UpdateWeather(double& dt)
+ void CPhysics::UpdateWeather(CParticle* particle, double& dt)
  {
-
+	 
  }
 
 //Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )

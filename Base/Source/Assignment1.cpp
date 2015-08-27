@@ -500,13 +500,13 @@ void Assignment1::SetHUD(const bool m_bHUDmode)
 		glEnable(GL_DEPTH_TEST);
 	}
 }
-Particle* Assignment1::FetchParticle()
+CParticle* Assignment1::FetchParticle()
 {
 	
 	//Exercise 3a: Fetch a game object from m_paList and return it
-	for(std::vector<Particle*>::iterator it = m_paList.begin(); it!= m_paList.end(); ++it)
+	for(std::vector<CParticle*>::iterator it = m_paList.begin(); it!= m_paList.end(); ++it)
 	{
-		Particle * go = (Particle*)*it;
+		CParticle * go = (CParticle*)*it;
 		if(go->active == false)
 		{
 			go->active = true;
@@ -519,7 +519,7 @@ Particle* Assignment1::FetchParticle()
 	
 	for(unsigned i = 0; i<20; ++i)
 	{
-		Particle *go = new Particle(PARTICLE_TYPE::PARTICLE_LEAF);
+		CParticle *go = new CParticle(CParticle::PARTICLE_LEAF);
 		m_paList.push_back(go);
 	}
 	return m_paList[m_paList.size() - 1];
@@ -582,12 +582,12 @@ void Assignment1::RenderTrees()
 		modelStack.PopMatrix();
 	}
 }
-void Assignment1::RenderGO(Particle *go)
+void Assignment1::RenderGO(CParticle *go)
 {
 	switch(go->type)
 	{
 		
-	case PARTICLE_TYPE::PARTICLE_LEAF:
+	case CParticle::PARTICLE_LEAF:
 		{
 			Vector3 posP;
 			posP.x = camera.position.x - go->pos.x;
@@ -605,7 +605,7 @@ void Assignment1::RenderGO(Particle *go)
 		}
 		break;
 
-	case PARTICLE_TYPE::PARTICLE_SMOKE:
+	case CParticle::PARTICLE_SMOKE:
 		{
 			Vector3 posP;
 			posP.x = camera.position.x - go->pos.x;
@@ -621,7 +621,7 @@ void Assignment1::RenderGO(Particle *go)
 		}
 		break;
 
-	case PARTICLE_TYPE::PARTICLE_SPARKS:
+	case CParticle::PARTICLE_SPARKS:
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
@@ -1040,9 +1040,9 @@ void Assignment1::RenderSkyPlane(Mesh* mesh, Color color, int slices, float Plan
 } 
 void Assignment1::RenderParticle()
 {
-	for(std::vector<Particle *>::iterator it = m_paList.begin(); it != m_paList.end(); ++it)
+	for(std::vector<CParticle *>::iterator it = m_paList.begin(); it != m_paList.end(); ++it)
 	{
-		Particle *go = (Particle *)*it;
+		CParticle *go = (CParticle *)*it;
 		if(go->active)
 		{
 			RenderGO(go);
@@ -1680,9 +1680,9 @@ void Assignment1::UpdateParticle(double dt)
 {
 	if(m_LeafLastSpawned > 0.1f)
 	{
-		Particle *pa = FetchParticle();
+		CParticle *pa = FetchParticle();
 
-		pa->type = PARTICLE_TYPE::PARTICLE_LEAF;
+		pa->type = CParticle::PARTICLE_LEAF;
 		pa->pos.Set(Math::RandFloatMinMax(-SKYBOXSIZE*0.5,SKYBOXSIZE*0.5),1000,Math::RandFloatMinMax(-SKYBOXSIZE*0.5,SKYBOXSIZE*0.5));
 		pa->vel.Set(Math::RandFloatMinMax(-100,100),Math::RandFloatMinMax(5,10),Math::RandFloatMinMax(-100,100));
 		pa->scale.Set(1,1,1);
@@ -1696,9 +1696,9 @@ void Assignment1::UpdateParticle(double dt)
 
 	if(m_SmokeLastSpawned > 0.7f)
 	{
-		Particle *pa = FetchParticle();
+		CParticle *pa = FetchParticle();
 
-		pa->type = PARTICLE_TYPE::PARTICLE_SMOKE;
+		pa->type = CParticle::PARTICLE_SMOKE;
 		pa->pos.Set(CAMPFIRE1.x,CAMPFIRE1.y+13,CAMPFIRE1.z);
 		pa->vel.Set(Math::RandFloatMinMax(-2,2),1,Math::RandFloatMinMax(-2,2));
 		pa->scale.Set(1,1,1);
@@ -1711,9 +1711,9 @@ void Assignment1::UpdateParticle(double dt)
 	{
 		for(int i = 0; i < 30; ++i)
 		{
-			Particle *pa = FetchParticle();
+			CParticle *pa = FetchParticle();
 
-			pa->type = PARTICLE_TYPE::PARTICLE_SPARKS;
+			pa->type = CParticle::PARTICLE_SPARKS;
 			pa->pos.Set(LAMPPOST1.x,GetHeightMapY(LAMPPOST1.x,LAMPPOST1.z) + 90,LAMPPOST1.z);
 			pa->vel.Set(Math::RandFloatMinMax(-10,10),Math::RandFloatMinMax(-10,-20),Math::RandFloatMinMax(-10,10));
 			pa->scale.Set(1,1,1);
@@ -1723,13 +1723,13 @@ void Assignment1::UpdateParticle(double dt)
 		m_sparks = 0;
 	}
 
-	for(std::vector<Particle *>::iterator it = m_paList.begin(); it != m_paList.end(); ++it)
+	for(std::vector<CParticle *>::iterator it = m_paList.begin(); it != m_paList.end(); ++it)
 	{
-		Particle *go = (Particle *)*it;
+		CParticle *go = (CParticle *)*it;
 
 		if(go->active)
 		{
-			if(go->type == PARTICLE_TYPE::PARTICLE_LEAF || go->type == PARTICLE_TYPE::PARTICLE_SPARKS)
+			if(go->type == CParticle::PARTICLE_LEAF || go->type == CParticle::PARTICLE_SPARKS)
 			{
 				go->vel += m_gravity*dt;
 				go->scale.Set(1,1,1);
@@ -1740,7 +1740,7 @@ void Assignment1::UpdateParticle(double dt)
 					go->active = false;
 				}
 			}
-			else if(go->type == PARTICLE_TYPE::PARTICLE_SMOKE)
+			else if(go->type == CParticle::PARTICLE_SMOKE)
 			{
 				go->vel -= m_gravity*dt;
 				go->pos += go->vel * (float)dt;

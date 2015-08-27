@@ -6,6 +6,7 @@
 #include "Camera3.h"
 #include "LoadHmap.h"
 #include "Light.h"
+#include "Particle.h"
 #include <iostream>
 #include <sstream>
 
@@ -46,7 +47,7 @@ public:
 	void UpdateSun(Light &, double & dt);
 
 	// Weather
-	void UpdateWeather(double& dt);
+	void UpdateWeather(CParticle* particle, double& dt);
 
 	// Set enable weather
 	void SetEnableWeather(bool enableWeather);

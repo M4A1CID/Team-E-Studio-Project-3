@@ -197,7 +197,7 @@ public:
 	void RenderUI();
 	void RenderStartZone();
 	void RenderTargets();
-	void RenderGO(Particle *go);
+	void RenderGO(CParticle *go);
 	void RenderParticle();
 	void RenderAnimations();
 
@@ -236,11 +236,11 @@ public:
 		GUN_SLOT_TWO,
 		GUN_SLOT_THREE,
 	};
-	Particle* FetchParticle();
+	CParticle* FetchParticle();
 
 
 private:
-	std::vector<Particle *> m_paList;
+	std::vector<CParticle *> m_paList;
 	std::vector<Vector3> m_treeList;
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];

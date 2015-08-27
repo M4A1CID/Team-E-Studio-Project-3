@@ -4,19 +4,21 @@
 #include "Vector3.h"
 #include "Material.h"
 
-enum PARTICLE_TYPE
-{
-	PARTICLE_NONE = 0,
-	PARTICLE_LEAF,
-	PARTICLE_SMOKE,
-	PARTICLE_SPARKS,
-	PARTICLE_TOTAL,
-};
-class Particle
+
+class CParticle
 {
 
-	public:
+public:
 
+	enum PARTICLE_TYPE
+	{
+		PARTICLE_NONE = 0,
+		PARTICLE_LEAF,
+		PARTICLE_SPARKS,
+		PARTICLE_SMOKE,
+		PARTICLE_RAIN,
+		PARTICLE_TOTAL,
+	};
 
 	PARTICLE_TYPE type;
 	Vector3 pos;
@@ -28,8 +30,8 @@ class Particle
 	Material material;
 
 
-	Particle(PARTICLE_TYPE typeValue);
-	~Particle();
+	CParticle(PARTICLE_TYPE typeValue);
+	~CParticle();
 };
 
 #endif

@@ -219,6 +219,9 @@ class SceneSP3 : public Scene
 		GEO_INVISIBILITY,	// 64
 		GEO_GREEN,			// 65
 
+		// Rain
+		GEO_RAIN,			// 66
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,
@@ -298,6 +301,7 @@ public:
 	CDoor* FetchDoor();
 	CLaser* FetchLaser();
 	CDoll* FetchDoll();
+	CParticle* FetchRain();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -312,6 +316,7 @@ public:
 	void RenderEnemyList();
 	void RenderLaserList();
 	void RenderDollList();
+	void RenderRain(CParticle* go);
 	void RenderInvisibilityList();
 	void RenderUI();
 	void RenderMainMenu();
@@ -362,12 +367,11 @@ public:
 		GUN_SLOT_TWO,
 		GUN_SLOT_THREE,
 	};
-	Particle* FetchParticle();
 
 	//Handle to the menu state class - this is accessed in application so it is in public.
 	CMenu_States* m_cStates;	
+
 private:
-	std::vector<Particle *> m_paList;
 	std::vector<CObj *> myObjList;
 	std::vector<CDoor *> myDoorList;
 	std::vector<CKey *> myKeyList;
@@ -376,6 +380,7 @@ private:
 	std::vector<CLaser *> myLaserList;
 	std::vector<CDoll *> myDollList;
 	std::vector<CInvisibility *> myInvisibilityList;
+	std::vector<CParticle *> myParticleList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
@@ -423,6 +428,9 @@ private:
 	ISoundEngine* engine;
 	ISound* music ;
 	ISound* fire;
+
+	// Rain Count
+	int m_RainCount;
 
 	// Laser
 	CLaser* laser;

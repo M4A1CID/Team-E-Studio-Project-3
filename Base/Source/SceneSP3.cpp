@@ -22,6 +22,7 @@ SceneSP3::SceneSP3()
 	, Invis(false)
 	, InvisTime(15)
 	, m_speed(1)
+	, m_RainCount(0)
 {
 }
 
@@ -643,8 +644,12 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_GOGGLES] = MeshBuilder::GenerateOBJ("GEO_GOGGLES", "Objects//goggles.obj");
 	meshList[GEO_GOGGLES]->textureArray[0] = LoadTGA("Image//goggles.tga");
 
-	meshList[GEO_GREEN] = MeshBuilder::GenerateQuad("GEO_GREEN", Color(0,1,1), 1);
+	meshList[GEO_GREEN] = MeshBuilder::GenerateQuad("GEO_GREEN", Color(0,1,1), 1.f);
 	meshList[GEO_GREEN]->textureID = LoadTGA("Image//green.tga");
+
+	// Rain
+	meshList[GEO_RAIN] = MeshBuilder::GenerateQuad("GEO_RAIN", Color(1,1,1), 5.f);
+	meshList[GEO_RAIN]->textureArray[0] = LoadTGA("Image//rain.tga");
 
 	// Laser
 	meshList[GEO_LASER] = MeshBuilder::GenerateLaser("Laser", 10);
@@ -743,6 +748,7 @@ void SceneSP3::initVariables()
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
+	CParticle* ptr = FetchRain();
 	physicsEngine.SetWorldTime(335);
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
@@ -789,16 +795,17 @@ void SceneSP3::checkDollFlip()
 						myDollList[i]->setRotation_X(1);
 						myDollList[i]->setFlipped(true);
 						myDollList[i]->setAltFlipped(false);
+						physicsEngine.SetEnableWeather(true);
 						cout << "Doll flipped" << endl;
 					}
-					if (myDollList[i]->getFlipped() == true && myDollList[i]->getAltFlipped() == false)
+					/*if (myDollList[i]->getFlipped() == true && myDollList[i]->getAltFlipped() == false)
 					{
 						myDollList[i]->setAngle(180);
 						myDollList[i]->setRotation_X(1);
 						myDollList[i]->setFlipped(false);
 						myDollList[i]->setAltFlipped(true);
 						cout << "Doll flipped back" << endl;
-					}
+					}*/
 				}
 			}
 		}
@@ -1041,6 +1048,33 @@ void SceneSP3::UpdatePlay(double dt)
 			physicsEngine.collisionResponseBetweenLaser(camera,thePlayer,go,dt);
 		}
 	}
+	// Update the weather
+	
+	CParticle *go = FetchRain();
+
+	if (physicsEngine.GetEnableWeather() == true && go->active == true)
+	{
+		go->type = CParticle::PARTICLE_RAIN;
+		go->scale.Set(1, 1, 1);
+		go->vel.Set(0, 0, 0);
+		go->pos.Set(Math::RandFloatMinMax(-1500, 1500), 300, Math::RandIntMinMax(-1500, 1500));
+	}
+
+
+	for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
+	{
+		CParticle* go = (CParticle *)*it;
+
+		if (physicsEngine.GetEnableWeather() == true)
+		{
+			go->vel += physicsEngine.getGravity() * dt;
+			go->pos += go->vel * dt;
+		}
+		if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z))
+		{
+			go->active = false;
+		}
+	}
 
 	//Update the sun
 	physicsEngine.UpdateSun(lights[0], dt);
@@ -1207,6 +1241,29 @@ CDoll* SceneSP3::FetchDoll()
 	CDoll *go = myDollList.back();
 	go->setActive(true);
 	return go;
+}
+CParticle* SceneSP3::FetchRain()
+{
+	for (std::vector<CParticle*>::iterator i = myParticleList.begin(); i != myParticleList.end(); ++i)
+	{
+		CParticle *go = (CParticle*)*i;
+
+		if (!go->active)
+		{
+			go->active = true;
+			go->type = CParticle::PARTICLE_RAIN;
+			m_RainCount++;
+			return go;
+		}
+	}
+
+	for (unsigned i = 0; i < 200; ++i)
+	{
+		CParticle* go = new CParticle(CParticle::PARTICLE_RAIN);
+		myParticleList.push_back(go);
+	}
+
+	return myParticleList[myParticleList.size() - 1];
 }
 bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 {
@@ -1629,6 +1686,25 @@ void SceneSP3::RenderCompass()
 	float theta = Math::RadianToDegree(atan2(temp.x,temp.z));
 	RenderMeshIn2D(meshList[GEO_COMPASS_NEEDLE_UI],20,60,10,true,-theta);
 }
+void SceneSP3::RenderRain(CParticle* go)
+{
+	float angleX = camera.position.x - go->pos.x;
+	float angleZ = camera.position.z - go->pos.z;
+	float angleY = Math::RadianToDegree(atan2(angleX, angleZ));
+
+	switch (go->type)
+	{
+	case CParticle::PARTICLE_RAIN:
+
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Rotate(angleY, 0, 1, 0);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_RAIN], false);
+		modelStack.PopMatrix();
+		break;
+	}
+}
 void SceneSP3::RenderUI()
 {
 	//============================= HUD displayed on screen ====================================
@@ -1824,7 +1900,26 @@ void SceneSP3::RenderGamePlay()
 			//cout << "Collision detected!" << endl;
 		}
 	}
-	
+	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
+	{
+		CKey *go = (CKey *)*it;
+		if(physicsEngine.checkCollisionBetweenKey(thePlayer,go))
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT],"Stop walking into the item!",Color(1,1,1),2,2,2);
+			//cout << "Collision detected!" << endl;
+		}
+	}
+
+	// Rain
+	for (std::vector<CParticle*>::iterator i = myParticleList.begin(); i != myParticleList.end(); i++)
+	{
+		CParticle* go = (CParticle*) *i;
+
+		if (go->active == true)
+		{
+			RenderRain(go);
+		}
+	}
 	RenderDebugWireframe();
 
 	
@@ -2319,6 +2414,11 @@ void SceneSP3::Exit()
 	{
 		if(myDollList[i] != NULL)
 			delete myDollList[i];
+	}
+	for(unsigned int i = 0; i < myParticleList.size(); ++i)
+	{
+		if(myParticleList[i] != NULL)
+			delete myParticleList[i];
 	}
 	if(m_cMap != NULL)
 	{
