@@ -52,7 +52,7 @@ public:
 	void UpdateSun(Light &, double & dt);
 
 	// Weather
-	void UpdateWeather(CParticle* particle, double& dt);
+	void UpdateWeather(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, double& dt);
 
 	// Set enable weather
 	void SetEnableWeather(bool enableWeather);

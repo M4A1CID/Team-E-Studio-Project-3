@@ -1052,29 +1052,31 @@ void SceneSP3::UpdatePlay(double dt)
 	
 	CParticle *go = FetchRain();
 
-	if (physicsEngine.GetEnableWeather() == true && go->active == true)
-	{
-		go->type = CParticle::PARTICLE_RAIN;
-		go->scale.Set(1, 1, 1);
-		go->vel.Set(0, 0, 0);
-		go->pos.Set(Math::RandFloatMinMax(-1500, 1500), 300, Math::RandIntMinMax(-1500, 1500));
-	}
+	physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt);
+
+	/*if (physicsEngine.GetEnableWeather() == true && go->active == true)
+	 {
+		 go->type = CParticle::PARTICLE_RAIN;
+		 go->scale.Set(1, 1, 1);
+		 go->vel.Set(0, 0, 0);
+		 go->pos.Set(Math::RandFloatMinMax(-1500, 1500), 300, Math::RandIntMinMax(-1500, 1500));
+	 }
 
 
-	for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
-	{
-		CParticle* go = (CParticle *)*it;
+	 for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
+	 {
+		 CParticle* go = (CParticle *)*it;
 
-		if (physicsEngine.GetEnableWeather() == true)
-		{
-			go->vel += physicsEngine.getGravity() * dt;
-			go->pos += go->vel * dt;
-		}
-		if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z))
-		{
-			go->active = false;
-		}
-	}
+		 if (physicsEngine.GetEnableWeather() == true)
+		 {
+			 go->vel += physicsEngine.getGravity() * dt;
+			 go->pos += go->vel * dt;
+		 }
+		 if (go->pos.y <= physicsEngine.GetHeightMapY(go->pos.x, go->pos.z, m_heightMap, TERRAIN_SCALE))
+		 {
+			 go->active = false;
+		 }
+	 }*/
 
 	//Update the sun
 	physicsEngine.UpdateSun(lights[0], dt);

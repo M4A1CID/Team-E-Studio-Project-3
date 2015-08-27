@@ -379,9 +379,31 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	 return ss.str();
  }
 
- void CPhysics::UpdateWeather(CParticle* particle, double& dt)
+ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt)
  {
-	 
+	 if (GetEnableWeather() == true && particle->active == true)
+	 {
+		 particle->type = CParticle::PARTICLE_RAIN;
+		 particle->scale.Set(1, 1, 1);
+		 particle->vel.Set(0, 0, 0);
+		 particle->pos.Set(Math::RandFloatMinMax(-1500, 1500), 300, Math::RandIntMinMax(-1500, 1500));
+	 }
+
+
+	 for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
+	 {
+		 CParticle* go = (CParticle *)*it;
+
+		 if (GetEnableWeather() == true)
+		 {
+			 go->vel += getGravity() * dt;
+			 go->pos += go->vel * dt;
+		 }
+		 if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightmap, terrainSize))
+		 {
+			 go->active = false;
+		 }
+	 }
  }
 
 //Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )
