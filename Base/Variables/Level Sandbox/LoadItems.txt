@@ -4,69 +4,10 @@
 10		75		-110		2		2		2		63		1
 30		75		-110		2		2		2		64		1
 
--15		70		-150		5		5		5		35		1
--30		70		-150		5		5		5		36		1
--45		70		-150		5		5		5		37		1
--60		70		-150		5		5		5		38		1
--75		70		-150		5		5		5		39		1
--90		70		-150		5		5		5		40		1
--105	70		-150		5		5		5		41		1
--120	70		-150		5		5		5		42		1
--135	70		-150		5		5		5		43		1
--150	70		-150		5		5		5		44		1
-
--200	70		-150		5		5		5		45		1
--250	70		-150		5		5		5		46		1
--300	70		-150		5		5		5		47		1
--350 	70		-150		5		5		5		48		1
--400	70		-150		5		5		5		49		1
--450	70		-150		5		5		5		50		1
--500	70		-150		5		5		5		51		1
--550	70		-150		5		5		5		52		1
--600	70		-150		5		5		5		53		1
--650	70		-150		5		5		5		54		1
--700	70		-150		5		5		5		55		1
--750	70		-150		5		5		5		56		1
--800	70		-150		5		5		5		57		1
--850	70		-150		5		5		5		58		1
--900	70		-150		5		5		5		59		1
--950	70		-150		5		5		5		60		1
-
-
-
-
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
 //GEOTYPE 20 == MIN SECURITY
 //GEOTYPE 21 == MED SECURITY
 //GEOTYPE 22 == MAX SECURITY
-
-//Geotype 35	= BATON
-//Geotype 36	= CHAIR
-//Geotype 37	= FLASHLIGHT
-//Geotype 38	= CARROT
-//Geotype 39	= CONTAINER
-//Geotype 40	= DONUT
-//Geotype 41	= ORANGE
-//Geotype 42	= RICE
-//Geotype 43	= FORK
-//Geotype 44	= SPOON
-
-//Geotype 45	= BOOK_1
-//Geotype 46	= BOOK_2
-//Geotype 47	= BOOKSHELF
-//Geotype 48	= COMPUTER MONITOR 1
-//Geotype 49	= COMPUTER MONITOR 2
-//Geotype 50	= CUPBOARD 1
-//Geotype 51	= CUPBOARD 2
-//Geotype 52	= HANGING LIGHT
-//Geotype 53	= PLYER
-//Geotype 54	= POSTER 1
-//Geotype 55	= POSTER 2
-//Geotype 56	= RAILING
-//Geotype 57	= REFRIGERATOR
-//Geotype 58	= SCREWDRIVER
-//Geotype 59	= TOILET
-//Geotype 60	= WINDOW
 
 //Geotype 63	= GOGGLES
 //Geotype 64	= INVISIBILITY
