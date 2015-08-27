@@ -27,7 +27,6 @@ public:
 	void collisionResponseBetweenOBJ(Camera3&,CPlayer*&, CObj*&, double);
 
 	bool checkCollisionBetweenKey(CPlayer*, CKey*);
-	void collisionResponseBetweenKey(Camera3&, CPlayer*&, CKey*&, double);
 
 	bool checkCollisionBetweenLaser(CPlayer*, CLaser*);
 	void collisionResponseBetweenLaser(Camera3&, CPlayer*&, CLaser*&, double);
@@ -41,7 +40,7 @@ public:
 
 	//Barymetric Terrain Collision
 	float barryCentric(Vector3 & p1, Vector3 & p2, Vector3 & p3, Vector2 & pos);
-	void getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer );
+	//void getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer );
 
 	// Dynamic Light based on time
 	void UpdateSun(Light &, double & dt);

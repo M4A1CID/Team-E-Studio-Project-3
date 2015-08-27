@@ -228,6 +228,7 @@ class SceneSP3 : public Scene
 		GEO_COMPASS_UI,
 		GEO_COMPASS_NEEDLE_UI,
 		GEO_WARNING_UI,
+		GEO_OBJECTIVE_UI,
 
 		//Menu system
 		GEO_MENU_BACKGROUND,
@@ -257,6 +258,7 @@ public:
 	~SceneSP3();
 
 	Vector3 TERRAIN_SCALE;
+	void bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length);
 
 	virtual void Init();
 	virtual void Update(double dt);
@@ -392,6 +394,7 @@ private:
 
 	float m_fFps;
 	float m_AI_Update_Timer;
+	float m_Z_Buffer_timer;
 	//Current level of scene
 	short int m_Current_Level;
 

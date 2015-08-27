@@ -48,6 +48,27 @@ SceneSP3::~SceneSP3()
 		m_cStates = NULL;
 	}
 }
+
+void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
+{
+
+	for(int iter = 1; iter < length; iter++)
+	{
+		for(int index = 0; index <length - iter; index++)
+		{
+			if( (list[index]->getPosition()-camPos).Length() < (list[index+1]->getPosition()-camPos).Length())
+			{
+				//swap around
+				CKey* temp = list[index+1];
+				list[index+1] = list[index];
+				list[index] = temp;
+			}
+
+		}
+	}
+}
+
+
 void SceneSP3::initMenu()
 {	
 	//the singleton approach ensure that this isn't initialized more than once
@@ -212,7 +233,7 @@ void SceneSP3::initLights()
 	m_uiParameters[U_LIGHT4_EXPONENT] = glGetUniformLocation(m_programID, "lights[4].exponent");*/
 
 	lights[0].type = Light::LIGHT_DIRECTIONAL;
-	lights[0].position.Set(-2000, 100, 500);
+	lights[0].position.Set(-200, 100, 500);
 	lights[0].color.Set(0.7f, 0.7f, 0.5f);
 	lights[0].power = 1.f;
 	lights[0].kC = 1.f;
@@ -649,6 +670,9 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_WARNING_UI] = MeshBuilder::GenerateQuad("GEO_WARNING_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_WARNING_UI]->textureID = LoadTGA("Image//warningEnemy.tga");
+
+	meshList[GEO_OBJECTIVE_UI] = MeshBuilder::GenerateQuad("GEO_OBJECTIVE_UI",Color(1,1,1),1.f);
+	meshList[GEO_OBJECTIVE_UI]->textureArray[0] = LoadTGA("Image//objective.tga");
 }
 void SceneSP3::initGameData()
 {
@@ -708,6 +732,7 @@ void SceneSP3::initVariables()
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
 	m_Current_Level = 0;
+	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
 	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
@@ -963,7 +988,12 @@ void SceneSP3::UpdateEnemies(double dt)
 void SceneSP3::UpdatePlay(double dt)
 {
 	UpdateInvisibility(dt);
-
+	m_Z_Buffer_timer += (float)dt;
+	if( m_Z_Buffer_timer > 0.3) //Update the Z buffer every 0.3sec
+	{
+		bubbleSort(myKeyList,camera.position,myKeyList.size());
+		m_Z_Buffer_timer= 0;
+	}
 	dt *= m_speed;
 
 	static bool bESCButton2 = false;
@@ -971,7 +1001,7 @@ void SceneSP3::UpdatePlay(double dt)
 	if(!bESCButton2 && Application::IsKeyPressed(VK_ESCAPE) && !m_cStates->GetPauseActive()) // if ESC pressed and not in pause - make sure only when pressed then update
 	{
 		bESCButton2 = true;
-		m_cStates->SetPauseActive(true);  //m_bPauseActive = true;	
+		m_cStates->SetPauseActive(true);  //m_bPauseActive = true;
 	}
 	//if key release
 	else if(bESCButton2 && !Application::IsKeyPressed(VK_ESCAPE)) // when release , prevent holding down bug
@@ -1608,6 +1638,7 @@ void SceneSP3::RenderUI()
 	RenderCompass();
 	RenderWarning();
 
+	
 
 	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
 
@@ -1793,16 +1824,10 @@ void SceneSP3::RenderGamePlay()
 			//cout << "Collision detected!" << endl;
 		}
 	}
-	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
-	{
-		CKey *go = (CKey *)*it;
-		if(physicsEngine.checkCollisionBetweenKey(thePlayer,go))
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT],"Stop walking into the item!",Color(1,1,1),2,2,2);
-			//cout << "Collision detected!" << endl;
-		}
-	}
+	
 	RenderDebugWireframe();
+
+	
 	RenderUI();
 }
 void SceneSP3::Render()
@@ -1913,12 +1938,13 @@ void SceneSP3::RenderWorld()
 
 	RenderObjList();
 	RenderDoorList();
-	RenderKeyList();
+	
 	RenderEnemyList();
 	RenderLaserList();
 	RenderDollList();
-
+	
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
+	RenderKeyList();
 }
 void SceneSP3::RenderObjList()
 {
@@ -1950,8 +1976,18 @@ void SceneSP3::RenderKeyList()
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.PushMatrix();
+			modelStack.Translate(0,20,0);
+			Vector3 temp = camera.position - go->getPosition();
+			float theta = Math::RadianToDegree(atan2(temp.x,temp.z));
+			modelStack.Rotate(theta,0,1,0);
+			modelStack.Scale(20,20,1);
+			RenderMesh(meshList[GEO_OBJECTIVE_UI],false);
+			modelStack.PopMatrix();
+
 			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
+			
 			modelStack.PopMatrix();
 		}
 	}
@@ -2123,8 +2159,13 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rot
 		modelStack.Rotate(rotateAngle, 0, 0, 1);
 
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
-
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+
+	
+
+	glUniform1i(m_uiParameters[U_LIGHTENABLED], 0);
+
+
 	glUniformMatrix4fv(m_uiParameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 	if(mesh->textureID > 0)
 	{

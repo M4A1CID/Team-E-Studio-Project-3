@@ -3,7 +3,7 @@
 
 CPhysics::CPhysics(void)
 {
-	m_Gravity = Vector3(0,-9.8,0);
+	m_Gravity = Vector3(0,-9.8f,0);
 	m_fOffset = 160.f;
 	m_fLaserDetectionRange = 5.f;
 	m_time_interval= 0;
@@ -78,15 +78,15 @@ void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, 
 	diffVec *= 10;
 	if(camera.GetCameraType() == Camera3::LAND_CAM)
 	{
-		camera.position.x -= diffVec.x * dt;
-		camera.position.z -= diffVec.z * dt;
-		camera.target.x -= diffVec.x * dt;
-		camera.target.z -= diffVec.z * dt;
+		camera.position.x -= diffVec.x * (float)dt;
+		camera.position.z -= diffVec.z *  (float)dt;
+		camera.target.x -= diffVec.x *  (float)dt;
+		camera.target.z -= diffVec.z *  (float)dt;
 	}
 	else
 	{
-		camera.position -= diffVec * dt;
-		camera.target -= diffVec * dt;
+		camera.position -= diffVec *  (float)dt;
+		camera.target -= diffVec *  (float)dt;
 	}
 }
 
@@ -108,23 +108,6 @@ bool CPhysics::checkCollisionBetweenKey(CPlayer* go1, CKey* go2)
 	}
 	return false;
 	
-}
-void CPhysics::collisionResponseBetweenKey(Camera3 &camera,CPlayer* &thePlayer, CKey* &go, double dt)
-{
-	Vector3 diffVec = go->getPosition() - thePlayer->GetPosition();
-	diffVec *= 10;
-	if(camera.GetCameraType() == Camera3::LAND_CAM)
-	{
-		camera.position.x -= diffVec.x * dt;
-		camera.position.z -= diffVec.z * dt;
-		camera.target.x -= diffVec.x * dt;
-		camera.target.z -= diffVec.z * dt;
-	}
-	else
-	{
-		camera.position -= diffVec * dt;
-		camera.target -= diffVec * dt;
-	}
 }
 
 // Collision with laser
@@ -182,60 +165,60 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 }
 
- void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
- {
-	  
+ //void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
+ //{
+	//  
 
-	 
-	 float x = thePlayer->GetPosition().x / 4000.f;
-	 float z = thePlayer->GetPosition().z / 4000.f;
+	// 
+	// float x = thePlayer->GetPosition().x / 4000.f;
+	// float z = thePlayer->GetPosition().z / 4000.f;
 
-	 //If out of bound
-	if(x < -0.5f || x > 0.5f || z < -0.5f || z > 0.5f)
-		return;
+	// //If out of bound
+	//if(x < -0.5f || x > 0.5f || z < -0.5f || z > 0.5f)
+	//	return;
 
-	//If heightMap failed to load and is empty
-	if(heightMap.size() == 0)
-		return;
+	////If heightMap failed to load and is empty
+	//if(heightMap.size() == 0)
+	//	return;
 
 
-	unsigned terrainSize = static_cast<unsigned>((unsigned)sqrt(static_cast<double>(heightMap.size()))); 
-	 x/= terrainSize;
-	 z/= terrainSize;
+	//unsigned terrainSize = static_cast<unsigned>((unsigned)sqrt(static_cast<double>(heightMap.size()))); 
+	// x/= terrainSize;
+	// z/= terrainSize;
 
-	 //get the size of the grid based on the terrain size
-	 float gridSquareSize = 1.f/ (terrainSize);
+	// //get the size of the grid based on the terrain size
+	// float gridSquareSize = 1.f/ (terrainSize);
 
-	 int gridX = (x + 0.5f) / gridSquareSize;
-	 int gridZ = (z + 0.5f) / gridSquareSize;
+	// int gridX = (x + 0.5f) / gridSquareSize;
+	// int gridZ = (z + 0.5f) / gridSquareSize;
 
-	 //get the coordinates based on the player position and terrain size
-	 float xCoord = fmod((x + 0.5f),gridSquareSize) / gridSquareSize;
-	 float zCoord = fmod((z + 0.5f),gridSquareSize) / gridSquareSize;
+	// //get the coordinates based on the player position and terrain size
+	// float xCoord = fmod((x + 0.5f),gridSquareSize) / gridSquareSize;
+	// float zCoord = fmod((z + 0.5f),gridSquareSize) / gridSquareSize;
 
-	 float answer = 0.f;
+	// float answer = 0.f;
 
-	 if (xCoord <= (1-zCoord)) 
-	 {
-		 answer = barryCentric(Vector3(0, heights[gridX][gridZ], 0), 
-			 Vector3(1,heights[gridX + 1][gridZ], 0), 
-			 Vector3(0,heights[gridX][gridZ + 1], 1),  
-			 Vector2(xCoord, zCoord));
-	 } 
-	 else 
-	 {
-		 answer = barryCentric(Vector3(1, heights[gridX + 1][gridZ], 0),
-			 Vector3(1, heights[gridX + 1][gridZ + 1], 1), 
-			 Vector3(0, heights[gridX][gridZ + 1], 1), 
-			 Vector2(xCoord, zCoord));
-	 }
+	// if (xCoord <= (1-zCoord)) 
+	// {
+	//	 answer = barryCentric(Vector3(0, heights[gridX][gridZ], 0), 
+	//		 Vector3(1,heights[gridX + 1][gridZ], 0), 
+	//		 Vector3(0,heights[gridX][gridZ + 1], 1),  
+	//		 Vector2(xCoord, zCoord));
+	// } 
+	// else 
+	// {
+	//	 answer = barryCentric(Vector3(1, heights[gridX + 1][gridZ], 0),
+	//		 Vector3(1, heights[gridX + 1][gridZ + 1], 1), 
+	//		 Vector3(0, heights[gridX][gridZ + 1], 1), 
+	//		 Vector2(xCoord, zCoord));
+	// }
 
-	 float diffY = answer - thePlayer->GetPosition().y;
-	 camera.position.y += diffY +20;
-	 camera.target.y += diffY +20;
-	 thePlayer->SetPositionY(camera.position.y + (answer / 256.f));
-	
- }
+	// float diffY = answer - thePlayer->GetPosition().y;
+	// camera.position.y += diffY +20;
+	// camera.target.y += diffY +20;
+	// thePlayer->SetPositionY(camera.position.y + (answer / 256.f));
+	//
+ //}
 
  // Dynamic Light based on time
  void CPhysics::UpdateSun(Light & light, double & dt)
@@ -247,71 +230,67 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	 //		720sec  :   12:00
 	 //		1440sec	:   24:00
 	
-	 m_In_World_Time += dt;
-	 m_time_interval += dt;
+	 m_In_World_Time +=  (float)dt;
+	 m_time_interval +=  (float)dt;
 	 //If it hits 24:00, set it back to 00:00 
 	 if(m_In_World_Time > 1440)
 	 {
 		 m_In_World_Time = 0;
 	 }
 
-	 // 20:00 ~ 06:00         Night Time
-	 if(m_In_World_Time > 1200 || m_In_World_Time <= 360)
+	 // for each second that pass
+	 if(m_time_interval >= 1)
 	 {
-		 if(m_time_interval >= 1) // for each second that pass
+		 // 20:00 ~ 06:00         Night Time
+		 if(m_In_World_Time > 1200 || m_In_World_Time <= 360)
 		 {
+
 			 diff = Vector3(0.164f,0.145f,0.207f) -current;
-			 diff =  diff.Normalize() * dt * 0.01;
+			 diff =  diff.Normalize() * (float)dt * 0.01f;
 			 current += diff;
 			 m_time_interval = 0;
-		 }
 
-	 }
-	 //06:00 ~ 08:00		Morning Time
-	 else if(m_In_World_Time >360 && m_In_World_Time <= 480)
-	 {
-		 if(m_time_interval >= 1) // for each second that pass
+		 }
+		 //06:00 ~ 08:00		Morning Time
+		 else if(m_In_World_Time >360 && m_In_World_Time <= 480)
 		 {
 			 diff = Vector3(1.f,0.572f,0.f) -current;
-			 diff =  diff.Normalize() * dt * 0.01;
+			 diff =  diff.Normalize() * (float)dt * 0.01f;
 			 current += diff;
 			 m_time_interval = 0;
+
 		 }
-	 }
-	 // 08:00 ~ 10:00		Going to afternoon time
-	 else if(m_In_World_Time > 480 && m_In_World_Time <= 600)
-	 {
-		  if(m_time_interval >= 1) // for each second that pass
+		 // 08:00 ~ 10:00		Going to afternoon time
+		 else if(m_In_World_Time > 480 && m_In_World_Time <= 600)
 		 {
 			 diff = Vector3(1.f,0.85f,0.f) -current;
-			 diff =  diff.Normalize() * dt * 0.01;
+			 diff =  diff.Normalize() * (float)dt * 0.01f;
 			 current += diff;
 			 m_time_interval = 0;
+
 		 }
-	 }
-	 // 10:00 ~ 18:00	Afternoon time
-	 else if(m_In_World_Time > 600 && m_In_World_Time <= 1080)
-	 {
-		  if(m_time_interval >= 1) // for each second that pass
+		 // 10:00 ~ 18:00	Afternoon time
+		 else if(m_In_World_Time > 600 && m_In_World_Time <= 1080)
 		 {
-			  diff = Vector3(1.f,0.85f,0.f) -current;
-			  diff =  diff.Normalize() * dt * 0.01;
-			  current += diff;
-			  m_time_interval = 0;
+
+			 diff = Vector3(1.f,0.85f,0.f) -current;
+			 diff =  diff.Normalize() * (float)dt * 0.01f;
+			 current += diff;
+			 m_time_interval = 0;
+
+
+		 }
+		 // 18:00 ~ 20:00	Evening time
+		 else if(m_In_World_Time > 1080 && m_In_World_Time <= 1200)
+		 {
+
+			 diff = Vector3(0.164f,0.145f,0.207f) -current;
+			 diff =  diff.Normalize() * (float)dt * 0.01f;
+			 current += diff;
+			 m_time_interval = 0;
 
 		 }
 	 }
-	 // 18:00 ~ 20:00	Evening time
-	 else if(m_In_World_Time > 1080 && m_In_World_Time <= 1200)
-	 {
-		  if(m_time_interval >= 1) // for each second that pass
-		  {
-			  diff = Vector3(0.164f,0.145f,0.207f) -current;
-			  diff =  diff.Normalize() * dt * 0.01;
-			  current += diff;
-			  m_time_interval = 0;
-		  }
-	  }
 
 
 	 light.color.Set(current.x ,current.y,current.z);
@@ -343,7 +322,7 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 
  string CPhysics::GetHourTime(void)
  {
-	 int temp = m_In_World_Time / 60;
+	 int temp = (int)m_In_World_Time / 60;
 	  std::ostringstream ss;
 	 if(temp < 10)
 	 {
@@ -358,7 +337,7 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
  }
  string CPhysics::GetMinuteTime(void)
  {
-	 int temp = m_In_World_Time;
+	 int temp = (int)m_In_World_Time;
 	 temp = temp % 60;
 	  std::ostringstream ss;
 	 if(temp < 10)
