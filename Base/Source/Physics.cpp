@@ -75,6 +75,33 @@ bool CPhysics::checkCollisionBetweenOBJ(CPlayer* go1, CObj* go2)
 void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, CObj* &go, double dt)
 {
 	Vector3 diffVec = go->getPosition() - thePlayer->GetPosition();
+	if(diffVec.x < 0)
+	{
+		camera.position.x += CAMERA_REPELL;
+		camera.target.x += CAMERA_REPELL ;
+	}
+
+	if(diffVec.x > 0)
+	{
+		camera.position.x -= CAMERA_REPELL;
+		camera.target.x -= CAMERA_REPELL;
+	}
+
+	if(diffVec.z < 0)
+	{
+		camera.position.z += CAMERA_REPELL;
+		camera.target.z += CAMERA_REPELL;
+	}
+
+	if(diffVec.z > 0)
+	{
+		camera.position.z -= CAMERA_REPELL;
+		camera.target.z -= CAMERA_REPELL ;
+	}
+
+
+
+	/*Vector3 diffVec = go->getPosition() - thePlayer->GetPosition();
 	diffVec *= 10;
 	if(camera.GetCameraType() == Camera3::LAND_CAM)
 	{
@@ -87,28 +114,28 @@ void CPhysics::collisionResponseBetweenOBJ(Camera3 &camera,CPlayer* &thePlayer, 
 	{
 		camera.position -= diffVec *  (float)dt;
 		camera.target -= diffVec *  (float)dt;
-	}
+	}*/
 }
 
-bool CPhysics::checkCollisionBetweenKey(CPlayer* go1, CKey* go2)
-{
-	Vector3 obj1 = go1->GetPosition();
-	Vector3 obj2 = go2->getPosition();
-	Vector3 halfScale = (go2->getScale()) * 0.5;
-
-	//AABB to AABB collision detection
-	if( obj1.x + go1->GetScale().x > obj2.x - halfScale.x  &&
-		obj1.x - go1->GetScale().x < obj2.x + halfScale.x  &&
-		obj1.y + go1->GetScale().y > obj2.y - halfScale.y  && 
-		obj1.y - go1->GetScale().y < obj2.y + halfScale.y  &&
-		obj1.z + go1->GetScale().z > obj2.z - halfScale.z  &&
-		obj1.z - go1->GetScale().z < obj2.z + halfScale.z )
-	{
-		return true;
-	}
-	return false;
-	
-}
+//bool CPhysics::checkCollisionBetweenKey(CPlayer* go1, CKey* go2)
+//{
+//	Vector3 obj1 = go1->GetPosition();
+//	Vector3 obj2 = go2->getPosition();
+//	Vector3 halfScale = (go2->getScale()) * 0.5;
+//
+//	//AABB to AABB collision detection
+//	if( obj1.x + go1->GetScale().x > obj2.x - halfScale.x  &&
+//		obj1.x - go1->GetScale().x < obj2.x + halfScale.x  &&
+//		obj1.y + go1->GetScale().y > obj2.y - halfScale.y  && 
+//		obj1.y - go1->GetScale().y < obj2.y + halfScale.y  &&
+//		obj1.z + go1->GetScale().z > obj2.z - halfScale.z  &&
+//		obj1.z - go1->GetScale().z < obj2.z + halfScale.z )
+//	{
+//		return true;
+//	}
+//	return false;
+//	
+//}
 
 // Collision with laser
 bool CPhysics::checkCollisionBetweenLaser(CPlayer* player, CLaser* laser)

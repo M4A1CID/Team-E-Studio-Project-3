@@ -1891,24 +1891,7 @@ void SceneSP3::RenderGamePlay()
 	//============================ MAIN RENDER PASS ===========================
 	RenderPassMain();
 
-	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
-	{
-		CObj *go = (CObj *)*it;
-		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT],"Collision Detected!",Color(1,1,1),2,2,2);
-			//cout << "Collision detected!" << endl;
-		}
-	}
-	for(std::vector<CKey *>::iterator it = myKeyList.begin(); it != myKeyList.end(); ++it)
-	{
-		CKey *go = (CKey *)*it;
-		if(physicsEngine.checkCollisionBetweenKey(thePlayer,go))
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT],"Stop walking into the item!",Color(1,1,1),2,2,2);
-			//cout << "Collision detected!" << endl;
-		}
-	}
+	
 
 	// Rain
 	for (std::vector<CParticle*>::iterator i = myParticleList.begin(); i != myParticleList.end(); i++)

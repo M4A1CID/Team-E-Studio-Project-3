@@ -14,9 +14,14 @@ using namespace std;
 
 class CPhysics
 {
+
+	const static int CAMERA_REPELL = 10;
+	
 public:
 	CPhysics(void);
 	~CPhysics(void);
+
+
 
 	// Get the gravity
 	Vector3 getGravity(void); 
@@ -27,7 +32,7 @@ public:
 	bool checkCollisionBetweenOBJ(CPlayer*, CObj*);
 	void collisionResponseBetweenOBJ(Camera3&,CPlayer*&, CObj*&, double);
 
-	bool checkCollisionBetweenKey(CPlayer*, CKey*);
+	//bool checkCollisionBetweenKey(CPlayer*, CKey*);
 
 	bool checkCollisionBetweenLaser(CPlayer*, CLaser*);
 	void collisionResponseBetweenLaser(Camera3&, CPlayer*&, CLaser*&, double);
