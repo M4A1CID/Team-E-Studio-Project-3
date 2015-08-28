@@ -21,7 +21,7 @@ SceneSP3::SceneSP3()
 	, NVM(false)
 	, NVTime(10)
 	, Invis(false)
-	, InvisTime(10)
+	, InvisTime(15)
 	, m_speed(1)
 	, m_RainCount(0)
 {
@@ -70,6 +70,7 @@ void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
 	}
 }
 
+
 void SceneSP3::initMenu()
 {	
 	//the singleton approach ensure that this isn't initialized more than once
@@ -79,14 +80,14 @@ void SceneSP3::initMenu()
 		m_cStates = new CMenu_States();
 	}
 }
-void SceneSP3::initPlayer()
+/*void SceneSP3::initPlayer()
 {
 	//initialize the player class using the overloaded constructor
-	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
+	//the parameters are as follows: active, position, scale
 	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5));
 
 	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
-}
+}*/
 void SceneSP3::initTokenForEnemyPathfinding()
 {
 	ofstream fout( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" );
@@ -157,7 +158,7 @@ void SceneSP3::Init()
 {
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
-	initPlayer();
+//	initPlayer();
 	initMeshlist();
 	initVariables();
 
@@ -740,6 +741,7 @@ void SceneSP3::initVariables()
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
+	LoadFromTextFilePlayer("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadPlayer.txt");
 	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
 	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
 	LoadFromTextFileDoor("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoor.txt");
@@ -956,18 +958,14 @@ void SceneSP3::checkOpenDoor()
 }
 void SceneSP3::UpdateInvisibility(double dt)
 {
-	//cout << InvisTime << endl;
-
-	//this condition ensures that the time does not reset even if you pick up an extra Invisibility item
 	if(Invis)
 	{
 		InvisTime -= dt;
 
-		//reset to false and the time to original timing.
 		if(InvisTime < 0)
 		{
 			Invis = false;
-			InvisTime = 10;
+			InvisTime = 15;
 		}
 	}
 }
@@ -1127,17 +1125,17 @@ void SceneSP3::Update(double dt)
 }
 void SceneSP3::UpdatePeeingStatus(double dt)
 {
-	static bool bRButtonState = false;
+	static bool bQButtonState = false;
 	//Q button Selection
-	if(!bRButtonState && Application::IsMousePressed(1))
+	if(!bQButtonState && Application::IsKeyPressed('Q'))
 	{
-		bRButtonState = true;
-		std::cout << "R MOUSE BUTTON DOWN" << std::endl;
+		bQButtonState = true;
+		std::cout << "Q BUTTON DOWN" << std::endl;
 	}
-	else if(bRButtonState && !Application::IsMousePressed(1))
+	else if(bQButtonState && !Application::IsKeyPressed('Q'))
 	{
-		bRButtonState = false;
-		std::cout << "R MOUSE BUTTON UP" << std::endl;
+		bQButtonState = false;
+		std::cout << "Q BUTTON UP" << std::endl;
 	}
 }
 void SceneSP3::UpdateSceneControls()
@@ -1518,6 +1516,31 @@ bool SceneSP3::LoadFromTextFileDoll(const string mapString)
 	}
 	else 
 		cout << "Doll Loaded: FAILED!"; 
+	return false;
+}
+bool SceneSP3::LoadFromTextFilePlayer(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Scale;
+	bool active;
+	thePlayer = new CPlayer();
+	if (myfile.is_open())
+	{
+		while ( myfile >> active >> Pos.x >> Pos.y >> Pos.z >> Scale.x >> Scale.y >> Scale.z)
+		{
+			thePlayer->SetPosition(Pos);
+			thePlayer->SetScale(Scale);
+			thePlayer->SetActive(active);
+			cout << "Player Loaded: SUCCESS!" << endl;
+			
+		}
+		myfile.close();
+		return true;
+	}
+	else 
+		cout << "Player Loaded: FAILED!"; 
 	return false;
 }
 bool SceneSP3::LoadFromTextFileWaypoints(const string mapString)
@@ -2266,8 +2289,6 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 }
 void SceneSP3::RenderMeshIn2D(Mesh *mesh, float size, float x, float y, bool rotate, float rotateAngle)
 {
-	
-
 	Mtx44 ortho;
 	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
 	projectionStack.PushMatrix();

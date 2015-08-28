@@ -250,6 +250,7 @@ class SceneSP3 : public Scene
 		GEO_DEBUG_AI,
 		NUM_GEOMETRY,
 	};
+
 	enum RENDER_PASS
 	{
 		RENDER_PASS_PRE,
@@ -269,7 +270,7 @@ public:
 	
 	void initMenu();
 	void initGameData();		//trigger this when restarting
-	void initPlayer();
+	//void initPlayer();
 	void initEnemies();
 	void initUniforms();
 	void initVariables();
@@ -286,6 +287,7 @@ public:
 
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
+	bool LoadFromTextFilePlayer(const string mapString);
 	bool LoadFromTextFileItem(const string mapString);
 	bool LoadFromTextFileEnemy(const string mapString);
 	bool LoadFromTextFileLaser(const string mapString);
@@ -385,7 +387,6 @@ private:
 	std::vector<Vector3> myWaypointList;
 	std::vector<CLaser *> myLaserList;
 	std::vector<CDoll *> myDollList;
-	std::vector<CInvisibility *> myInvisibilityList;
 	std::vector<CParticle *> myParticleList;
 
 	unsigned m_vertexArrayID;
