@@ -28,6 +28,7 @@
 #include "Laser.h"
 #include "Doll.h"
 #include "Invisibility.h"
+#include "Peeing.h"
 #include <vector>
 #include <fstream>
 
@@ -224,6 +225,9 @@ class SceneSP3 : public Scene
 		// Rain
 		GEO_RAIN,			// 66
 
+		// Peeing particles
+		GEO_PEEING_PARTICLES,
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,
@@ -273,7 +277,8 @@ public:
 	
 	void initMenu();
 	void initGameData();		//trigger this when restarting
-	//void initPlayer();
+	void initPeeing();			//for peeing feature
+	void initPlayer();
 	void initEnemies();
 	void initUniforms();
 	void initVariables();
@@ -309,6 +314,7 @@ public:
 	CLaser* FetchLaser();
 	CDoll* FetchDoll();
 	CParticle* FetchRain();
+	void FetchPeeingParticle();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -333,6 +339,7 @@ public:
 	void RenderDebugWireframe();
 	void RenderCompass();
 	void RenderWarning();
+	void RenderPeeingParticles();
 
 	//Test render 2D Partitioning
 	void RenderTileMap();
@@ -396,6 +403,7 @@ private:
 	std::vector<CDoll *> myDollList;
 	std::vector<CParticle *> myParticleList;
 	std::vector<string> mySpeechList;
+	std::vector<CPeeingParticleInfo *> myPeeingParticleList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
@@ -465,6 +473,7 @@ private:
 	//Vector3 m_gravity;
 	CPhysics physicsEngine;
 	
+	CPeeing* m_cPeeing;
 
 	//Light Depth Buffer
 	unsigned m_gPassShaderID;
