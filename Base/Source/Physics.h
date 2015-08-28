@@ -8,6 +8,7 @@
 #include "Light.h"
 #include "Particle.h"
 #include "Enemy.h"
+#include "Peeing.h"
 #include <iostream>
 #include <sstream>
 
@@ -54,6 +55,9 @@ public:
 
 	// Weather
 	void UpdateWeather(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, double& dt, std::vector<CEnemy *> enemy);
+
+	//Peeing
+	void UpdatePeeing(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap, const Vector3& terrainSize, Camera3& camera, double& dt);
 
 	// Set enable weather
 	void SetEnableWeather(bool enableWeather);

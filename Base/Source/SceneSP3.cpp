@@ -75,7 +75,20 @@ void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
 		}
 	}
 }
+void SceneSP3::initPeeing()
+{
+	//initialize peeing
+	//the parameters are as such:
+	//ammo count, ammo clip size, firing rate, reload timer, is it active?, need reload?, is it firing?
+	m_cPeeing = new CPeeing(60, 60, 0.1f, 0.f, true, false, false);
 
+	//create an vector array of peeing AMMO
+	for(int i = 0; i < 120; ++i)
+	{
+		CParticle* go = new CParticle(CParticle::PARTICLE_PEE);
+		myParticleList.push_back(go);
+	}
+}
 
 void SceneSP3::initMenu()
 {	
@@ -164,7 +177,9 @@ void SceneSP3::Init()
 {
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
-//	initPlayer();
+
+	//initPlayer();
+	initPeeing();
 	initMeshlist();
 	initVariables();
 
@@ -689,6 +704,15 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_SPEECH_UI] = MeshBuilder::GenerateQuad("GEO_SPEECH_UI",Color(1,1,1),1.f);
 	meshList[GEO_SPEECH_UI]->textureID = LoadTGA("Image//dialogBox.tga");
 
+	meshList[GEO_WATCH_UI] = MeshBuilder::GenerateQuad("GEO_WATCH_UI",Color(1,1,1),1.f);
+	meshList[GEO_WATCH_UI]->textureID = LoadTGA("Image//watch_base.tga");
+
+	meshList[GEO_WATCH_HOUR_HAND_UI] = MeshBuilder::GenerateQuad("GEO_WATCH_HOUR_HAND_UI",Color(1,1,1),1.f);
+	meshList[GEO_WATCH_HOUR_HAND_UI]->textureID = LoadTGA("Image//watch_hour.tga");
+
+	meshList[GEO_WATCH_MIN_HAND_UI] = MeshBuilder::GenerateQuad("GEO_WATCH_MIN_HAND_UI",Color(1,1,1),1.f);
+	meshList[GEO_WATCH_MIN_HAND_UI]->textureID = LoadTGA("Image//watch_min.tga");
+
 	//peeing particles
 	meshList[GEO_PEEING_PARTICLES] = MeshBuilder::GenerateSphere("GEO_PEEING_PARTICLES", Color(1, 1, 0), 18, 36, 1.f);
 }
@@ -764,7 +788,7 @@ void SceneSP3::initVariables()
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
-	CParticle* ptr = FetchRain();
+	CParticle* ptr = FetchParticle();
 	physicsEngine.SetWorldTime(335);
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
@@ -1192,12 +1216,9 @@ void SceneSP3::UpdatePlay(double dt)
 		}
 	}
 	// Update the weather
+	CParticle *go = FetchParticle();
 
-		CParticle *go = FetchRain();
-		physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
-
-	
-
+	physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
 	//Update the sun
 	physicsEngine.UpdateSun(lights[0], dt);
 	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
@@ -1245,19 +1266,22 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 		bRButtonState = false;
 		std::cout << "R MOUSE BUTTON UP" << std::endl;
 	}
-	else if(bQButtonState && !Application::IsKeyPressed('Q'))
-	{
-		bQButtonState = false;
-		std::cout << "Q BUTTON UP" << std::endl;
-	}
 
 	if(bRButtonState && m_cPeeing->getAmmo() != 0)
 	{
+		CParticle *go = FetchParticle();
+
 		m_cPeeing->setFiring(m_cPeeing->getFiring() - dt);
 		
+		go->active = true;
+		go->type = CParticle::PARTICLE_PEE;
+		go->scale.Set(0.1, 0.1, 0.1);
+		go->vel.Set(((camera.target.x - camera.position.x)), (camera.target.y - camera.position.y) + 10, ((camera.target.z - camera.position.z)));
+		go->pos.Set(camera.position.x, camera.position.y - 5, camera.position.z);
+
 		if(m_cPeeing->getIsFiring())
 		{	
-			FetchPeeingParticle();	
+			FetchParticle();	
 			m_cPeeing->setAmmo(m_cPeeing->getAmmo()-1);
 			m_cPeeing->setIsFiring(false);
 		}
@@ -1288,17 +1312,10 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 			m_cPeeing->setNeedReload(false);
 		}
 	}
-
-	//looks through the bullet list, spawns the object required
-	for(std::vector<CPeeingParticleInfo*> ::iterator it = myPeeingParticleList.begin() ; it != myPeeingParticleList.end(); ++it)
-	{
-		CPeeingParticleInfo *bullet = (CPeeingParticleInfo* ) *it;
-		if(bullet->getStatus())
-		{
-			bullet->Update(dt);
-		}
-	}
+	CParticle *go = FetchParticle();
+	physicsEngine.UpdatePeeing(myParticleList, go, m_heightMap, TERRAIN_SCALE, camera, dt);
 }
+	
 void SceneSP3::UpdateSceneControls()
 {
 	if(Application::IsKeyPressed(VK_F1))
@@ -1435,7 +1452,7 @@ CDoll* SceneSP3::FetchDoll()
 	go->setActive(true);
 	return go;
 }
-CParticle* SceneSP3::FetchRain()
+CParticle* SceneSP3::FetchParticle()
 {
 	for (std::vector<CParticle*>::iterator i = myParticleList.begin(); i != myParticleList.end(); ++i)
 	{
@@ -1993,30 +2010,26 @@ void SceneSP3::RenderWarning()
 		}
 	}
 }
+void SceneSP3::RenderWatch()
+{
+	RenderMeshIn2D(meshList[GEO_WATCH_UI], 40, -60, 10);
+
+	//float hour;
+	//int min;
+
+
+	//hour = (int)(physicsEngine.GetWorldTime()/60);
+	//min = (int)(physicsEngine.GetWorldTime())%60;
+
+	//float theta = Math::RadianToDegree(atan2(min, hour));
+	//RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -theta);
+}
 void SceneSP3::RenderCompass()
 {
 	RenderMeshIn2D(meshList[GEO_COMPASS_UI],20,60,10);
 	Vector3 temp = camera.position-camera.target ;
 	float theta = Math::RadianToDegree(atan2(temp.x,temp.z));
 	RenderMeshIn2D(meshList[GEO_COMPASS_NEEDLE_UI],20,60,10,true,-theta);
-}
-void SceneSP3::RenderPeeingParticles()
-{
-	//looks through the bullet list, spawns the object required
-	for(std::vector<CPeeingParticleInfo*> ::iterator it = myPeeingParticleList.begin() ; it != myPeeingParticleList.end(); ++it)
-	{
-		CPeeingParticleInfo *go = (CPeeingParticleInfo* ) *it;
-		if(go->getStatus())
-		{
-			modelStack.PushMatrix();
-			//modelStack.Translate(2.5, -1.25, 2.5);
-			modelStack.Translate(go->getPosition().x, go->getPosition().y,go->getPosition().z);
-			//modelStack.Rotate(-90, 1, 0, 0);
-			modelStack.Scale(go->getScale().x, go->getScale().y, go->getScale().z);
-			RenderMesh(meshList[GEO_PEEING_PARTICLES], false);
-			modelStack.PopMatrix();
-		}
-	}
 }
 void SceneSP3::RenderRain(CParticle* go)
 {
@@ -2035,6 +2048,13 @@ void SceneSP3::RenderRain(CParticle* go)
 		RenderMesh(meshList[GEO_RAIN], false);
 		modelStack.PopMatrix();
 		break;
+	case CParticle::PARTICLE_PEE:
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_PEEING_PARTICLES], false);
+		modelStack.PopMatrix();
+		break;
 	}
 }
 void SceneSP3::RenderUI()
@@ -2048,6 +2068,7 @@ void SceneSP3::RenderUI()
 			RenderMeshUI(meshList[GEO_GREEN], 190,150,150,1,1);
 			modelStack.PopMatrix();
 		}
+	RenderWatch();
 	RenderCompass();
 	RenderWarning();
 
@@ -2377,7 +2398,6 @@ void SceneSP3::RenderWorld()
 	RenderMesh(meshList[GEO_SPHERE],false);
 	modelStack.PopMatrix();
 
-	RenderPeeingParticles();
 	RenderObjList();
 	RenderDoorList();
 	RenderInmateList();
@@ -2725,12 +2745,6 @@ void SceneSP3::Exit()
 	{
 		if(meshList[i])
 			delete meshList[i];
-	}
-	while(myPeeingParticleList.size() > 0)
-	{
-		CPeeingParticleInfo *go = myPeeingParticleList.back();
-		delete go;
-		myPeeingParticleList.pop_back();
 	}
 	while(myObjList.size() > 0)
 	{
