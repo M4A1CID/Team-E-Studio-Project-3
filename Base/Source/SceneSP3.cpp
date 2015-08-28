@@ -775,7 +775,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 2;
+	m_Current_Level = 0;
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -790,7 +790,7 @@ void SceneSP3::initVariables()
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
-	CParticle* ptr = FetchParticle();
+	//CParticle* ptr = FetchParticle();
 	physicsEngine.SetWorldTime(335);
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
