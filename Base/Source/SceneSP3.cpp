@@ -1525,7 +1525,12 @@ bool SceneSP3::LoadFromTextFilePlayer(const string mapString)
 	Vector3 Pos;
 	Vector3 Scale;
 	bool active;
-	thePlayer = new CPlayer();
+	
+	if(thePlayer == NULL)
+	{
+		thePlayer = new CPlayer();
+	}
+
 	if (myfile.is_open())
 	{
 		while ( myfile >> active >> Pos.x >> Pos.y >> Pos.z >> Scale.x >> Scale.y >> Scale.z)
