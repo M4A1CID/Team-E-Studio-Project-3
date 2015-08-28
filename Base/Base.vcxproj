@@ -23,6 +23,7 @@
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\FrustrumCulling.cpp" />
     <ClCompile Include="Source\Guard.cpp" />
+    <ClCompile Include="Source\Inmate.cpp" />
     <ClCompile Include="Source\Item.cpp" />
     <ClCompile Include="Source\Key.cpp" />
     <ClCompile Include="Source\Laser.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="Source\FrustrumCulling.h" />
     <ClInclude Include="Source\Geometry.h" />
     <ClInclude Include="Source\Guard.h" />
+    <ClInclude Include="Source\Inmate.h" />
     <ClInclude Include="Source\Item.h" />
     <ClInclude Include="Source\Key.h" />
     <ClInclude Include="Source\Laser.h" />

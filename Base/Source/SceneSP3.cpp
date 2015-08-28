@@ -1179,10 +1179,14 @@ void SceneSP3::UpdatePlay(double dt)
 		}
 	}
 	// Update the weather
-	
-	CParticle *go = FetchRain();
 
-	physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt);
+	//if (m_fRainTimer > 10.f)
+	//{
+		CParticle *go = FetchRain();
+		physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
+
+		//m_fRainTimer = 0.f;
+	//}
 
 	/*if (physicsEngine.GetEnableWeather() == true && go->active == true)
 	 {
@@ -1405,7 +1409,7 @@ CParticle* SceneSP3::FetchRain()
 		}
 	}
 
-	for (unsigned i = 0; i < 200; ++i)
+	for (unsigned i = 0; i < 10; ++i)
 	{
 		CParticle* go = new CParticle(CParticle::PARTICLE_RAIN);
 		myParticleList.push_back(go);
@@ -2197,7 +2201,10 @@ void SceneSP3::RenderGamePlay()
 
 		if (go->active == true)
 		{
-			RenderRain(go);
+			if (PointInFrustum(go->pos.x, go->pos.y, go->pos.z))
+			{
+				RenderRain(go);
+			}
 		}
 	}
 	RenderDebugWireframe();
@@ -2318,7 +2325,7 @@ void SceneSP3::RenderWorld()
 	RenderLaserList();
 	RenderDollList();
 	
-	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
+	//RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 	RenderKeyList();
 }
 void SceneSP3::RenderObjList()

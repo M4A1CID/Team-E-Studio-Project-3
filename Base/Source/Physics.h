@@ -7,6 +7,7 @@
 #include "LoadHmap.h"
 #include "Light.h"
 #include "Particle.h"
+#include "Enemy.h"
 #include <iostream>
 #include <sstream>
 
@@ -52,7 +53,7 @@ public:
 	void UpdateSun(Light &, double & dt);
 
 	// Weather
-	void UpdateWeather(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, double& dt);
+	void UpdateWeather(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, double& dt, std::vector<CEnemy *> enemy);
 
 	// Set enable weather
 	void SetEnableWeather(bool enableWeather);
@@ -64,6 +65,11 @@ public:
 	float GetWorldTime(void);
 	// Set the current world time
 	void SetWorldTime(float);
+
+	// Set wind direction
+	void SetWindDirection(Vector3);
+	// Get wind direction
+	Vector3 GetWindDirection(void);
 
 	string GetHourTime(void);
 	string GetMinuteTime(void);
@@ -80,4 +86,10 @@ private:
 
 	// Weather
 	bool m_bEnableWeather;
+	Vector3 WindDirection;
+	float WindTimer;
+	Vector3 difference;
+	float m_spawnRateTimer;
+	float m_fRainTimer;
+	float m_fRainRate;
 };

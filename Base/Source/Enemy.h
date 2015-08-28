@@ -5,9 +5,10 @@
 
 class CEnemy
 {
-	static const int ENEMY_VIEW_DISTANCE = 100;
+	
 	static const int ENEMY_MOVE_SPEED = 60;
 public:
+	static const int ENEMY_VIEW_DISTANCE = 100;
 	CEnemy(void);
 	CEnemy(Vector3 Pos, Vector3 Scale, int GeoType, bool Active);
 	virtual ~CEnemy(void);
@@ -150,9 +151,14 @@ public:
 	// Get current state
 	int getCurrentState(void);
 
+
 	void setRotateForward(bool);
 	int getRotateForward(void);
 
+	// Set visibility range
+	void setVisibility(float);
+	// Get visibility range
+	float getVisibility(void);
 
 private:
 	Vector3 Pos;			// Enemy's position
@@ -197,6 +203,8 @@ private:
 	// Head Rotation value
 	float RotationHead;
 
+	// Visibility
+	float VisibilityRange;
 
 	//CStrategy* theStrategy;	// Enemy's strategy
 

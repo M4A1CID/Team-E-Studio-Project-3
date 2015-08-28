@@ -7,6 +7,12 @@ CPhysics::CPhysics(void)
 	m_fOffset = 160.f;
 	m_fLaserDetectionRange = 5.f;
 	m_time_interval= 0;
+	WindDirection = Vector3(0.f, 0.f, 0.f);
+	WindTimer = 0.f;
+	difference = Vector3(0.f, 0.f, 0.f);
+	m_spawnRateTimer = 0.f;
+	m_fRainTimer = 0.f;
+	m_fRainRate = 0.01f;
 }
 
 CPhysics::~CPhysics(void)
@@ -183,8 +189,8 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 
 
 //Barycentric Coordinate
- float CPhysics::barryCentric(Vector3 & p1, Vector3 & p2, Vector3 & p3, Vector2 & pos) 
- {
+float CPhysics::barryCentric(Vector3 & p1, Vector3 & p2, Vector3 & p3, Vector2 & pos) 
+{
 	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
 	float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
@@ -192,226 +198,272 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 	return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 }
 
- //void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
- //{
-	//  
+//void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
+//{
+//  
 
-	// 
-	// float x = thePlayer->GetPosition().x / 4000.f;
-	// float z = thePlayer->GetPosition().z / 4000.f;
+// 
+// float x = thePlayer->GetPosition().x / 4000.f;
+// float z = thePlayer->GetPosition().z / 4000.f;
 
-	// //If out of bound
-	//if(x < -0.5f || x > 0.5f || z < -0.5f || z > 0.5f)
-	//	return;
+// //If out of bound
+//if(x < -0.5f || x > 0.5f || z < -0.5f || z > 0.5f)
+//	return;
 
-	////If heightMap failed to load and is empty
-	//if(heightMap.size() == 0)
-	//	return;
-
-
-	//unsigned terrainSize = static_cast<unsigned>((unsigned)sqrt(static_cast<double>(heightMap.size()))); 
-	// x/= terrainSize;
-	// z/= terrainSize;
-
-	// //get the size of the grid based on the terrain size
-	// float gridSquareSize = 1.f/ (terrainSize);
-
-	// int gridX = (x + 0.5f) / gridSquareSize;
-	// int gridZ = (z + 0.5f) / gridSquareSize;
-
-	// //get the coordinates based on the player position and terrain size
-	// float xCoord = fmod((x + 0.5f),gridSquareSize) / gridSquareSize;
-	// float zCoord = fmod((z + 0.5f),gridSquareSize) / gridSquareSize;
-
-	// float answer = 0.f;
-
-	// if (xCoord <= (1-zCoord)) 
-	// {
-	//	 answer = barryCentric(Vector3(0, heights[gridX][gridZ], 0), 
-	//		 Vector3(1,heights[gridX + 1][gridZ], 0), 
-	//		 Vector3(0,heights[gridX][gridZ + 1], 1),  
-	//		 Vector2(xCoord, zCoord));
-	// } 
-	// else 
-	// {
-	//	 answer = barryCentric(Vector3(1, heights[gridX + 1][gridZ], 0),
-	//		 Vector3(1, heights[gridX + 1][gridZ + 1], 1), 
-	//		 Vector3(0, heights[gridX][gridZ + 1], 1), 
-	//		 Vector2(xCoord, zCoord));
-	// }
-
-	// float diffY = answer - thePlayer->GetPosition().y;
-	// camera.position.y += diffY +20;
-	// camera.target.y += diffY +20;
-	// thePlayer->SetPositionY(camera.position.y + (answer / 256.f));
-	//
- //}
-
- // Dynamic Light based on time
- void CPhysics::UpdateSun(Light & light, double & dt)
- {
-	 // Real life vs In-game time
-	 //		1sec	:	1min		
-	 //		1min	:	1hour
-	 //		60sec	:	60min
-	 //		720sec  :   12:00
-	 //		1440sec	:   24:00
-	
-	 m_In_World_Time +=  (float)dt;
-	 m_time_interval +=  (float)dt;
-	 //If it hits 24:00, set it back to 00:00 
-	 if(m_In_World_Time > 1440)
-	 {
-		 m_In_World_Time = 0;
-	 }
-
-	 // for each second that pass
-	 if(m_time_interval >= 1)
-	 {
-		 // 20:00 ~ 06:00         Night Time
-		 if(m_In_World_Time > 1200 || m_In_World_Time <= 360)
-		 {
-
-			 diff = Vector3(0.164f,0.145f,0.207f) -current;
-			 if(!diff.IsZero())
-				 diff =  diff.Normalize() * (float)dt * 0.01f;
-			 current += diff;
-			 m_time_interval = 0;
-
-		 }
-		 //06:00 ~ 08:00		Morning Time
-		 else if(m_In_World_Time >360 && m_In_World_Time <= 480)
-		 {
-			 diff = Vector3(1.f,0.572f,0.f) -current;
-			 if(!diff.IsZero())
-			 diff =  diff.Normalize() * (float)dt * 0.01f;
-			 light.power += 0.01f * (float)dt;
-			 current += diff;
-			 m_time_interval = 0;
-
-		 }
-		 // 08:00 ~ 10:00		Going to afternoon time
-		 else if(m_In_World_Time > 480 && m_In_World_Time <= 600)
-		 {
-			 diff = Vector3(1.f,0.85f,0.f) -current;
-			 if(!diff.IsZero())
-			 diff =  diff.Normalize() * (float)dt * 0.01f;
-			 current += diff;
-			 m_time_interval = 0;
-
-		 }
-		 // 10:00 ~ 18:00	Afternoon time
-		 else if(m_In_World_Time > 600 && m_In_World_Time <= 1080)
-		 {
-
-			 diff = Vector3(1.f,0.85f,0.f) -current;
-			 if(!diff.IsZero())
-			 diff =  diff.Normalize() * (float)dt * 0.01f;
-			 current += diff;
-			 m_time_interval = 0;
+////If heightMap failed to load and is empty
+//if(heightMap.size() == 0)
+//	return;
 
 
-		 }
-		 // 18:00 ~ 20:00	Evening time
-		 else if(m_In_World_Time > 1080 && m_In_World_Time <= 1200)
-		 {
+//unsigned terrainSize = static_cast<unsigned>((unsigned)sqrt(static_cast<double>(heightMap.size()))); 
+// x/= terrainSize;
+// z/= terrainSize;
 
-			 diff = Vector3(0.164f,0.145f,0.207f) -current;
-			 if(!diff.IsZero())
-			 diff =  diff.Normalize() * (float)dt * 0.01f;
-			 light.power -= 0.01f * (float)dt;
-			 current += diff;
-			 m_time_interval = 0;
+// //get the size of the grid based on the terrain size
+// float gridSquareSize = 1.f/ (terrainSize);
 
-		 }
-	 }
+// int gridX = (x + 0.5f) / gridSquareSize;
+// int gridZ = (z + 0.5f) / gridSquareSize;
+
+// //get the coordinates based on the player position and terrain size
+// float xCoord = fmod((x + 0.5f),gridSquareSize) / gridSquareSize;
+// float zCoord = fmod((z + 0.5f),gridSquareSize) / gridSquareSize;
+
+// float answer = 0.f;
+
+// if (xCoord <= (1-zCoord)) 
+// {
+//	 answer = barryCentric(Vector3(0, heights[gridX][gridZ], 0), 
+//		 Vector3(1,heights[gridX + 1][gridZ], 0), 
+//		 Vector3(0,heights[gridX][gridZ + 1], 1),  
+//		 Vector2(xCoord, zCoord));
+// } 
+// else 
+// {
+//	 answer = barryCentric(Vector3(1, heights[gridX + 1][gridZ], 0),
+//		 Vector3(1, heights[gridX + 1][gridZ + 1], 1), 
+//		 Vector3(0, heights[gridX][gridZ + 1], 1), 
+//		 Vector2(xCoord, zCoord));
+// }
+
+// float diffY = answer - thePlayer->GetPosition().y;
+// camera.position.y += diffY +20;
+// camera.target.y += diffY +20;
+// thePlayer->SetPositionY(camera.position.y + (answer / 256.f));
+//
+//}
+
+// Dynamic Light based on time
+void CPhysics::UpdateSun(Light & light, double & dt)
+{
+	// Real life vs In-game time
+	//		1sec	:	1min		
+	//		1min	:	1hour
+	//		60sec	:	60min
+	//		720sec  :   12:00
+	//		1440sec	:   24:00
+
+	m_In_World_Time +=  (float)dt;
+	m_time_interval +=  (float)dt;
+	//If it hits 24:00, set it back to 00:00 
+	if(m_In_World_Time > 1440)
+	{
+		m_In_World_Time = 0;
+	}
+
+	// for each second that pass
+	if(m_time_interval >= 1)
+	{
+		// 20:00 ~ 06:00         Night Time
+		if(m_In_World_Time > 1200 || m_In_World_Time <= 360)
+		{
+
+			diff = Vector3(0.164f,0.145f,0.207f) -current;
+			diff =  diff.Normalize() * (float)dt * 0.01f;
+			current += diff;
+			m_time_interval = 0;
+
+		}
+		//06:00 ~ 08:00		Morning Time
+		else if(m_In_World_Time >360 && m_In_World_Time <= 480)
+		{
+			diff = Vector3(1.f,0.572f,0.f) -current;
+			diff =  diff.Normalize() * (float)dt * 0.01f;
+			current += diff;
+			m_time_interval = 0;
+
+		}
+		// 08:00 ~ 10:00		Going to afternoon time
+		else if(m_In_World_Time > 480 && m_In_World_Time <= 600)
+		{
+			diff = Vector3(1.f,0.85f,0.f) -current;
+			diff =  diff.Normalize() * (float)dt * 0.01f;
+			current += diff;
+			m_time_interval = 0;
+
+		}
+		// 10:00 ~ 18:00	Afternoon time
+		else if(m_In_World_Time > 600 && m_In_World_Time <= 1080)
+		{
+
+			diff = Vector3(1.f,0.85f,0.f) -current;
+			diff =  diff.Normalize() * (float)dt * 0.01f;
+			current += diff;
+			m_time_interval = 0;
 
 
-	 light.color.Set(current.x ,current.y,current.z);
-	
- }
+		}
+		// 18:00 ~ 20:00	Evening time
+		else if(m_In_World_Time > 1080 && m_In_World_Time <= 1200)
+		{
 
- // Get the current world time
- float CPhysics::GetWorldTime(void)
- {
-	 return m_In_World_Time;
- }
- // Set the current world time
- void CPhysics::SetWorldTime(float time)
- {
-	 this->m_In_World_Time = time;
- }
+			diff = Vector3(0.164f,0.145f,0.207f) -current;
+			diff =  diff.Normalize() * (float)dt * 0.01f;
+			current += diff;
+			m_time_interval = 0;
 
- // Set enable weather
- void CPhysics::SetEnableWeather(bool enableWeather)
- {
-	 this->m_bEnableWeather = enableWeather;
- }
-
- // Get enable weather
- bool CPhysics::GetEnableWeather()
- {
-	 return m_bEnableWeather;
- }
-
- string CPhysics::GetHourTime(void)
- {
-	 int temp = (int)m_In_World_Time / 60;
-	  std::ostringstream ss;
-	 if(temp < 10)
-	 {
-		
-		 ss << "0" << temp;
-	 }
-	 else
-	 {
-		 ss << temp;
-	 }
-	 return ss.str();
- }
- string CPhysics::GetMinuteTime(void)
- {
-	 int temp = (int)m_In_World_Time;
-	 temp = temp % 60;
-	  std::ostringstream ss;
-	 if(temp < 10)
-	 {
-		
-		 ss << "0" << temp;
-	 }
-	 else
-	 {
-		 ss << temp;
-	 }
-	 return ss.str();
- }
-
- void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt)
- {
-	 if (GetEnableWeather() == true && particle->active == true)
-	 {
-		 particle->type = CParticle::PARTICLE_RAIN;
-		 particle->scale.Set(1, 1, 1);
-		 particle->vel.Set(0, 0, 0);
-		 particle->pos.Set(Math::RandFloatMinMax(-1500, 1500), 300, Math::RandIntMinMax(-1500, 1500));
-	 }
+		}
+	}
 
 
-	 for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
-	 {
-		 CParticle* go = (CParticle *)*it;
+	light.color.Set(current.x ,current.y,current.z);
 
-		 if (GetEnableWeather() == true)
-		 {
-			 go->vel += getGravity() * dt;
-			 go->pos += go->vel * dt;
-		 }
-		 if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightmap, terrainSize))
-		 {
-			 go->active = false;
-		 }
-	 }
- }
+}
+
+// Get the current world time
+float CPhysics::GetWorldTime(void)
+{
+	return m_In_World_Time;
+}
+// Set the current world time
+void CPhysics::SetWorldTime(float time)
+{
+	this->m_In_World_Time = time;
+}
+
+// Set enable weather
+void CPhysics::SetEnableWeather(bool enableWeather)
+{
+	this->m_bEnableWeather = enableWeather;
+}
+
+// Get enable weather
+bool CPhysics::GetEnableWeather()
+{
+	return m_bEnableWeather;
+}
+
+// Set wind direction
+void CPhysics::SetWindDirection(Vector3 WindDirection)
+{
+	this->WindDirection = WindDirection;
+}
+
+// Get wind direction
+Vector3 CPhysics::GetWindDirection(void)
+{
+	return WindDirection;
+}
+
+string CPhysics::GetHourTime(void)
+{
+	int temp = (int)m_In_World_Time / 60;
+	std::ostringstream ss;
+	if(temp < 10)
+	{
+
+		ss << "0" << temp;
+	}
+	else
+	{
+		ss << temp;
+	}
+	return ss.str();
+}
+string CPhysics::GetMinuteTime(void)
+{
+	int temp = (int)m_In_World_Time;
+	temp = temp % 60;
+	std::ostringstream ss;
+	if(temp < 10)
+	{
+
+		ss << "0" << temp;
+	}
+	else
+	{
+		ss << temp;
+	}
+	return ss.str();
+}
+
+void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt, std::vector<CEnemy *> myEnemyList)
+{
+	float offset = 20.f;
+	WindTimer += dt;
+	m_spawnRateTimer += (float)dt;
+	m_fRainTimer += (float)dt;
+
+	if (GetEnableWeather() == true && particle->active == true)
+	{
+		if (m_fRainTimer > m_fRainRate)
+		{
+			particle->type = CParticle::PARTICLE_RAIN;
+			particle->scale.Set(1, 1, 1);
+			particle->vel.Set(0, 0, 0);
+			particle->pos.Set(Math::RandFloatMinMax(-2000, 2000), 1500, Math::RandIntMinMax(-2000, 2000));
+
+			m_fRainTimer = 0;
+		}
+	}
+
+	if (WindTimer > 30.f)
+	{
+		WindDirection = Vector3(Math::RandFloatMinMax(-15, 15), Math::RandFloatMinMax(-1.75, 0), Math::RandFloatMinMax(-15, 15));
+		WindTimer = 0.f;
+		cout << WindDirection << endl;
+	}
+
+	for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
+	{
+		CParticle* go = (CParticle *)*it;
+
+		if (GetEnableWeather() == true)
+		{
+			//if(!difference.IsZero())
+			//{
+			difference = WindDirection + m_Gravity;
+			//}
+			go->vel += difference * dt;
+			go->pos += go->vel * dt;
+		}
+		if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightmap, terrainSize) - offset)
+		{
+			go->active = false;
+		}
+	}
+
+	for (std::vector<CEnemy* >::iterator it = myEnemyList.begin(); it != myEnemyList.end(); ++it)
+	{
+		CEnemy* enemy = (CEnemy *)* it;
+
+		if (GetEnableWeather() == true && enemy->getVisibility() != CEnemy::ENEMY_VIEW_DISTANCE * 0.75f)
+		{
+			enemy->setVisibility(enemy->getVisibility() * 0.75f);
+			cout << enemy->getVisibility() << endl;
+		}
+	}
+	if (m_spawnRateTimer > 240)
+	{
+		SetEnableWeather(false);
+		for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
+		{
+			CParticle* go = (CParticle *)*it;
+
+			go->active = false;
+		}
+	}
+}
 
 //Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )
 //{

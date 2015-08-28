@@ -5,6 +5,7 @@ CEnemy::CEnemy(void)
 	this->isAlerted = false;
 	prev.SetZero();
 	currentState = STATE_IDLE;
+	VisibilityRange = ENEMY_VIEW_DISTANCE;
 }
 CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
 {
@@ -242,7 +243,7 @@ void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
 	
 	
 
-	if( temp.Length() < ENEMY_VIEW_DISTANCE) // If player is close enough to the enemy
+	if( temp.Length() < VisibilityRange) // If player is close enough to the enemy
 	{
 		if(LeftView.Length() != 0)
 		LeftView.Normalize();
@@ -569,4 +570,14 @@ void CEnemy::setRotateForward(bool rotateForward)
 int CEnemy::getRotateForward(void)
 {
 	return rotateForward;
+}
+// Set visibility range
+void CEnemy::setVisibility(float visibility)
+{
+	this->VisibilityRange = visibility;
+}
+// Get visibility range
+float CEnemy::getVisibility(void)
+{
+	return VisibilityRange;
 }
