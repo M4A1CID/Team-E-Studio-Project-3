@@ -31,14 +31,14 @@
 #include <fstream>
 
 //Modify this to load your level via string
-const static string m_fileBuffer[5] = {"Level Glenn"};
+const static string m_fileBuffer[5] = {"Level Sandbox"};
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
-	const static int INTERACTION_DISTANCE = 10;
+	const static int INTERACTION_DISTANCE = 20;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
@@ -342,6 +342,7 @@ public:
 	void UpdateEnemies(double dt);
 	void UpdateSceneControls();
 	void UpdateInvisibility(double dt);
+	void UpdateNVM(double dt);
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);
@@ -429,6 +430,7 @@ private:
 	bool MaxCollected;
 	bool NVM;
 	bool Invis;
+	double NVTime;
 	double InvisTime;
 
 	ISoundEngine* engine;

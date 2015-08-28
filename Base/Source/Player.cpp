@@ -7,18 +7,14 @@ CPlayer::CPlayer(void)
 	: active(false)
 	, pos(0, 0, 0)
 	, scale(0, 0, 0)
-	, itemsHeld(0)
-	, maxItemCap(0)
 {
 }
 //cannot do the same construction as the default because this will have different set of values
-CPlayer::CPlayer(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap)
+CPlayer::CPlayer(bool active, Vector3 pos, Vector3 scale)
 {
 	this->active = active;
 	this->pos = pos;
 	this->scale = scale;
-	this->itemsHeld = itemsHeld;
-	this->maxItemCap = maxItemCap;
 	this->detected = false;
 }
 //the destructor. nothing to destroy right now
@@ -136,17 +132,6 @@ float CPlayer::GetScaleZ(void)
 }
 
 /*============= inventory-related codes for player =================*/
-
-//get current maximum item capacity of player
-int CPlayer::getMaxItemCap()
-{
-	return maxItemCap;
-}
-//get current number of items held by player
-int CPlayer::getItemsHeld()
-{
-	return itemsHeld;
-}
 //this is when player picks up an item and our 
 void CPlayer::setInventory(CItem* pickedUp)
 {

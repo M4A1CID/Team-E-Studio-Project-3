@@ -19,6 +19,7 @@ SceneSP3::SceneSP3()
 	, MedCollected(false)
 	, MaxCollected(false)
 	, NVM(false)
+	, NVTime(10)
 	, Invis(false)
 	, InvisTime(15)
 	, m_speed(1)
@@ -83,7 +84,7 @@ void SceneSP3::initPlayer()
 {
 	//initialize the player class using the overloaded constructor
 	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
-	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5), 0, 2);
+	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5));
 
 	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
@@ -956,7 +957,6 @@ void SceneSP3::checkOpenDoor()
 }
 void SceneSP3::UpdateInvisibility(double dt)
 {
-	//cout << InvisTime << endl;
 	if(Invis)
 	{
 		InvisTime -= dt;
@@ -965,6 +965,19 @@ void SceneSP3::UpdateInvisibility(double dt)
 		{
 			Invis = false;
 			InvisTime = 15;
+		}
+	}
+}
+void SceneSP3::UpdateNVM(double dt)
+{
+	if(NVM)
+	{
+		NVTime -= dt;
+
+		if(NVTime < 0)
+		{
+			NVM = false;
+			NVTime = 10;
 		}
 	}
 }
@@ -995,6 +1008,7 @@ void SceneSP3::UpdateEnemies(double dt)
 void SceneSP3::UpdatePlay(double dt)
 {
 	UpdateInvisibility(dt);
+	UpdateNVM(dt);
 	m_Z_Buffer_timer += (float)dt;
 	if( m_Z_Buffer_timer > 0.3) //Update the Z buffer every 0.3sec
 	{
@@ -1149,11 +1163,11 @@ void SceneSP3::UpdateSceneControls()
 		m_speed += 0.1f;
 	}
 
-	if(Application::IsKeyPressed('8'))
+	if(Application::IsKeyPressed('8') || NVM == false)
 	{
 		m_bLightEnabled = true;
 	}
-	if(Application::IsKeyPressed('9'))
+	if(Application::IsKeyPressed('9') || NVM == true)
 	{
 		m_bLightEnabled = false;
 	}
@@ -1728,29 +1742,24 @@ void SceneSP3::RenderUI()
 	//============================= HUD displayed on screen ====================================
 	SetHUD(true);
 
-	
-	RenderCompass();
-	RenderWarning();
-
-	
-
-	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
-
-
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 50);
-
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
-
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
-
-		//thePlayer->GetActive();
-		
-		if(NVM == true)
+	if(NVM == true)
 		{
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_GREEN], 190,150,150,1,1);
 			modelStack.PopMatrix();
 		}
+	RenderCompass();
+	RenderWarning();
+
+	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
+
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 50);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
+
+		//thePlayer->GetActive();
+		
+		
 
 		if(MinCollected == true)
 		{
@@ -1813,6 +1822,14 @@ void SceneSP3::RenderUI()
 		ss << "Invis Time: " << InvisTime;
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 42.f);
 	}
+
+	if(NVM == true)
+	{
+		std::ostringstream ss;
+		ss.precision(3);
+		ss << "Night Vision Time: " << NVTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
+	}
 	std::ostringstream ss;
 	ss.precision(3);
 	ss << "FPS: " << m_fFps;
@@ -1830,11 +1847,11 @@ void SceneSP3::RenderUI()
 
 	ss.str(std::string());
 	ss << "Time: " << physicsEngine.GetHourTime() << ":" << physicsEngine.GetMinuteTime();
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 45);
 
 	ss.str(std::string());
 	ss << "Speed: " << m_speed;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 45);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 48);
 	
 	SetHUD(false);
 	

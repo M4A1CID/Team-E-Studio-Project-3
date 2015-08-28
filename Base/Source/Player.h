@@ -12,7 +12,7 @@ class CPlayer
 {
 public:
 	CPlayer(void);
-	CPlayer(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap);
+	CPlayer(bool active, Vector3 pos, Vector3 scale);
 	~CPlayer(void);
 
 	//void Init(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap);
@@ -66,9 +66,6 @@ public:
 	void setKeyList(CKey* pickedUp);
 	void setKeyList(CKey* pickedUp, int slot);
 
-	int getMaxItemCap();
-	int getItemsHeld();
-
 	// Animations
 	void Walking();
 	void Idle();
@@ -89,10 +86,6 @@ private:
 	bool active;	// if player is dead, this flips to false
 	bool detected;	// if the player is detected
 	Camera3 camera;
-
-	//below are the items-related code
-	int itemsHeld;						// number of items held by player
-	int maxItemCap;						// max number of items that can be carried by player
 
 	std::vector<CItem*> InventoryList;	// the list of items inside player's inventory
 	std::vector<CKey*> KeyList;			//List of keys inside player's inventory
