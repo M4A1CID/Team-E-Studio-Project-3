@@ -38,7 +38,7 @@ using namespace irrklang;
 class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
-	const static int INTERACTION_DISTANCE = 10;
+	const static int INTERACTION_DISTANCE = 128;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
@@ -250,7 +250,6 @@ class SceneSP3 : public Scene
 		GEO_DEBUG_AI,
 		NUM_GEOMETRY,
 	};
-
 	enum RENDER_PASS
 	{
 		RENDER_PASS_PRE,

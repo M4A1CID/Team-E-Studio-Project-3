@@ -20,7 +20,7 @@ SceneSP3::SceneSP3()
 	, MaxCollected(false)
 	, NVM(false)
 	, Invis(false)
-	, InvisTime(15)
+	, InvisTime(10)
 	, m_speed(1)
 	, m_RainCount(0)
 {
@@ -69,7 +69,6 @@ void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
 	}
 }
 
-
 void SceneSP3::initMenu()
 {	
 	//the singleton approach ensure that this isn't initialized more than once
@@ -83,7 +82,7 @@ void SceneSP3::initPlayer()
 {
 	//initialize the player class using the overloaded constructor
 	//the parameters are as follows: active, position, scale, items player is holding, total number of items that can be held
-	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5), 0, 2);
+	thePlayer = new CPlayer(true, Vector3(0, 70, 10), Vector3(5, 5, 5), 0, 2);
 
 	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
 }
@@ -957,14 +956,17 @@ void SceneSP3::checkOpenDoor()
 void SceneSP3::UpdateInvisibility(double dt)
 {
 	//cout << InvisTime << endl;
+
+	//this condition ensures that the time does not reset even if you pick up an extra Invisibility item
 	if(Invis)
 	{
 		InvisTime -= dt;
 
+		//reset to false and the time to original timing.
 		if(InvisTime < 0)
 		{
 			Invis = false;
-			InvisTime = 15;
+			InvisTime = 10;
 		}
 	}
 }
@@ -1110,17 +1112,57 @@ void SceneSP3::Update(double dt)
 }
 void SceneSP3::UpdatePeeingStatus(double dt)
 {
-	static bool bQButtonState = false;
+	////Mouse Section
+	//if(!bLButtonState && Application::IsMousePressed(0) && m_cCarbine->getNeedReload() == false && m_cCarbine->getActiveWeapon() == true && m_cCarbine->getIsEmpty() == false)
+	//{
+	//	bLButtonState = true;
+	//	std::cout << "LBUTTON DOWN" << std::endl;
+	//	m_cCarbine->setIsFiring(true);
+	//}
+	//else if(bLButtonState && !Application::IsMousePressed(0))
+	//{
+	//	bLButtonState = false;
+
+	//	GunFire = NULL;
+
+	//	std::cout << "LBUTTON UP" << std::endl;
+	//	//camera.target.y -= fRecoilPistol * (float) dt;
+	//}
+
+	//if(bLButtonState && m_cCarbine->getActiveRounds() != 0)
+	//{
+	//	if(GunFire->getIsPaused() == true)
+	//		GunFire->setIsPaused(false);
+	//	if(m_cCarbine->getFiringRate() < 0)
+	//		GunFire = NULL;
+	//	
+	//	m_cCarbine->setFiringRate(m_cCarbine->getFiringRate() - dt);
+	//	
+	//	if(m_cCarbine->getIsFiring())
+	//	{	
+	//		FetchBullet();	
+	//		m_cCarbine->setActiveRounds(m_cCarbine->getActiveRounds()-1);
+	//		camera.target.y += fRecoilCarbine * (float) dt;
+	//		m_cCarbine->setIsFiring(false);
+	//	}
+	//	if(m_cCarbine->getFiringRate() < 0 && m_cCarbine->getIsFiring() == false)
+	//	{
+	//		m_cCarbine->setFiringRate(0.1f);
+	//		m_cCarbine->setIsFiring(true);
+	//	}
+	//}
+	
+	static bool bRButtonState = false;
 	//Q button Selection
-	if(!bQButtonState && Application::IsKeyPressed('Q'))
+	if(!bRButtonState && Application::IsMousePressed(1))
 	{
-		bQButtonState = true;
-		std::cout << "Q BUTTON DOWN" << std::endl;
+		bRButtonState = true;
+		std::cout << "R MOUSE BUTTON DOWN" << std::endl;
 	}
-	else if(bQButtonState && !Application::IsKeyPressed('Q'))
+	else if(bRButtonState && !Application::IsMousePressed(1))
 	{
-		bQButtonState = false;
-		std::cout << "Q BUTTON UP" << std::endl;
+		bRButtonState = false;
+		std::cout << "R MOUSE BUTTON UP" << std::endl;
 	}
 }
 void SceneSP3::UpdateSceneControls()
