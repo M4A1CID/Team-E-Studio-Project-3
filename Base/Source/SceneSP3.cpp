@@ -22,6 +22,8 @@ SceneSP3::SceneSP3()
 	, NVTime(10)
 	, Invis(false)
 	, InvisTime(15)
+	, Cooldown(false)
+	, RechargeTime(20)
 	, m_speed(1)
 	, m_RainCount(0)
 {
@@ -994,14 +996,25 @@ void SceneSP3::UpdateInvisibility(double dt)
 }
 void SceneSP3::UpdateNVM(double dt)
 {
-	if(NVM)
+	if(NVM == true && Cooldown == false)
 	{
 		NVTime -= dt;
-
 		if(NVTime < 0)
 		{
 			NVM = false;
-			NVTime = 10;
+			Cooldown = true;
+		}
+	}
+}
+void SceneSP3::UpdateCooldown(double dt)
+{
+	if(NVM == false && Cooldown == true)
+	{
+		RechargeTime -= dt;
+		if(RechargeTime < 0)
+		{
+			Cooldown = false;
+			RechargeTime = 20;
 		}
 	}
 }
@@ -1124,6 +1137,7 @@ void SceneSP3::UpdatePlay(double dt)
 {
 	UpdateInvisibility(dt);
 	UpdateNVM(dt);
+	UpdateCooldown(dt);
 	m_Z_Buffer_timer += (float)dt;
 	if( m_Z_Buffer_timer > 0.3) //Update the Z buffer every 0.3sec
 	{
@@ -1273,7 +1287,10 @@ void SceneSP3::UpdateSceneControls()
 		checkOpenDoor();
 		checkDollFlip();
 	}
-
+	if(Application::IsKeyPressed('Q'))
+	{
+		NVM = true;
+	}
 	if(Application::IsKeyPressed(VK_F5))
 	{
 		m_speed = Math::Max(0.f, m_speed - 0.1f);
@@ -2086,6 +2103,20 @@ void SceneSP3::RenderUI()
 		std::ostringstream ss;
 		ss.precision(3);
 		ss << "Night Vision Time: " << NVTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
+	}
+	if(Cooldown == true)
+	{
+		std::ostringstream ss;
+		ss.precision(3);
+		ss << "Cooldown Time: " << RechargeTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
+	}
+	if(Cooldown == false && NVM == false)
+	{
+		std::ostringstream ss;
+		ss.precision(3);
+		ss << "Ready to use!";
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
 	}
 

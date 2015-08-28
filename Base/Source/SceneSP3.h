@@ -235,7 +235,7 @@ class SceneSP3 : public Scene
 		GEO_WARNING_UI,
 		GEO_OBJECTIVE_UI,
 		GEO_SPEECH_UI,
-
+		
 		//Menu system
 		GEO_MENU_BACKGROUND,
 		GEO_MENU,
@@ -253,7 +253,6 @@ class SceneSP3 : public Scene
 		GEO_DEBUG_AI,
 		NUM_GEOMETRY,
 	};
-
 	enum RENDER_PASS
 	{
 		RENDER_PASS_PRE,
@@ -273,7 +272,6 @@ public:
 	
 	void initMenu();
 	void initGameData();		//trigger this when restarting
-	//void initPlayer();
 	void initEnemies();
 	void initUniforms();
 	void initVariables();
@@ -350,6 +348,7 @@ public:
 	void UpdateSceneControls();
 	void UpdateInvisibility(double dt);
 	void UpdateNVM(double dt);
+	void UpdateCooldown(double dt);
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);
@@ -432,6 +431,7 @@ private:
 
 	//Handle to the player class
 	CPlayer* thePlayer;
+	CInmate* theInmate;
 
 	//Bools to render in UI; can be modified or removed if too expensive
 	bool MinCollected;
@@ -440,6 +440,8 @@ private:
 	bool NVM;
 	bool Invis;
 	bool Speech;
+	bool Cooldown;
+	double RechargeTime;
 	double NVTime;
 	double InvisTime;
 
