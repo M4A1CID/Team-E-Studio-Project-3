@@ -250,7 +250,6 @@ class SceneSP3 : public Scene
 		GEO_DEBUG_AI,
 		NUM_GEOMETRY,
 	};
-
 	enum RENDER_PASS
 	{
 		RENDER_PASS_PRE,

@@ -21,7 +21,7 @@ SceneSP3::SceneSP3()
 	, NVM(false)
 	, NVTime(10)
 	, Invis(false)
-	, InvisTime(15)
+	, InvisTime(10)
 	, m_speed(1)
 	, m_RainCount(0)
 {
@@ -69,7 +69,6 @@ void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
 		}
 	}
 }
-
 
 void SceneSP3::initMenu()
 {	
@@ -957,14 +956,18 @@ void SceneSP3::checkOpenDoor()
 }
 void SceneSP3::UpdateInvisibility(double dt)
 {
+	//cout << InvisTime << endl;
+
+	//this condition ensures that the time does not reset even if you pick up an extra Invisibility item
 	if(Invis)
 	{
 		InvisTime -= dt;
 
+		//reset to false and the time to original timing.
 		if(InvisTime < 0)
 		{
 			Invis = false;
-			InvisTime = 15;
+			InvisTime = 10;
 		}
 	}
 }
@@ -1124,17 +1127,17 @@ void SceneSP3::Update(double dt)
 }
 void SceneSP3::UpdatePeeingStatus(double dt)
 {
-	static bool bQButtonState = false;
+	static bool bRButtonState = false;
 	//Q button Selection
-	if(!bQButtonState && Application::IsKeyPressed('Q'))
+	if(!bRButtonState && Application::IsMousePressed(1))
 	{
-		bQButtonState = true;
-		std::cout << "Q BUTTON DOWN" << std::endl;
+		bRButtonState = true;
+		std::cout << "R MOUSE BUTTON DOWN" << std::endl;
 	}
-	else if(bQButtonState && !Application::IsKeyPressed('Q'))
+	else if(bRButtonState && !Application::IsMousePressed(1))
 	{
-		bQButtonState = false;
-		std::cout << "Q BUTTON UP" << std::endl;
+		bRButtonState = false;
+		std::cout << "R MOUSE BUTTON UP" << std::endl;
 	}
 }
 void SceneSP3::UpdateSceneControls()

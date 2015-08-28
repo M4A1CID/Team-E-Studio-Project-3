@@ -21,7 +21,8 @@ public:
 	void Init();
 	void Run();
 	void Exit();
-	static bool IsKeyPressed(unsigned short key);
+	static bool IsKeyPressed(unsigned short key);	//keyboard controls
+	static bool IsMousePressed(unsigned short key);	//mouse controls
 	bool GetMouseUpdate();
 	bool GetKeyboardUpdate();
 
