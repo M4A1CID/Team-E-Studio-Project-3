@@ -273,7 +273,8 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 {
 
 			 diff = Vector3(0.164f,0.145f,0.207f) -current;
-			 diff =  diff.Normalize() * (float)dt * 0.01f;
+			 if(!diff.IsZero())
+				 diff =  diff.Normalize() * (float)dt * 0.01f;
 			 current += diff;
 			 m_time_interval = 0;
 
@@ -282,7 +283,9 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 else if(m_In_World_Time >360 && m_In_World_Time <= 480)
 		 {
 			 diff = Vector3(1.f,0.572f,0.f) -current;
+			 if(!diff.IsZero())
 			 diff =  diff.Normalize() * (float)dt * 0.01f;
+			 light.power += 0.01f * (float)dt;
 			 current += diff;
 			 m_time_interval = 0;
 
@@ -291,6 +294,7 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 else if(m_In_World_Time > 480 && m_In_World_Time <= 600)
 		 {
 			 diff = Vector3(1.f,0.85f,0.f) -current;
+			 if(!diff.IsZero())
 			 diff =  diff.Normalize() * (float)dt * 0.01f;
 			 current += diff;
 			 m_time_interval = 0;
@@ -301,6 +305,7 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 {
 
 			 diff = Vector3(1.f,0.85f,0.f) -current;
+			 if(!diff.IsZero())
 			 diff =  diff.Normalize() * (float)dt * 0.01f;
 			 current += diff;
 			 m_time_interval = 0;
@@ -312,14 +317,16 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 {
 
 			 diff = Vector3(0.164f,0.145f,0.207f) -current;
+			 if(!diff.IsZero())
 			 diff =  diff.Normalize() * (float)dt * 0.01f;
+			 light.power -= 0.01f * (float)dt;
 			 current += diff;
 			 m_time_interval = 0;
 
 		 }
 	 }
 
-
+	
 	 light.color.Set(current.x ,current.y,current.z);
 	
  }

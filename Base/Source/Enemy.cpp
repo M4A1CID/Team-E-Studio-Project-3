@@ -244,8 +244,11 @@ void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
 
 	if( temp.Length() < ENEMY_VIEW_DISTANCE) // If player is close enough to the enemy
 	{
+		if(LeftView.Length() != 0)
 		LeftView.Normalize();
+		if(RightView.Length() != 0)
 		RightView.Normalize();
+		if(temp.Length() != 0)
 		temp.Normalize();
 
 
@@ -311,6 +314,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 			{
 				//Move it to it's destination
 				DirectionFacing = destination - Pos;
+				if(DirectionFacing.Length() != 0)
 				DirectionFacing.Normalize();
 				Pos += DirectionFacing *dt * ENEMY_MOVE_SPEED;
 			}
@@ -323,6 +327,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 		{
 			destination = Vector3(0,0,-900);
 			DirectionFacing = destination - Pos;
+			if(DirectionFacing.Length() != 0)
 			DirectionFacing.Normalize();
 		}
 		break;
@@ -335,6 +340,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 			{
 				destination = thePlayer->GetPosition();
 				DirectionFacing = destination - Pos;
+				if(DirectionFacing.Length() != 0)
 				DirectionFacing.Normalize();
 				Pos += DirectionFacing *dt * ENEMY_MOVE_SPEED;
 			}
@@ -380,6 +386,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 			{
 				//Move it to it's destination
 				DirectionFacing = destination - Pos;
+				if(DirectionFacing.Length() != 0)
 				DirectionFacing.Normalize();
 				Pos += DirectionFacing * dt * ENEMY_MOVE_SPEED;
 			}

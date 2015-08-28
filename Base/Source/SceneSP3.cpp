@@ -235,7 +235,7 @@ void SceneSP3::initLights()
 	m_uiParameters[U_LIGHT4_EXPONENT] = glGetUniformLocation(m_programID, "lights[4].exponent");*/
 
 	lights[0].type = Light::LIGHT_DIRECTIONAL;
-	lights[0].position.Set(-200, 100, 500);
+	lights[0].position.Set(-200, 100, 0);
 	lights[0].color.Set(0.7f, 0.7f, 0.5f);
 	lights[0].power = 1.f;
 	lights[0].kC = 1.f;
@@ -1134,6 +1134,7 @@ void SceneSP3::UpdatePlay(double dt)
 	//Update the sun
 	physicsEngine.UpdateSun(lights[0], dt);
 	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+	glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
 	m_fFps = (float)(1.f / dt);
 }
 void SceneSP3::Update(double dt)
