@@ -1,0 +1,4 @@
+
+//PosX,		PosY,		PosZ,		Angle,			RotateX, 	RotateY, 	RotateZ, 		ScaleX,		ScaleY,		ScaleZ,		GeoType,		Active
+
+// Geotype 61	= Doll

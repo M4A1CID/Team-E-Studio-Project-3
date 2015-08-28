@@ -1,0 +1,12 @@
+400		5		-100		10		10		10		2	1	600		100		2
+//PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		Type,	Active,	DestinationX,	DestinationZ,	State
+
+
+
+//STATE_PATROL, 0
+//STATE_IDLE, 1
+//STATE_WANDER, 2
+//STATE_AVOID, 3
+//STATE_CHASE 4
+//NUM_STATE
+	

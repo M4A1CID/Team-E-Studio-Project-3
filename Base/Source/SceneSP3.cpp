@@ -775,7 +775,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 0;
+	m_Current_Level = 2;
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -2319,7 +2319,7 @@ void SceneSP3::RenderGamePlay()
 		}
 	}
 	RenderDebugWireframe();
-
+	RenderWayPoints();
 	
 	RenderUI();
 }
@@ -2814,7 +2814,7 @@ void SceneSP3::Exit()
 		myLaserList.pop_back();
 	}
 	
-	for(unsigned int i = 0; i < myWaypointList.size(); ++i)
+	while(myWaypointList.size() > 0)
 	{
 		myWaypointList.pop_back();
 	}
