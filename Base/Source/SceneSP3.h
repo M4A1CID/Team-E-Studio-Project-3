@@ -33,7 +33,7 @@
 #include <fstream>
 
 //Modify this to load your level via string
-const static string m_fileBuffer[5] = {"Level Sandbox"};
+const static string m_fileBuffer[5] = {"Level Sandbox","Level Glenn","Level Edmund", "Level Gerald", "Level Troy"};
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 
@@ -44,7 +44,7 @@ class SceneSP3 : public Scene
 	const static int SPEECH_DISTANCE = 128;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
-	const static int MAP_SIZE = 4096;
+	const static int MAP_SIZE = 2048;
 	const static int MAP_BOX_SIZE = 128;
 	const static int DETECT_ENEMY_DISTANCE = 368;
 	
