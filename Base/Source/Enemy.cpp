@@ -553,3 +553,13 @@ int CEnemy::getCurrentState(void)
 {
 	return currentState;
 }
+// Set rotate forward
+void CEnemy::setRotateForward(bool rotateForward)
+{
+	this->rotateForward = rotateForward;
+}
+// Get current state
+int CEnemy::getRotateForward(void)
+{
+	return rotateForward;
+}

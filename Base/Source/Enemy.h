@@ -68,6 +68,7 @@ public:
 
 	void setIsAlert(bool);
 	bool getIsAlert(void);
+	bool rotateForward;
 
 	// Animations
 	void Walking();
@@ -148,6 +149,9 @@ public:
 	void setCurrentState(int);
 	// Get current state
 	int getCurrentState(void);
+
+	void setRotateForward(bool);
+	int getRotateForward(void);
 
 
 private:

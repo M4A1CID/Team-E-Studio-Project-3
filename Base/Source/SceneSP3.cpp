@@ -990,7 +990,44 @@ void SceneSP3::UpdateEnemies(double dt)
 
 		if(enemy->getActive())
 		{
+			switch(enemy->getCurrentState())
+			{
+			case CEnemy::STATE_IDLE:
+				{
+					enemy->setRotationLeftArm(0);
+					enemy->setRotationLeftLeg(0);
+					enemy->setRotationRightArm(0);
+					enemy->setRotationRightLeg(0);
+				}
+				break;
+			case CEnemy::STATE_WANDER:
+				{
+					float constant = dt * 10;
 
+					//Check booleans
+					if(enemy->getRotationLeftArm() > 45)
+						enemy->setRotateForward(false);
+					else if(enemy->getRotationLeftArm() < -45)
+						enemy->setRotateForward(true);
+
+					//Update rotation
+					if(enemy->getRotateForward() == true)
+					{
+						enemy->setRotationLeftArm(enemy->getRotationLeftArm() + constant);
+						enemy->setRotationRightLeg(enemy->getRotationRightLeg() + constant);
+						enemy->setRotationLeftLeg(enemy->getRotationLeftLeg() - constant);
+						enemy->setRotationRightArm(enemy->getRotationRightArm() - constant);
+					}
+					else
+					{
+						enemy->setRotationLeftArm(enemy->getRotationLeftArm() - constant);
+						enemy->setRotationRightLeg(enemy->getRotationRightLeg() - constant);
+						enemy->setRotationLeftLeg(enemy->getRotationLeftLeg() + constant);
+						enemy->setRotationRightArm(enemy->getRotationRightArm() + constant);
+					}
+				}
+				break;
+			}
 			//int checkPosition_X = (int) ((enemy->getPosition().x+ thePlayer->GetPositionX()) / m_cMap->GetTileSize() );
 			//int checkPosition_Z = m_cMap->GetNumOfTiles_Width() - (int) ( (enemy->getPosition().z + m_cMap->GetTileSize()) / m_cMap->GetTileSize());
 			//if(enemy->getIsAlert()) // If this enemy detected the player
