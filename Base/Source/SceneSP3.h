@@ -28,6 +28,7 @@
 #include "Laser.h"
 #include "Doll.h"
 #include "Invisibility.h"
+#include "Peeing.h"
 #include <vector>
 #include <fstream>
 
@@ -224,6 +225,9 @@ class SceneSP3 : public Scene
 		// Rain
 		GEO_RAIN,			// 66
 
+		// Peeing particles
+		GEO_PEEING_PARTICLES,
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,
@@ -235,7 +239,10 @@ class SceneSP3 : public Scene
 		GEO_WARNING_UI,
 		GEO_OBJECTIVE_UI,
 		GEO_SPEECH_UI,
-		
+		GEO_WATCH_UI,
+		GEO_WATCH_HOUR_HAND_UI,
+		GEO_WATCH_MIN_HAND_UI,
+
 		//Menu system
 		GEO_MENU_BACKGROUND,
 		GEO_MENU,
@@ -272,6 +279,8 @@ public:
 	
 	void initMenu();
 	void initGameData();		//trigger this when restarting
+	void initPeeing();			//for peeing feature
+	void initPlayer();
 	void initEnemies();
 	void initUniforms();
 	void initVariables();
@@ -306,7 +315,7 @@ public:
 	CDoor* FetchDoor();
 	CLaser* FetchLaser();
 	CDoll* FetchDoll();
-	CParticle* FetchRain();
+	CParticle* FetchParticle();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -331,6 +340,7 @@ public:
 	void RenderDebugWireframe();
 	void RenderCompass();
 	void RenderWarning();
+	void RenderWatch();
 
 	//Test render 2D Partitioning
 	void RenderTileMap();
@@ -349,6 +359,7 @@ public:
 	void UpdateInvisibility(double dt);
 	void UpdateNVM(double dt);
 	void UpdateCooldown(double dt);
+	void UpdatePeeingStatus(double dt);	
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);
@@ -377,13 +388,6 @@ public:
 
 	//Handle to the menu state class - this is accessed in application so it is in public.
 	CMenu_States* m_cStates;	
-
-	/** Experimental features **/
-	bool bPeeing;		//trigger true if player is pissing
-
-	void UpdatePeeingStatus(double dt);	
-
-	/** Experimental features **/
 private:
 	std::vector<CObj *> myObjList;
 	std::vector<CDoor *> myDoorList;
@@ -467,6 +471,7 @@ private:
 	//Vector3 m_gravity;
 	CPhysics physicsEngine;
 	
+	CPeeing* m_cPeeing;
 
 	//Light Depth Buffer
 	unsigned m_gPassShaderID;

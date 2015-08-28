@@ -1,6 +1,10 @@
 #include "Item.h"
 
 CItem::CItem(void)
+	: Pos(Vector3(0, 0, 0))
+	, Scale(Vector3(0, 0, 0))
+	, active(false)
+	, geoType(0)
 {
 
 }

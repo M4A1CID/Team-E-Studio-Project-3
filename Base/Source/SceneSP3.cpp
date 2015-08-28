@@ -15,6 +15,7 @@ SceneSP3::SceneSP3()
 	, thePlayer(NULL)
 	, m_cMap(NULL)
 	, m_cStates(NULL)
+	, m_cPeeing(NULL)
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
@@ -51,6 +52,11 @@ SceneSP3::~SceneSP3()
 		delete m_cStates;
 		m_cStates = NULL;
 	}
+	if(m_cPeeing)
+	{
+		delete m_cPeeing;
+		m_cPeeing = NULL;
+	}
 }
 
 void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
@@ -71,7 +77,20 @@ void SceneSP3::bubbleSort(vector<CKey*> & list, Vector3 camPos ,int length)
 		}
 	}
 }
+void SceneSP3::initPeeing()
+{
+	//initialize peeing
+	//the parameters are as such:
+	//ammo count, ammo clip size, firing rate, reload timer, is it active?, need reload?, is it firing?
+	m_cPeeing = new CPeeing(60, 60, 0.1f, 0.f, true, false, false);
 
+	//create an vector array of peeing AMMO
+	for(int i = 0; i < 120; ++i)
+	{
+		CParticle* go = new CParticle(CParticle::PARTICLE_PEE);
+		myParticleList.push_back(go);
+	}
+}
 
 void SceneSP3::initMenu()
 {	
@@ -160,7 +179,9 @@ void SceneSP3::Init()
 {
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
-//	initPlayer();
+
+	//initPlayer();
+	initPeeing();
 	initMeshlist();
 	initVariables();
 
@@ -684,6 +705,18 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_SPEECH_UI] = MeshBuilder::GenerateQuad("GEO_SPEECH_UI",Color(1,1,1),1.f);
 	meshList[GEO_SPEECH_UI]->textureID = LoadTGA("Image//dialogBox.tga");
+
+	meshList[GEO_WATCH_UI] = MeshBuilder::GenerateQuad("GEO_WATCH_UI",Color(1,1,1),1.f);
+	meshList[GEO_WATCH_UI]->textureID = LoadTGA("Image//watch_base.tga");
+
+	meshList[GEO_WATCH_HOUR_HAND_UI] = MeshBuilder::GenerateQuad("GEO_WATCH_HOUR_HAND_UI",Color(1,1,1),1.f);
+	meshList[GEO_WATCH_HOUR_HAND_UI]->textureID = LoadTGA("Image//watch_hour.tga");
+
+	meshList[GEO_WATCH_MIN_HAND_UI] = MeshBuilder::GenerateQuad("GEO_WATCH_MIN_HAND_UI",Color(1,1,1),1.f);
+	meshList[GEO_WATCH_MIN_HAND_UI]->textureID = LoadTGA("Image//watch_min.tga");
+
+	//peeing particles
+	meshList[GEO_PEEING_PARTICLES] = MeshBuilder::GenerateSphere("GEO_PEEING_PARTICLES", Color(1, 1, 0), 18, 36, 1.f);
 }
 void SceneSP3::initGameData()
 {
@@ -757,7 +790,7 @@ void SceneSP3::initVariables()
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
-	CParticle* ptr = FetchRain();
+	CParticle* ptr = FetchParticle();
 	physicsEngine.SetWorldTime(335);
 	//LoadFromTextFileOBJ("Variables/Level Sandbox/LoadOBJ.txt");
 	//LoadFromTextFileItem("Variables/Level Sandbox/LoadItems.txt");
@@ -873,6 +906,7 @@ void SceneSP3::checkPickUpItem()
 					case 64:
 						{
 							cout << "YOU GOT : INVISIBILITY" << endl;
+							//
 							Invis = true;
 						}
 						break;
@@ -983,6 +1017,9 @@ void SceneSP3::checkSpeech()
 }
 void SceneSP3::UpdateInvisibility(double dt)
 {
+	//cout << InvisTime << endl;
+	//invisible->UpdateInvisibility(dt);
+
 	if(Invis)
 	{
 		InvisTime -= dt;
@@ -990,7 +1027,7 @@ void SceneSP3::UpdateInvisibility(double dt)
 		if(InvisTime < 0)
 		{
 			Invis = false;
-			InvisTime = 15;
+			InvisTime = 10;
 		}
 	}
 }
@@ -1193,39 +1230,9 @@ void SceneSP3::UpdatePlay(double dt)
 		}
 	}
 	// Update the weather
+	CParticle *go = FetchParticle();
 
-	//if (m_fRainTimer > 10.f)
-	//{
-		CParticle *go = FetchRain();
-		physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
-
-		//m_fRainTimer = 0.f;
-	//}
-
-	/*if (physicsEngine.GetEnableWeather() == true && go->active == true)
-	 {
-		 go->type = CParticle::PARTICLE_RAIN;
-		 go->scale.Set(1, 1, 1);
-		 go->vel.Set(0, 0, 0);
-		 go->pos.Set(Math::RandFloatMinMax(-1500, 1500), 300, Math::RandIntMinMax(-1500, 1500));
-	 }
-
-
-	 for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
-	 {
-		 CParticle* go = (CParticle *)*it;
-
-		 if (physicsEngine.GetEnableWeather() == true)
-		 {
-			 go->vel += physicsEngine.getGravity() * dt;
-			 go->pos += go->vel * dt;
-		 }
-		 if (go->pos.y <= physicsEngine.GetHeightMapY(go->pos.x, go->pos.z, m_heightMap, TERRAIN_SCALE))
-		 {
-			 go->active = false;
-		 }
-	 }*/
-
+	physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
 	//Update the sun
 	physicsEngine.UpdateSun(lights[0], dt);
 	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
@@ -1258,19 +1265,71 @@ void SceneSP3::Update(double dt)
 }
 void SceneSP3::UpdatePeeingStatus(double dt)
 {
-	static bool bQButtonState = false;
+	static bool bRButtonState = false;
 	//Q button Selection
-	if(!bQButtonState && Application::IsKeyPressed('Q'))
+	if(!bRButtonState && Application::IsMousePressed(1))
 	{
-		bQButtonState = true;
-		std::cout << "Q BUTTON DOWN" << std::endl;
+		bRButtonState = true;
+		std::cout << "R MOUSE BUTTON DOWN" << std::endl;
+
+		//this indicates that the firing trigger is pushed.
+		m_cPeeing->setIsFiring(true);
 	}
-	else if(bQButtonState && !Application::IsKeyPressed('Q'))
+	else if(bRButtonState && !Application::IsMousePressed(1))
 	{
-		bQButtonState = false;
-		std::cout << "Q BUTTON UP" << std::endl;
+		bRButtonState = false;
+		std::cout << "R MOUSE BUTTON UP" << std::endl;
 	}
+
+	if(bRButtonState && m_cPeeing->getAmmo() != 0)
+	{
+		CParticle *go = FetchParticle();
+
+		m_cPeeing->setFiring(m_cPeeing->getFiring() - dt);
+		
+		go->active = true;
+		go->type = CParticle::PARTICLE_PEE;
+		go->scale.Set(0.1, 0.1, 0.1);
+		go->vel.Set(((camera.target.x - camera.position.x)), (camera.target.y - camera.position.y) + 10, ((camera.target.z - camera.position.z)));
+		go->pos.Set(camera.position.x, camera.position.y - 5, camera.position.z);
+
+		if(m_cPeeing->getIsFiring())
+		{	
+			FetchParticle();	
+			m_cPeeing->setAmmo(m_cPeeing->getAmmo()-1);
+			m_cPeeing->setIsFiring(false);
+		}
+		if(m_cPeeing->getFiring() < 0 && m_cPeeing->getIsFiring() == false)
+		{
+			m_cPeeing->setFiring(0.1f);
+			m_cPeeing->setIsFiring(true);
+		}
+	}
+
+	//guard against double reload
+	//voluntary reload
+	if((Application::IsKeyPressed('R') && m_cPeeing->getAmmo() < m_cPeeing->getAmmoSize()) || m_cPeeing->getAmmo() == 0)
+	{
+		m_cPeeing->setNeedReload(true);
+	}
+	//call the need reload
+	if(m_cPeeing->getNeedReload())
+	{
+		m_cPeeing->setReload(m_cPeeing->getReload() + dt);
+		
+		//about 3 seconds of reload
+		if(m_cPeeing->getReload() > 1.5f)
+		{
+			//reload complete. back to full ammo size and reset reload timer.
+			m_cPeeing->setAmmo(m_cPeeing->getAmmoSize());
+			m_cPeeing->setReload(0.f);
+			m_cPeeing->setNeedReload(false);
+		}
+	}
+	CParticle *go = FetchParticle();
+	physicsEngine.UpdatePeeing(myParticleList, go, m_heightMap, TERRAIN_SCALE, camera, dt);
 }
+	
 void SceneSP3::UpdateSceneControls()
 {
 	if(Application::IsKeyPressed(VK_F1))
@@ -1390,7 +1449,6 @@ CLaser* SceneSP3::FetchLaser()
 	go->setActive(true);
 	return go;
 }
-
 CDoll* SceneSP3::FetchDoll()
 {
 	for(std::vector<CDoll *>::iterator it = myDollList.begin(); it != myDollList.end(); ++it)
@@ -1411,7 +1469,7 @@ CDoll* SceneSP3::FetchDoll()
 	go->setActive(true);
 	return go;
 }
-CParticle* SceneSP3::FetchRain()
+CParticle* SceneSP3::FetchParticle()
 {
 	for (std::vector<CParticle*>::iterator i = myParticleList.begin(); i != myParticleList.end(); ++i)
 	{
@@ -1969,6 +2027,20 @@ void SceneSP3::RenderWarning()
 		}
 	}
 }
+void SceneSP3::RenderWatch()
+{
+	RenderMeshIn2D(meshList[GEO_WATCH_UI], 40, -60, 10);
+
+	//float hour;
+	//int min;
+
+
+	//hour = (int)(physicsEngine.GetWorldTime()/60);
+	//min = (int)(physicsEngine.GetWorldTime())%60;
+
+	//float theta = Math::RadianToDegree(atan2(min, hour));
+	//RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -theta);
+}
 void SceneSP3::RenderCompass()
 {
 	RenderMeshIn2D(meshList[GEO_COMPASS_UI],20,60,10);
@@ -1993,6 +2065,13 @@ void SceneSP3::RenderRain(CParticle* go)
 		RenderMesh(meshList[GEO_RAIN], false);
 		modelStack.PopMatrix();
 		break;
+	case CParticle::PARTICLE_PEE:
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		RenderMesh(meshList[GEO_PEEING_PARTICLES], false);
+		modelStack.PopMatrix();
+		break;
 	}
 }
 void SceneSP3::RenderUI()
@@ -2006,6 +2085,7 @@ void SceneSP3::RenderUI()
 			RenderMeshUI(meshList[GEO_GREEN], 190,150,150,1,1);
 			modelStack.PopMatrix();
 		}
+	RenderWatch();
 	RenderCompass();
 	RenderWarning();
 
@@ -2127,7 +2207,7 @@ void SceneSP3::RenderUI()
 
 	ss.str(std::string());
 	ss.precision(3);
-	ss << "Pos_X: " << camera.position.x;
+	ss << "Bullet: " << m_cPeeing->getAmmo();
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 54);
 
 	ss.str(std::string());
@@ -2697,50 +2777,59 @@ void SceneSP3::Exit()
 		if(meshList[i])
 			delete meshList[i];
 	}
-	for(unsigned int i = 0; i < myObjList.size(); ++i)
+	while(myObjList.size() > 0)
 	{
-		if(myObjList[i] != NULL)
-			delete myObjList[i];
+		CObj *go = myObjList.back();
+		delete go;
+		myObjList.pop_back();
 	}
-	for(unsigned int i = 0; i < myKeyList.size(); ++i)
+
+	while(myKeyList.size() > 0)
 	{
-		if(myKeyList[i] != NULL)
-			delete myKeyList[i];
-	}
-	for(unsigned int i = 0; i < myEnemyList.size(); ++i)
-	{
-		if(myEnemyList[i] != NULL)
-			delete myEnemyList[i];
+		CKey *go = myKeyList.back();
+		delete go;
+		myKeyList.pop_back();
 	}
 	for(unsigned int i = 0; i < myInmateList.size(); ++i)
 	{
 		if(myInmateList[i] != NULL)
 			delete myInmateList[i];
 	}
+	while(myEnemyList.size() > 0)
+	{
+		CEnemy *go = myEnemyList.back();
+		delete go;
+		myEnemyList.pop_back();
+	}
+	while(myDoorList.size() > 0)
+	{
+		CDoor *go = myDoorList.back();
+		delete go;
+		myDoorList.pop_back();
+	}
+	while(myLaserList.size() > 0)
+	{
+		CLaser *go = myLaserList.back();
+		delete go;
+		myLaserList.pop_back();
+	}
 	
-	for(unsigned int i = 0; i < myDoorList.size(); ++i)
-	{
-		if(myDoorList[i] != NULL)
-			delete myDoorList[i];
-	}
-	for(unsigned int i = 0; i < myLaserList.size(); ++i)
-	{
-		if(myLaserList[i] != NULL)
-			delete myLaserList[i];
-	}
 	for(unsigned int i = 0; i < myWaypointList.size(); ++i)
 	{
 		myWaypointList.pop_back();
 	}
-	for(unsigned int i = 0; i < myDollList.size(); ++i)
+
+	while(myDollList.size() > 0)
 	{
-		if(myDollList[i] != NULL)
-			delete myDollList[i];
+		CDoll *go = myDollList.back();
+		delete go;
+		myDollList.pop_back();
 	}
-	for(unsigned int i = 0; i < myParticleList.size(); ++i)
+	while(myParticleList.size() > 0)
 	{
-		if(myParticleList[i] != NULL)
-			delete myParticleList[i];
+		CParticle *go = myParticleList.back();
+		delete go;
+		myParticleList.pop_back();
 	}
 	if(m_cMap != NULL)
 	{
@@ -2757,7 +2846,11 @@ void SceneSP3::Exit()
 		delete m_cStates;
 		m_cStates = NULL;
 	}
-
+	if(m_cPeeing)
+	{
+		delete m_cPeeing;
+		m_cPeeing = NULL;
+	}
 	//if (music)
 	//	music->drop(); // release music stream.
 	//if(fire)

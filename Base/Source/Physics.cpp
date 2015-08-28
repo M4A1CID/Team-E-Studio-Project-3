@@ -1,6 +1,5 @@
 #include "Physics.h"
 
-
 CPhysics::CPhysics(void)
 {
 	m_Gravity = Vector3(0,-9.8f,0);
@@ -197,7 +196,6 @@ float CPhysics::barryCentric(Vector3 & p1, Vector3 & p2, Vector3 & p3, Vector2 &
 	float l3 = 1.0f - l1 - l2;
 	return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 }
-
 //void CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap, Camera3& camera, CPlayer*& thePlayer)
 //{
 //  
@@ -329,7 +327,6 @@ void CPhysics::UpdateSun(Light & light, double & dt)
 	light.color.Set(current.x ,current.y,current.z);
 
 }
-
 // Get the current world time
 float CPhysics::GetWorldTime(void)
 {
@@ -396,7 +393,24 @@ string CPhysics::GetMinuteTime(void)
 	}
 	return ss.str();
 }
+void CPhysics::UpdatePeeing(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightMap, const Vector3& terrainSize, Camera3& camera, double& dt)
+{
+	//this should trigger when the right mouse click is triggered
+	for(std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
+	{
+		CParticle* go = (CParticle *)*it;
 
+		if(go->type == CParticle::PARTICLE_PEE)
+		{
+			go->vel += getGravity() * dt;
+			go->pos += go->vel * dt;
+		}
+		if(go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightMap, terrainSize))
+		{
+			go->active = false;
+		}
+	}
+}
 void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt, std::vector<CEnemy *> myEnemyList)
 {
 	float offset = 20.f;
@@ -438,7 +452,7 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* p
 			go->pos += go->vel * dt;
 		}
 		if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightmap, terrainSize) - offset)
-		{
+	{
 			go->active = false;
 		}
 	}
@@ -464,23 +478,3 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* p
 		}
 	}
 }
-
-//Vector3 CPhysics::getBarycentricCoordinatesAt(std::vector<unsigned char> &heightMap,const Vector3& terrainSize, Camera3& camera, CPlayer*& thePlayer )
-//{
-//	Vector3 initVector,v1,v2,Zvector, Xvector,NormalVector;
-//
-//	initVector.Set(thePlayer->GetPosition().x, heightMap[thePlayer->GetPosition().z + thePlayer->GetPosition().x],thePlayer->GetPosition().z);
-//
-//	/*Vector3 initVector,v1,v2,Zvector, Xvector,NormalVector;
-//	initVector.Set(thePlayer->GetPosition().x , heightMap[thePlayer->GetPosition().z * terrainSize + thePlayer->GetPosition().x], thePlayer->GetPosition().z); 
-//	v1.Set( thePlayer->GetPosition().x+1 , heightMap[thePlayer->GetPosition().z * terrainSize + (thePlayer->GetPosition().x+1)], thePlayer->GetPosition().z); 
-//	v2.Set(thePlayer->GetPosition().x , heightMap[(thePlayer->GetPosition().z+1) * terrainSize + thePlayer->GetPosition().x], thePlayer->GetPosition().z+1); 
-//	Xvector = v1 - initVector;
-//	Zvector = v2 - initVector;
-//	NormalVector = Zvector.Cross(Xvector);
-//
-//	float diffY = NormalVector.y - thePlayer->GetPosition().y;
-//	camera.position.y += diffY;
-//	camera.target.y += diffY;
-//	thePlayer->SetPositionY(NormalVector.y);*/
-//}
