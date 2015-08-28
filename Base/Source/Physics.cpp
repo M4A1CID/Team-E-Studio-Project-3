@@ -326,7 +326,7 @@ void  CPhysics::setPlayerHeight(Camera3& camera,CPlayer*& thePlayer, std::vector
 		 }
 	 }
 
-	
+
 	 light.color.Set(current.x ,current.y,current.z);
 	
  }

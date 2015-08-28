@@ -679,6 +679,9 @@ void SceneSP3::initMeshlist()
 
 	meshList[GEO_OBJECTIVE_UI] = MeshBuilder::GenerateQuad("GEO_OBJECTIVE_UI",Color(1,1,1),1.f);
 	meshList[GEO_OBJECTIVE_UI]->textureArray[0] = LoadTGA("Image//objective.tga");
+
+	meshList[GEO_SPEECH_UI] = MeshBuilder::GenerateQuad("GEO_SPEECH_UI",Color(1,1,1),1.f);
+	meshList[GEO_SPEECH_UI]->textureID = LoadTGA("Image//dialogBox.tga");
 }
 void SceneSP3::initGameData()
 {
@@ -743,10 +746,12 @@ void SceneSP3::initVariables()
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
 	LoadFromTextFilePlayer("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadPlayer.txt");
 	LoadFromTextFileEnemy("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadEnemy.txt");
+	LoadFromTextFileInmate("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadInmate.txt");
 	LoadFromTextFileItem("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadItems.txt");
 	LoadFromTextFileDoor("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoor.txt");
 	LoadFromTextFileLaser("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadLaser.txt");
 	LoadFromTextFileDoll("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoll.txt");
+	LoadFromTextFileSpeech("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadSpeech.txt");
 	initMap();
 	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
 
@@ -800,14 +805,6 @@ void SceneSP3::checkDollFlip()
 						physicsEngine.SetEnableWeather(true);
 						cout << "Doll flipped" << endl;
 					}
-					/*if (myDollList[i]->getFlipped() == true && myDollList[i]->getAltFlipped() == false)
-					{
-						myDollList[i]->setAngle(180);
-						myDollList[i]->setRotation_X(1);
-						myDollList[i]->setFlipped(false);
-						myDollList[i]->setAltFlipped(true);
-						cout << "Doll flipped back" << endl;
-					}*/
 				}
 			}
 		}
@@ -956,6 +953,32 @@ void SceneSP3::checkOpenDoor()
 		}
 	}
 }
+void SceneSP3::checkSpeech()
+{
+	//for each inmate list
+	// Vector3 temp = (inmate[i] - player position)
+	// if(temp.Length() < INTERACTION DISTANCE)
+	//{
+	//do speech
+	//}
+	
+	for(unsigned int i = 0; i < myInmateList.size(); ++i)
+	{
+		Vector3 temp = (myInmateList[i]->getPosition() - thePlayer->GetPosition());
+		if(temp.Length() < SPEECH_DISTANCE)
+		{
+			//if speech != true
+			Speech = true;
+			m_textSelection = rand()% (mySpeechList.size() - 1);
+			
+			//Get random string from string vector
+			//set display string
+			
+		}
+		else
+			Speech = false;
+	}
+}
 void SceneSP3::UpdateInvisibility(double dt)
 {
 	if(Invis)
@@ -1002,7 +1025,61 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_WANDER:
 				{
-					float constant = dt * 10;
+					float constant = dt * 30;
+
+					//Check booleans
+					if(enemy->getRotationLeftArm() > 45)
+						enemy->setRotateForward(false);
+					else if(enemy->getRotationLeftArm() < -45)
+						enemy->setRotateForward(true);
+
+					//Update rotation
+					if(enemy->getRotateForward() == true)
+					{
+						enemy->setRotationLeftArm(enemy->getRotationLeftArm() + constant);
+						enemy->setRotationRightLeg(enemy->getRotationRightLeg() + constant);
+						enemy->setRotationLeftLeg(enemy->getRotationLeftLeg() - constant);
+						enemy->setRotationRightArm(enemy->getRotationRightArm() - constant);
+					}
+					else
+					{
+						enemy->setRotationLeftArm(enemy->getRotationLeftArm() - constant);
+						enemy->setRotationRightLeg(enemy->getRotationRightLeg() - constant);
+						enemy->setRotationLeftLeg(enemy->getRotationLeftLeg() + constant);
+						enemy->setRotationRightArm(enemy->getRotationRightArm() + constant);
+					}
+				}
+				break;
+			case CEnemy::STATE_PATROL:
+				{
+					float constant = dt * 30;
+
+					//Check booleans
+					if(enemy->getRotationLeftArm() > 45)
+						enemy->setRotateForward(false);
+					else if(enemy->getRotationLeftArm() < -45)
+						enemy->setRotateForward(true);
+
+					//Update rotation
+					if(enemy->getRotateForward() == true)
+					{
+						enemy->setRotationLeftArm(enemy->getRotationLeftArm() + constant);
+						enemy->setRotationRightLeg(enemy->getRotationRightLeg() + constant);
+						enemy->setRotationLeftLeg(enemy->getRotationLeftLeg() - constant);
+						enemy->setRotationRightArm(enemy->getRotationRightArm() - constant);
+					}
+					else
+					{
+						enemy->setRotationLeftArm(enemy->getRotationLeftArm() - constant);
+						enemy->setRotationRightLeg(enemy->getRotationRightLeg() - constant);
+						enemy->setRotationLeftLeg(enemy->getRotationLeftLeg() + constant);
+						enemy->setRotationRightArm(enemy->getRotationRightArm() + constant);
+					}
+				}
+				break;
+			case CEnemy::STATE_CHASE:
+				{
+					float constant = dt * 60;
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1146,7 +1223,7 @@ void SceneSP3::Update(double dt)
 		m_cStates->SetRestartState(false);
 		m_cStates->SetPauseActive(false);
 	}
-
+	checkSpeech();
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
 	{
 	//update the game if not paused/ in menu
@@ -1520,6 +1597,32 @@ bool SceneSP3::LoadFromTextFileEnemy(const string mapString)
 		cout << "Enemies Loaded: FAILED!"; 
 	return false;
 }
+bool SceneSP3::LoadFromTextFileInmate(const string mapString)
+{
+	ifstream myfile (mapString);
+
+	Vector3 Pos;
+	Vector3 Scale;
+	bool active;
+	if (myfile.is_open())
+	{
+		while ( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >>active)
+		{
+			CInmate* ptr = new CInmate();
+			ptr->setPosition(Pos);
+			ptr->setPosition_Y(GetHeightMapY(Pos.x,Pos.z) + Pos.y);
+			ptr->setScale(Scale);
+			ptr->setActive(active);
+			myInmateList.push_back(ptr);
+		}
+		myfile.close();
+		cout << "Inmates Loaded: SUCCESS!" << endl;
+		return true;
+	}
+	else 
+		cout << "Inmates Loaded: FAILED!"<< endl; 
+	return false;
+}
 bool SceneSP3::LoadFromTextFileDoll(const string mapString)
 {
 	ifstream myfile (mapString);
@@ -1605,6 +1708,24 @@ bool SceneSP3::LoadFromTextFileWaypoints(const string mapString)
 	}
 	cout << "Waypoints generated!" << endl;
 	return true;
+}
+bool SceneSP3::LoadFromTextFileSpeech(const string mapString)
+{
+	ifstream myfile (mapString);
+	string temp;
+	if(myfile.is_open())
+	{
+		while(!myfile.eof())
+		{
+			getline(myfile, temp);
+			mySpeechList.push_back(temp);
+		}
+		cout << "Speech Loaded: SUCCEES!" << endl;
+		myfile.close();
+		return true;
+	}
+	cout << "Speech Loaded: FAILED!" << endl;
+	return false;
 }
 void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetRadius, float AtmosphereRadius, float hTile, float vTile)
 {
@@ -1764,6 +1885,53 @@ void SceneSP3::RenderEnemyList()
 		}
 	}
 }
+void SceneSP3::RenderInmateList()
+{
+	for(std::vector<CInmate *>::iterator it = myInmateList.begin(); it != myInmateList.end(); ++it)
+	{
+		CInmate *inmate = (CInmate *)*it;
+
+		if(inmate->getActive() == true)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(inmate->getPosition().x,inmate->getPosition().y,inmate->getPosition().z);
+			modelStack.Scale(inmate->getScale().x,inmate->getScale().y,inmate->getScale().z);
+			RenderMesh(meshList[inmate->getGeoBodyType()], m_bLightEnabled);		// Render the body at center point
+
+				// Render left arm
+				modelStack.PushMatrix();
+				modelStack.Translate(inmate->getOffsetArm().x,inmate->getOffsetArm().y, inmate->getOffsetArm().z);
+				RenderMesh(meshList[inmate->getGeoArmType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render right arm
+				modelStack.PushMatrix();
+				modelStack.Translate(-inmate->getOffsetArm().x,inmate->getOffsetArm().y, inmate->getOffsetArm().z);
+				RenderMesh(meshList[inmate->getGeoArmType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render left leg
+				modelStack.PushMatrix();
+				modelStack.Translate(inmate->getOffsetLeg().x, inmate->getOffsetLeg().y, inmate->getOffsetLeg().z);
+				RenderMesh(meshList[inmate->getGeoLegType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render right leg
+				modelStack.PushMatrix();
+				modelStack.Translate(-inmate->getOffsetLeg().x, inmate->getOffsetLeg().y, inmate->getOffsetLeg().z);
+				RenderMesh(meshList[inmate->getGeoLegType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+
+				// Render head
+				modelStack.PushMatrix();
+				modelStack.Translate(inmate->getOffsetHead().x,inmate->getOffsetHead().y, inmate->getOffsetHead().z);
+				RenderMesh(meshList[inmate->getGeoHeadType()],m_bLightEnabled);
+				modelStack.PopMatrix();
+				
+			modelStack.PopMatrix();
+		}
+	}
+}
 void SceneSP3::RenderWarning()
 {
 	for(unsigned int i = 0; i < myEnemyList.size(); ++i)
@@ -1826,9 +1994,26 @@ void SceneSP3::RenderUI()
 	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
 	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
 
+	if(Speech == true)
+	{
+		RenderMeshUI(meshList[GEO_SPEECH_UI], 110, 25, 20, 0, -50);
+		std::ostringstream speech;
+		speech.precision(3);
+		speech << mySpeechList[1];
+		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5, 0.9, 7);
+
+		speech.str(std::string());
+		speech.precision(3);
+		speech << mySpeechList[2];
+		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5, 0.9, 4);
+
+		speech.str(std::string());
+		speech.precision(3);
+		speech << mySpeechList[3];
+		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5, 0.9, 1);
+	}
+
 		//thePlayer->GetActive();
-		
-		
 
 		if(MinCollected == true)
 		{
@@ -1899,6 +2084,7 @@ void SceneSP3::RenderUI()
 		ss << "Night Vision Time: " << NVTime;
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
 	}
+
 	std::ostringstream ss;
 	ss.precision(3);
 	ss << "FPS: " << m_fFps;
@@ -2127,7 +2313,7 @@ void SceneSP3::RenderWorld()
 
 	RenderObjList();
 	RenderDoorList();
-	
+	RenderInmateList();
 	RenderEnemyList();
 	RenderLaserList();
 	RenderDollList();
@@ -2488,6 +2674,12 @@ void SceneSP3::Exit()
 		if(myEnemyList[i] != NULL)
 			delete myEnemyList[i];
 	}
+	for(unsigned int i = 0; i < myInmateList.size(); ++i)
+	{
+		if(myInmateList[i] != NULL)
+			delete myInmateList[i];
+	}
+	
 	for(unsigned int i = 0; i < myDoorList.size(); ++i)
 	{
 		if(myDoorList[i] != NULL)

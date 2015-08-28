@@ -22,6 +22,7 @@
 #include "Warden.h"
 #include "Guard.h"
 #include "Enemy.h"
+#include "Inmate.h"
 #include "Menu_States.h"
 #include "Door.h"
 #include "Laser.h"
@@ -39,6 +40,7 @@ class SceneSP3 : public Scene
 {
 	const static int SKYBOXSIZE = 100;
 	const static int INTERACTION_DISTANCE = 20;
+	const static int SPEECH_DISTANCE = 128;
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 4096;
@@ -232,6 +234,7 @@ class SceneSP3 : public Scene
 		GEO_COMPASS_NEEDLE_UI,
 		GEO_WARNING_UI,
 		GEO_OBJECTIVE_UI,
+		GEO_SPEECH_UI,
 
 		//Menu system
 		GEO_MENU_BACKGROUND,
@@ -284,6 +287,7 @@ public:
 	void checkPickUpItem();
 	void checkOpenDoor();
 	void checkDollFlip();
+	void checkSpeech();
 
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
@@ -294,7 +298,9 @@ public:
 	bool LoadFromTextFileDoll(const string mapString);
 	//try to clean this as soon as possible!
 	bool LoadFromTextFileDoor(const string mapString);
+	bool LoadFromTextFileInmate(const string mapString);
 	bool LoadFromTextFileWaypoints(const string mapString);
+	bool LoadFromTextFileSpeech(const string mapString);
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);
 	CObj* FetchOBJ();
@@ -318,7 +324,7 @@ public:
 	void RenderLaserList();
 	void RenderDollList();
 	void RenderRain(CParticle* go);
-	void RenderInvisibilityList();
+	void RenderInmateList();
 	void RenderUI();
 	void RenderMainMenu();
 	void RenderPauseMenu();
@@ -384,10 +390,12 @@ private:
 	std::vector<CDoor *> myDoorList;
 	std::vector<CKey *> myKeyList;
 	std::vector<CEnemy *> myEnemyList;
+	std::vector<CInmate *> myInmateList;
 	std::vector<Vector3> myWaypointList;
 	std::vector<CLaser *> myLaserList;
 	std::vector<CDoll *> myDollList;
 	std::vector<CParticle *> myParticleList;
+	std::vector<string> mySpeechList;
 
 	unsigned m_vertexArrayID;
 	Mesh* meshList[NUM_GEOMETRY];
@@ -410,6 +418,7 @@ private:
 	//Current level of scene
 	short int m_Current_Level;
 
+	int m_textSelection;
 	double m_dJumpingSpeed;
 	bool m_bLightEnabled;
 	//for terrain
@@ -430,6 +439,7 @@ private:
 	bool MaxCollected;
 	bool NVM;
 	bool Invis;
+	bool Speech;
 	double NVTime;
 	double InvisTime;
 
