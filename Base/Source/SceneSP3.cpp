@@ -409,10 +409,6 @@ void SceneSP3::initUniforms()
 	m_uiParameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
 	m_uiParameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 
-
-	
-	
-
 	// Get a handle for our "colorTexture" uniform
 	m_uiParameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled[0]");
 	m_uiParameters[U_COLOR_TEXTURE_ENABLED2] = glGetUniformLocation(m_programID, "colorTextureEnabled[1]");
@@ -900,7 +896,11 @@ void SceneSP3::checkPickUpItem()
 					case 63:
 						{
 							cout << "YOU GOT : NIGHT VISION GOGGLES" << endl;
-							NVM = true;
+							NVGet = true;
+							if (NVGet == true)
+							{
+								cout << "YOU ALREADY HAVE : NIGHT VISION GOGGLES" << endl;
+							}
 						}
 						break;
 					case 64:
@@ -1033,19 +1033,20 @@ void SceneSP3::UpdateInvisibility(double dt)
 }
 void SceneSP3::UpdateNVM(double dt)
 {
-	if(NVM == true && Cooldown == false)
+	if(NVM == true && Cooldown == false && NVGet == true)
 	{
 		NVTime -= dt;
 		if(NVTime < 0)
 		{
 			NVM = false;
 			Cooldown = true;
+			NVTime = 10;
 		}
 	}
 }
 void SceneSP3::UpdateCooldown(double dt)
 {
-	if(NVM == false && Cooldown == true)
+	if(NVM == false && Cooldown == true && NVGet == true)
 	{
 		RechargeTime -= dt;
 		if(RechargeTime < 0)
@@ -1346,7 +1347,7 @@ void SceneSP3::UpdateSceneControls()
 		checkOpenDoor();
 		checkDollFlip();
 	}
-	if(Application::IsKeyPressed('Q'))
+	if(Application::IsKeyPressed('Q') && NVGet == true && Cooldown == false)
 	{
 		NVM = true;
 	}
@@ -2192,7 +2193,7 @@ void SceneSP3::RenderUI()
 		ss << "Cooldown Time: " << RechargeTime;
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
 	}
-	if(Cooldown == false && NVM == false)
+	if(Cooldown == false && NVM == false && NVGet == true)
 	{
 		std::ostringstream ss;
 		ss.precision(3);

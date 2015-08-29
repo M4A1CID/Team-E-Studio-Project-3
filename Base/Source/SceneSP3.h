@@ -349,6 +349,7 @@ public:
 	//Shadow things
 	void RenderPassGPass();
 	void RenderPassMain();
+
 	void RenderWorld();
 
 	virtual void UpdatePlayerStatus(const unsigned char key);
@@ -442,6 +443,7 @@ private:
 	bool MedCollected;
 	bool MaxCollected;
 	bool NVM;
+	bool NVGet;
 	bool Invis;
 	bool Speech;
 	bool Cooldown;
