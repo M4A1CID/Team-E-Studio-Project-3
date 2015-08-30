@@ -1,0 +1,4 @@
+
+//PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,		Active
+
+// Geotype 62	= Laser

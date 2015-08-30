@@ -1,7 +1,11 @@
-
-
+260		60		-450		10		10		10		20	20		20		1		15		1
+-260		60		-450		10		10		10		20	20		20		1		15		1
+360		60		-450		10		10		10		20	20		20		1		15		1
+460		60		-350		10		10		10		20	20		20		1		15		1
+260		60		-350		10		10		10		20	20		20		1		15		1
 //PosX,		PosY,   	PosZ,		ScaleX, 	ScaleY, 	ScaleZ,	    OffsetX,	OffsetY,	OffsetZ,	LockBool,	GeoType,  	Active
 
+//Geotype 14	= CELL_DOOR
 //Geotype 15	= MIN_SEC_DOOR
 //Geotype 16	= MED_SEC_DOOR
 //Geotype 17	= MAX_SEC_DOOR

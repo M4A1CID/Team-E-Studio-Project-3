@@ -1,0 +1,9 @@
+
+
+//PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
+//GEOTYPE 20 == MIN SECURITY
+//GEOTYPE 21 == MED SECURITY
+//GEOTYPE 22 == MAX SECURITY
+
+//Geotype 63	= GOGGLES
+//Geotype 64	= INVISIBILITY
