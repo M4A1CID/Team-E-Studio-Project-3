@@ -276,7 +276,7 @@ Vector3 CEnemy::RotateByDegree(int degree)
 	return temp;
 }
 //Waypoint update
-void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double & dt)
+void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double & dt,CMap* m_cMap)
 {
 	switch(currentState)
 	{
@@ -292,7 +292,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 				for(int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
 				{
 					Vector3 temp = waypoints[i] - Pos;
-					if(temp.Length() <= 192)
+					if(temp.Length() <= m_cMap->GetTileSize() * 1.5)
 					{
 
 						if(prev != waypoints[i]) // if new possible waypoint is not the same as the prev destination
@@ -337,7 +337,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 		{
 			prev = destination; // Set this enemy's previous to current location
 
-			if( (thePlayer->GetPosition() - Pos).Length() < 128)
+			if( (thePlayer->GetPosition() - Pos).Length() < m_cMap->GetTileSize())
 			{
 				destination = thePlayer->GetPosition();
 				DirectionFacing = destination - Pos;

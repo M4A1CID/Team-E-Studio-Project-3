@@ -3,7 +3,8 @@
 CPhysics::CPhysics(void)
 {
 	m_Gravity = Vector3(0,-9.8f,0);
-	m_fOffset = 160.f;
+	m_fOffset = 100;
+	m_bEnableWeather = false;
 	m_fLaserDetectionRange = 5.f;
 	m_time_interval= 0;
 	WindDirection = Vector3(0.f, 0.f, 0.f);
@@ -393,7 +394,7 @@ string CPhysics::GetMinuteTime(void)
 	}
 	return ss.str();
 }
-void CPhysics::UpdatePeeing(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightMap, const Vector3& terrainSize, Camera3& camera, double& dt)
+void CPhysics::UpdatePeeing(std::vector<CParticle*>myParticleList, std::vector<unsigned char> &heightMap, const Vector3& terrainSize, Camera3& camera, double& dt)
 {
 	//this should trigger when the right mouse click is triggered
 	for(std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
@@ -411,26 +412,19 @@ void CPhysics::UpdatePeeing(std::vector<CParticle*>myParticleList, CParticle* pa
 		}
 	}
 }
-void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* particle, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt, std::vector<CEnemy *> myEnemyList)
+void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt, std::vector<CEnemy *> myEnemyList)
 {
 	float offset = 20.f;
 	WindTimer += dt;
 	m_spawnRateTimer += (float)dt;
 	m_fRainTimer += (float)dt;
 
-	if (GetEnableWeather() == true && particle->active == true)
-	{
-		if (m_fRainTimer > m_fRainRate)
-		{
-			particle->type = CParticle::PARTICLE_RAIN;
-			particle->scale.Set(1, 1, 1);
-			particle->vel.Set(0, 0, 0);
-			particle->pos.Set(Math::RandFloatMinMax(-2000, 2000), 1500, Math::RandIntMinMax(-2000, 2000));
+	
+	
+		
+	
 
-			m_fRainTimer = 0;
-		}
-	}
-
+	//Dynamically change in wind direction
 	if (WindTimer > 30.f)
 	{
 		WindDirection = Vector3(Math::RandFloatMinMax(-15, 15), Math::RandFloatMinMax(-1.75, 0), Math::RandFloatMinMax(-15, 15));
@@ -438,12 +432,14 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* p
 		cout << WindDirection << endl;
 	}
 
+
 	for (std::vector<CParticle* >::iterator it = myParticleList.begin(); it != myParticleList.end(); ++it)
 	{
 		CParticle* go = (CParticle *)*it;
 
-		if (GetEnableWeather() == true)
+		if (GetEnableWeather() == true && go->active)
 		{
+
 			//if(!difference.IsZero())
 			//{
 			difference = WindDirection + m_Gravity;
@@ -452,7 +448,7 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* p
 			go->pos += go->vel * dt;
 		}
 		if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightmap, terrainSize) - offset)
-	{
+		{
 			go->active = false;
 		}
 	}
@@ -477,4 +473,17 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, CParticle* p
 			go->active = false;
 		}
 	}
+}
+
+float CPhysics::GetRainTimer(void)
+{
+	return m_fRainTimer;
+}
+void CPhysics::SetRainTimer(float timer)
+{
+	this->m_fRainTimer = timer;
+}
+float CPhysics::GetRainRate(void)
+{
+	return m_fRainRate;
 }

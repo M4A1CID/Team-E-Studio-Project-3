@@ -45,7 +45,7 @@ class SceneSP3 : public Scene
 	const static int AI_PATH_OFFSET_X = 16;
 	const static int AI_PATH_OFFSET_Z = 15;
 	const static int MAP_SIZE = 2048;
-	const static int MAP_BOX_SIZE = 128;
+	const static int MAP_BOX_SIZE = 64;
 	const static int DETECT_ENEMY_DISTANCE = 368;
 	
 	enum UNIFORM_TYPE
@@ -306,7 +306,7 @@ public:
 	//try to clean this as soon as possible!
 	bool LoadFromTextFileDoor(const string mapString);
 	bool LoadFromTextFileInmate(const string mapString);
-	bool LoadFromTextFileWaypoints(const string mapString);
+	bool LoadFromTextFileWaypoints(void);
 	bool LoadFromTextFileSpeech(const string mapString);
 
 	//void bubbleSort(vector<Vector3> & list, Vector3 camPos, int length);

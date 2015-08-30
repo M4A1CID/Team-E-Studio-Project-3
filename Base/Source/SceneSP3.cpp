@@ -167,7 +167,7 @@ void SceneSP3::initTokenForEnemyPathfinding()
 }
 void SceneSP3::initMap()
 {
-	//initTokenForEnemyPathfinding();
+	initTokenForEnemyPathfinding();
 
 	//Base on the Enemy path finding, load the map
 	m_cMap = new CMap();
@@ -258,7 +258,7 @@ void SceneSP3::initLights()
 	m_uiParameters[U_LIGHT4_EXPONENT] = glGetUniformLocation(m_programID, "lights[4].exponent");*/
 
 	lights[0].type = Light::LIGHT_DIRECTIONAL;
-	lights[0].position.Set(-200, 100, 0);
+	lights[0].position.Set(0, 100, 0);
 	lights[0].color.Set(0.7f, 0.7f, 0.5f);
 	lights[0].power = 1.f;
 	lights[0].kC = 1.f;
@@ -771,7 +771,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 0;
+	m_Current_Level = 2;
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -784,7 +784,7 @@ void SceneSP3::initVariables()
 	LoadFromTextFileDoll("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadDoll.txt");
 	LoadFromTextFileSpeech("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadSpeech.txt");
 	initMap();
-	LoadFromTextFileWaypoints("Variables/"+ m_fileBuffer[m_Current_Level] +"/LoadWaypoints.txt");
+	LoadFromTextFileWaypoints();
 
 	//CParticle* ptr = FetchParticle();
 	physicsEngine.SetWorldTime(335);
@@ -1076,7 +1076,7 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_WANDER:
 				{
-					float constant = dt * 30;
+					float constant = dt * 150;
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1161,7 +1161,7 @@ void SceneSP3::UpdateEnemies(double dt)
 			//if(enemy->getIsAlert()) // If this enemy detected the player
 			//	enemy->Update(m_cMap,thePlayer,AI_PATH_OFFSET_X,AI_PATH_OFFSET_Z);
 			//else
-				enemy->Update(myWaypointList,thePlayer,dt);
+			enemy->Update(myWaypointList,thePlayer,dt,m_cMap);
 			
 			if(!Invis)
 			{
@@ -1231,9 +1231,21 @@ void SceneSP3::UpdatePlay(double dt)
 		}
 	}
 	// Update the weather
-	CParticle *go = FetchParticle();
+	physicsEngine.UpdateWeather(myParticleList, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
 
-	physicsEngine.UpdateWeather(myParticleList, go, m_heightMap, TERRAIN_SCALE, dt, myEnemyList);
+	
+	if (physicsEngine.GetRainTimer() > physicsEngine.GetRainRate() && physicsEngine.GetEnableWeather())
+	{
+
+
+		CParticle* particle = FetchParticle();
+		particle->type = CParticle::PARTICLE_RAIN;
+		particle->scale.Set(1, 1, 1);
+		particle->vel.Set(0, 0, 0);
+		particle->pos.Set(Math::RandFloatMinMax(-2000, 2000), 1500, Math::RandIntMinMax(-2000, 2000));
+
+		physicsEngine.SetRainTimer(0.f);
+	}
 	//Update the sun
 	physicsEngine.UpdateSun(lights[0], dt);
 	glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
@@ -1291,12 +1303,14 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 		go->active = true;
 		go->type = CParticle::PARTICLE_PEE;
 		go->scale.Set(0.1, 0.1, 0.1);
-		go->vel.Set(((camera.target.x - camera.position.x)), (camera.target.y - camera.position.y) + 10, ((camera.target.z - camera.position.z)));
-		go->pos.Set(camera.position.x, camera.position.y - 5, camera.position.z);
+		Vector3 dirVec = (camera.target-camera.position).Normalized();
+		dirVec *= 10.f;
+		go->vel.Set( dirVec.x,dirVec.y+5,dirVec.z );
+		go->pos.Set(camera.position.x, camera.target.y - 2, camera.position.z);
 
 		if(m_cPeeing->getIsFiring())
 		{	
-			FetchParticle();	
+			//FetchParticle();	
 			m_cPeeing->setAmmo(m_cPeeing->getAmmo()-1);
 			m_cPeeing->setIsFiring(false);
 		}
@@ -1327,8 +1341,7 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 			m_cPeeing->setNeedReload(false);
 		}
 	}
-	CParticle *go = FetchParticle();
-	physicsEngine.UpdatePeeing(myParticleList, go, m_heightMap, TERRAIN_SCALE, camera, dt);
+	physicsEngine.UpdatePeeing(myParticleList, m_heightMap, TERRAIN_SCALE, camera, dt);
 }
 	
 void SceneSP3::UpdateSceneControls()
@@ -1362,7 +1375,8 @@ void SceneSP3::UpdateSceneControls()
 
 	if(Application::IsKeyPressed('8') || NVM == false)
 	{
-		m_bLightEnabled = true;
+		m_bLightEnabled = false;
+		//m_bLightEnabled = true;
 	}
 	if(Application::IsKeyPressed('9') || NVM == true)
 	{
@@ -1535,19 +1549,22 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 	Vector3 Pos;
 	Vector3 Scale;
 	Vector3 Offset;
+	Vector3 Rotation;
+	int Angle;
 	int geotype;
 	bool active;
 	bool LockBool;
 	CDoor * door;
 	if (myfile.is_open())
 	{
-		while( myfile >> Pos.x >> Pos.y  >> Pos.z  >> Scale.x >> Scale.y >> Scale.z  >> Offset.x >> Offset.y >> Offset.z >> LockBool >> geotype >> active)
+		while( myfile >> Pos.x >> Pos.y  >> Pos.z >> Angle >> Rotation.x >> Rotation.y >> Rotation.z  >> Scale.x >> Scale.y >> Scale.z  >> Offset.x >> Offset.y >> Offset.z >> LockBool >> geotype >> active)
 		{
 
 			door = FetchDoor();
 			door->setActive(active);
 			door->setPosition(Pos);
 			door->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
+			door->setRotation(Angle,Rotation);
 			door->setGeoType(geotype);
 			door->SetLocked(LockBool);
 			door->setScale(Scale);
@@ -1769,7 +1786,7 @@ bool SceneSP3::LoadFromTextFilePlayer(const string mapString)
 		cout << "Player Loaded: FAILED!"; 
 	return false;
 }
-bool SceneSP3::LoadFromTextFileWaypoints(const string mapString)
+bool SceneSP3::LoadFromTextFileWaypoints(void)
 {
 	for(int i = 0; i < m_cMap->GetNumOfTiles_Height(); i ++)
 	{
@@ -2452,7 +2469,7 @@ void SceneSP3::RenderObjList()
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
-				//modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
+				modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
 				modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 				RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 				modelStack.PopMatrix();
@@ -2496,6 +2513,7 @@ void SceneSP3::RenderDoorList()
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+			modelStack.Rotate(go->getRotationAngle(),go->getRotation().x,go->getRotation().y,go->getRotation().z);
 			modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 			RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 			modelStack.PopMatrix();

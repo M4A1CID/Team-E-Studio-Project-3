@@ -54,10 +54,10 @@ public:
 	void UpdateSun(Light &, double & dt);
 
 	// Weather
-	void UpdateWeather(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, double& dt, std::vector<CEnemy *> enemy);
+	void UpdateWeather(std::vector<CParticle*>, std::vector<unsigned char> &heightMap,const Vector3& terrainSize, double& dt, std::vector<CEnemy *> enemy);
 
 	//Peeing
-	void UpdatePeeing(std::vector<CParticle*>, CParticle* particle, std::vector<unsigned char> &heightMap, const Vector3& terrainSize, Camera3& camera, double& dt);
+	void UpdatePeeing(std::vector<CParticle*>, std::vector<unsigned char> &heightMap, const Vector3& terrainSize, Camera3& camera, double& dt);
 
 	// Set enable weather
 	void SetEnableWeather(bool enableWeather);
@@ -77,6 +77,11 @@ public:
 
 	string GetHourTime(void);
 	string GetMinuteTime(void);
+
+	float GetRainTimer(void);
+	void SetRainTimer(float);
+	float GetRainRate(void);
+
 
 
 private:
