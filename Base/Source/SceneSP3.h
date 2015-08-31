@@ -420,6 +420,8 @@ private:
 	float m_Z_Buffer_timer;
 	//Current level of scene
 	short int m_Current_Level;
+	int m_Map_Size;
+	int m_Map_Box_Size;
 
 	int m_textSelection;
 	double m_dJumpingSpeed;

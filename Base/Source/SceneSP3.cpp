@@ -171,7 +171,7 @@ void SceneSP3::initMap()
 
 	//Base on the Enemy path finding, load the map
 	m_cMap = new CMap();
-	m_cMap->Init( MAP_SIZE, MAP_SIZE, MAP_SIZE/MAP_BOX_SIZE, MAP_SIZE/MAP_BOX_SIZE, MAP_SIZE, MAP_SIZE, MAP_BOX_SIZE,'1'); //Init level 1
+	m_cMap->Init( m_Map_Size, m_Map_Size, m_Map_Size/m_Map_Box_Size, m_Map_Size/m_Map_Box_Size, m_Map_Size, m_Map_Size, m_Map_Box_Size,'1'); //Init level 1
 	//m_cMap->LoadMap( "Variables/"+ m_fileBuffer[m_Current_Level] +"/Level1.csv" ); // Load level 1
 	m_cMap->LoadMap( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" ); // Load level 1
 }
@@ -771,7 +771,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 1;
+	m_Current_Level = 2;
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -1764,6 +1764,7 @@ bool SceneSP3::LoadFromTextFilePlayer(const string mapString)
 	Vector3 Pos;
 	Vector3 Scale;
 	bool active;
+	int mapSize;
 	
 	if(thePlayer == NULL)
 	{
@@ -1772,11 +1773,13 @@ bool SceneSP3::LoadFromTextFilePlayer(const string mapString)
 
 	if (myfile.is_open())
 	{
-		while ( myfile >> active >> Pos.x >> Pos.y >> Pos.z >> Scale.x >> Scale.y >> Scale.z)
+		while ( myfile >> active >> Pos.x >> Pos.y >> Pos.z >> Scale.x >> Scale.y >> Scale.z >> mapSize)
 		{
 			thePlayer->SetPosition(Pos);
 			thePlayer->SetScale(Scale);
 			thePlayer->SetActive(active);
+			m_Map_Size = mapSize;
+			m_Map_Box_Size = m_Map_Size / 32;
 			cout << "Player Loaded: SUCCESS!" << endl;
 			
 		}

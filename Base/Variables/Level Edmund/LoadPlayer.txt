@@ -1,2 +1,2 @@
-1		0	0	0	5	5	5
-//Active,	PosX,	PosY,	PosZ,	ScaleX,	ScaleY,	ScaleZ
+1		0	0	0	5	5	5	2048
+//Active,	PosX,	PosY,	PosZ,	ScaleX,	ScaleY,	ScaleZ, Mapsize
