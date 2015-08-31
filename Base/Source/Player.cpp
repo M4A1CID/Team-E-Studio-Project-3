@@ -7,6 +7,7 @@ CPlayer::CPlayer(void)
 	: active(false)
 	, pos(0, 0, 0)
 	, scale(0, 0, 0)
+	, detected(false)
 {
 }
 //cannot do the same construction as the default because this will have different set of values

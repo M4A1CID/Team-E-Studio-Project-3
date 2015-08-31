@@ -876,6 +876,7 @@ void SceneSP3::checkPickUpItem()
 						{
 							cout << "YOU GOT : MINIMUM SECURITY CARD" << endl;
 							myKeyList[i]->SetLevel(1); 
+							thePlayer->SetDetected(true);
 							MinCollected = true;
 						}
 						break;
@@ -883,6 +884,7 @@ void SceneSP3::checkPickUpItem()
 						{
 							cout << "YOU GOT : MEDIUM SECURITY CARD" << endl;
 							myKeyList[i]->SetLevel(2);
+							thePlayer->SetDetected(true);
 							MedCollected = true;
 						}
 						break;
@@ -890,6 +892,7 @@ void SceneSP3::checkPickUpItem()
 						{
 							cout << "YOU GOT : MAXIMUM SECURITY CARD" << endl;
 							myKeyList[i]->SetLevel(3);
+							thePlayer->SetDetected(true);
 							MaxCollected = true;
 						}
 						break;
@@ -1064,6 +1067,7 @@ void SceneSP3::UpdateEnemies(double dt)
 
 		if(enemy->getActive())
 		{
+			static float constant = dt * 150;
 			switch(enemy->getCurrentState())
 			{
 			case CEnemy::STATE_IDLE:
@@ -1076,7 +1080,7 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_WANDER:
 				{
-					float constant = dt * 150;
+					
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1103,7 +1107,6 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_PATROL:
 				{
-					float constant = dt * 30;
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1130,7 +1133,6 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_CHASE:
 				{
-					float constant = dt * 60;
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1304,8 +1306,8 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 		go->type = CParticle::PARTICLE_PEE;
 		go->scale.Set(0.1, 0.1, 0.1);
 		Vector3 dirVec = (camera.target-camera.position).Normalized();
-		dirVec *= 10.f;
-		go->vel.Set( dirVec.x,dirVec.y+5,dirVec.z );
+		dirVec *= 20.f;
+		go->vel.Set( dirVec.x + Math::RandFloatMinMax(-0.2,0.2),dirVec.y+5,dirVec.z + Math::RandFloatMinMax(-0.5,0.5));
 		go->pos.Set(camera.position.x, camera.target.y - 2, camera.position.z);
 
 		if(m_cPeeing->getIsFiring())

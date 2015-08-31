@@ -243,7 +243,7 @@ void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
 	
 	
 
-	if( temp.Length() < VisibilityRange) // If player is close enough to the enemy
+	if( temp.Length() < VisibilityRange && thePlayer->GetDetected()) // If player is close enough to the enemy
 	{
 		if(LeftView.Length() != 0)
 		LeftView.Normalize();
@@ -326,7 +326,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 
 	case STATE_IDLE:
 		{
-			destination = Vector3(0,0,-900);
+			//destination = Vector3(destination.x,destination.y,destination.z);
 			DirectionFacing = destination - Pos;
 			if(DirectionFacing.Length() != 0)
 			DirectionFacing.Normalize();
@@ -337,7 +337,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 		{
 			prev = destination; // Set this enemy's previous to current location
 
-			if( (thePlayer->GetPosition() - Pos).Length() < m_cMap->GetTileSize())
+			if( (thePlayer->GetPosition() - Pos).Length() < VisibilityRange)
 			{
 				destination = thePlayer->GetPosition();
 				DirectionFacing = destination - Pos;

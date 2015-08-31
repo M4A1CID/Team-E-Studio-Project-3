@@ -1,6 +1,10 @@
-400		5		-100		10		10		10		2	1	600		100		2
+400			5			-100		10			10			10			2			1		600			100				2
+-330		0			-575		10			10			10			1			1		-350			-575			1
+
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		Type,	Active,	DestinationX,	DestinationZ,	State
 
+//Type 1 Warden
+//Type 2 Guard
 
 
 //STATE_PATROL, 0
@@ -9,4 +13,3 @@
 //STATE_AVOID, 3
 //STATE_CHASE 4
 //NUM_STATE
-	

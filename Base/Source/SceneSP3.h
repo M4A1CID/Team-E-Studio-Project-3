@@ -47,7 +47,6 @@ class SceneSP3 : public Scene
 	const static int MAP_SIZE = 2048;
 	const static int MAP_BOX_SIZE = 64;
 	const static int DETECT_ENEMY_DISTANCE = 368;
-	
 	enum UNIFORM_TYPE
 	{
 		U_MVP = 0,
