@@ -332,8 +332,8 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 
 	// Speed
 	tempSpeed = 100.f;
-	sprintSpeed = 300.f;
-	crouchWalkSpeed = 20.f;
+	sprintSpeed = CAMERA_SPEED * 4.f;
+	crouchWalkSpeed = CAMERA_SPEED * 0.2f;
 
 	// Crouch
 	CrouchOff = 60.f;

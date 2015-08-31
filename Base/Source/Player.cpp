@@ -174,15 +174,6 @@ void CPlayer::UpdatePosition(double& dt, Camera3& camera)
 	pos.Set(camera.position.x, camera.position.y-offsetY, camera.position.z);
 }
 
-void CPlayer::TakeDump()
-{
-
-}
-void CPlayer::ThrowCrap()
-{
-
-}
-
 /*======== Animations =========*/
 // Walking
 void CPlayer::Walking()

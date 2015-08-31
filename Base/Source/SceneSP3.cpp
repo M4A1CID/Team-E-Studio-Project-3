@@ -771,7 +771,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 2;
+	m_Current_Level = 3;
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -1309,7 +1309,7 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 	if(!bRButtonState && Application::IsMousePressed(1))
 	{
 		bRButtonState = true;
-		std::cout << "R MOUSE BUTTON DOWN" << std::endl;
+		//std::cout << "R MOUSE BUTTON DOWN" << std::endl;
 
 		//this indicates that the firing trigger is pushed.
 		m_cPeeing->setIsFiring(true);
@@ -1317,7 +1317,7 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 	else if(bRButtonState && !Application::IsMousePressed(1))
 	{
 		bRButtonState = false;
-		std::cout << "R MOUSE BUTTON UP" << std::endl;
+		//std::cout << "R MOUSE BUTTON UP" << std::endl;
 	}
 
 	if(bRButtonState && m_cPeeing->getAmmo() != 0)
@@ -1399,12 +1399,11 @@ void SceneSP3::UpdateSceneControls()
 		m_speed += 0.1f;
 	}
 
-	if(Application::IsKeyPressed('8') || NVM == false)
+	if(Application::IsKeyPressed('8'))// || NVM == false)
 	{
 		m_bLightEnabled = false;
-		//m_bLightEnabled = true;
 	}
-	if(Application::IsKeyPressed('9') || NVM == true)
+	if(Application::IsKeyPressed('9'))// || NVM == true)
 	{
 		m_bLightEnabled = false;
 	}
@@ -2254,11 +2253,12 @@ void SceneSP3::RenderUI()
 	ss.str(std::string());
 	ss.precision(3);
 	ss << "Pos_X: " << camera.position.x;
+	ss << "X: " << camera.position.x;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 54);
 
 	ss.str(std::string());
 	ss.precision(3);
-	ss << "Pos_Z: " << camera.position.z;
+	ss << "Z: " << camera.position.z;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 51);
 
 	ss.str(std::string());
@@ -2365,7 +2365,7 @@ void SceneSP3::RenderGamePlay()
 		}
 	}
 	RenderDebugWireframe();
-	RenderWayPoints();
+	//RenderWayPoints();
 	
 	RenderUI();
 }
@@ -2471,10 +2471,6 @@ void SceneSP3::RenderWorld()
 
 	RenderTerrain();
 
-	modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_SPHERE],false);
-	modelStack.PopMatrix();
-
 	RenderObjList();
 	RenderDoorList();
 	RenderInmateList();
@@ -2482,7 +2478,7 @@ void SceneSP3::RenderWorld()
 	RenderLaserList();
 	RenderDollList();
 	
-	//RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
+	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
 	RenderKeyList();
 }
 void SceneSP3::RenderObjList()
@@ -2497,7 +2493,7 @@ void SceneSP3::RenderObjList()
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
-				modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
+				//modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
 				modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 				RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 				modelStack.PopMatrix();
