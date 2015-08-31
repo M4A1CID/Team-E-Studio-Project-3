@@ -101,14 +101,6 @@ void SceneSP3::initMenu()
 		m_cStates = new CMenu_States();
 	}
 }
-/*void SceneSP3::initPlayer()
-{
-	//initialize the player class using the overloaded constructor
-	//the parameters are as follows: active, position, scale
-	thePlayer = new CPlayer(true, Vector3(0, 20, 10), Vector3(5, 5, 5));
-
-	//thePlayer->Init(false, Vector3(0, 20, 10), Vector3 (5, 5, 5), 0, 2);
-}*/
 void SceneSP3::initTokenForEnemyPathfinding()
 {
 	ofstream fout( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" );
@@ -177,10 +169,12 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
+	m_Current_Level = 2;
+	Math::InitRNG();
+	m_bLightEnabled = true;
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
 
-	//initPlayer();
 	initPeeing();
 	initMeshlist();
 	initVariables();
@@ -767,11 +761,10 @@ void SceneSP3::initGameData()
 }
 void SceneSP3::initVariables()
 {
-	Math::InitRNG();
-	m_bLightEnabled = true;
+	
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 3;
+	
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -854,6 +847,12 @@ void SceneSP3::checkWin(void)
 				if(myDoorList[i]->getGeoType() == 17 && !myDoorList[i]->GetLocked())
 				{
 					cout << "You win!" << endl;
+					m_Current_Level = 0;
+					cleanUp();
+					camera.position.Set(0, 40, 0);
+					camera.target.Set(0, 40, 10);
+					initPeeing();
+					initVariables();
 				}
 			}
 		}
@@ -2365,7 +2364,7 @@ void SceneSP3::RenderGamePlay()
 		}
 	}
 	RenderDebugWireframe();
-	//RenderWayPoints();
+	RenderWayPoints();
 	
 	RenderUI();
 }
@@ -2493,7 +2492,7 @@ void SceneSP3::RenderObjList()
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
-				//modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
+				modelStack.Rotate(go->getRotationAngle(), go->getRotation().x, go->getRotation().y, go->getRotation().z);
 				modelStack.Scale(go->getScale().x,go->getScale().y,go->getScale().z);
 				RenderMesh(meshList[go->getGeoType()], m_bLightEnabled);
 				modelStack.PopMatrix();
@@ -2812,13 +2811,24 @@ const std::vector<unsigned char>SceneSP3::GetHeightMap()
 {
 	return m_heightMap;
 }
-void SceneSP3::Exit()
+
+void SceneSP3::cleanUp(void)
 {
-	// Cleanup VBO
-	for(int i = 0; i < NUM_GEOMETRY; ++i)
+	if(thePlayer != NULL)
 	{
-		if(meshList[i])
-			delete meshList[i];
+		delete thePlayer;
+		thePlayer = NULL;
+	}
+	
+	if(m_cPeeing)
+	{
+		delete m_cPeeing;
+		m_cPeeing = NULL;
+	}
+	if(m_cMap != NULL)
+	{
+		delete m_cMap;
+		m_cMap = NULL;
 	}
 	while(myObjList.size() > 0)
 	{
@@ -2833,10 +2843,11 @@ void SceneSP3::Exit()
 		delete go;
 		myKeyList.pop_back();
 	}
-	for(unsigned int i = 0; i < myInmateList.size(); ++i)
+	while(myInmateList.size() > 0)
 	{
-		if(myInmateList[i] != NULL)
-			delete myInmateList[i];
+		CInmate *go = myInmateList.back();
+		delete go;
+		myInmateList.pop_back();
 	}
 	while(myEnemyList.size() > 0)
 	{
@@ -2874,26 +2885,25 @@ void SceneSP3::Exit()
 		delete go;
 		myParticleList.pop_back();
 	}
-	if(m_cMap != NULL)
+	
+}
+void SceneSP3::Exit()
+{
+	// Cleanup VBO
+	for(int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		delete m_cMap;
-		m_cMap = NULL;
+		if(meshList[i])
+			delete meshList[i];
 	}
-	if(thePlayer != NULL)
-	{
-		delete thePlayer;
-		thePlayer = NULL;
-	}
+	
+	
+	
 	if(m_cStates != NULL)
 	{
 		delete m_cStates;
 		m_cStates = NULL;
 	}
-	if(m_cPeeing)
-	{
-		delete m_cPeeing;
-		m_cPeeing = NULL;
-	}
+	cleanUp();
 	//if (music)
 	//	music->drop(); // release music stream.
 	//if(fire)
