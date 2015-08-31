@@ -771,7 +771,7 @@ void SceneSP3::initVariables()
 	m_bLightEnabled = true;
 	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
 	
-	m_Current_Level = 2;
+	m_Current_Level = 1;
 	m_Z_Buffer_timer = 0.f;
 	m_AI_Update_Timer = 0.f;
 	LoadFromTextFileOBJ("Variables/" + m_fileBuffer[m_Current_Level] + "/LoadOBJ.txt");
@@ -1523,7 +1523,6 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 	{
 		while ( myfile >> Pos.x >> Pos.y >> Pos.z >> Angle >> Rotate.x >> Rotate.y >> Rotate.z >> Scale.x >> Scale.y >> Scale.z >> Offset.x >> Offset.y >> Offset.z >> geotype >> active)
 		{
-
 			obj = FetchOBJ();
 			obj->setActive(active);
 			obj->setPosition(Pos);
@@ -2225,7 +2224,7 @@ void SceneSP3::RenderUI()
 
 	ss.str(std::string());
 	ss.precision(3);
-	ss << "Bullet: " << m_cPeeing->getAmmo();
+	ss << "Pos_X: " << camera.position.x;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 54);
 
 	ss.str(std::string());
