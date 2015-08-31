@@ -195,3 +195,5 @@
 //Geotype 58	= SCREWDRIVER
 //Geotype 59	= TOILET
 //Geotype 60	= WINDOW
+
+//PRISON DIMENSIONS - 128 (X) X 160 (Z)

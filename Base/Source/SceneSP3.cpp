@@ -2049,15 +2049,15 @@ void SceneSP3::RenderWatch()
 {
 	RenderMeshIn2D(meshList[GEO_WATCH_UI], 40, -60, 10);
 
-	//float hour;
-	//int min;
+	float hour;
+	int min;
 
 
-	//hour = (int)(physicsEngine.GetWorldTime()/60);
-	//min = (int)(physicsEngine.GetWorldTime())%60;
+	hour = (int)(physicsEngine.GetWorldTime()*0.5);
+	min = (int)(physicsEngine.GetWorldTime())%60;
 
 	//float theta = Math::RadianToDegree(atan2(min, hour));
-	//RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -theta);
+	RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -hour);
 }
 void SceneSP3::RenderCompass()
 {
