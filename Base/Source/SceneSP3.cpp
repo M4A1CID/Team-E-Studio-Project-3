@@ -1590,6 +1590,7 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 			door->setRotation(Angle,Rotation);
 			door->setGeoType(geotype);
 			door->SetLocked(LockBool);
+			door->setOffset(Offset);
 			door->setScale(Scale);
 			cout << "Doors Loaded: SUCCESS!" << endl;
 		}
