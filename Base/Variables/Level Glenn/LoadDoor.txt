@@ -1,5 +1,13 @@
 195			65			-388	0		0			1			0			8			8			8			30			30			30			1			15			1
 195			60			-843	0		0			1			0			8			8			8			30			30			30			1			15			1
+800			60			385 	-90		0			1			0			8			8			8			30			30			30			1			15			1
+1600		60			385 	-90		0			1			0			8			8			8			30			30			30			1			15			1
+
+188			60			985 	180		0			1			0			8			8			8			30			30			30			1			15			1
+188			60			1440 	180		0			1			0			8			8			8			30			30			30			1			15			1
+
+-1200		60			1440 	180		0			1			0			8			8			8			30			30			30			1			16			1
+-1200		60			985 	180		0			1			0			8			8			8			30			30			30			1			16			1
 //PosX,		PosY,   	PosZ,	Angle, 	Rotation.x, Rotation.y, Rotation.z,	ScaleX, 	ScaleY, 	ScaleZ,	    OffsetX,	OffsetY,	OffsetZ,	LockBool,	GeoType,  	Active
 
 //Geotype 15	= MIN_SEC_DOOR
