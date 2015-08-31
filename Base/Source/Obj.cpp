@@ -5,6 +5,8 @@ CObj::CObj(void)
 {
 	Pos.SetZero();
 	Pos.SetZero();
+	Rotate.Set(0,1,0);
+	Angle = 0;
 	offset.SetZero();
 	active = false;
 	geoType = -1;
