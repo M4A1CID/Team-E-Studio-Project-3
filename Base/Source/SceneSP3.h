@@ -294,6 +294,7 @@ public:
 	void checkOpenDoor();
 	void checkDollFlip();
 	void checkSpeech();
+	void checkWin();
 
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);

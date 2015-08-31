@@ -841,7 +841,30 @@ void SceneSP3::checkDollFlip()
 		}
 	}
 }
+void SceneSP3::checkWin(void)
+{
+	switch(m_Current_Level)
+	{
+	case 1:
+		break;
+	case 2:
+		{
+			for(unsigned int i = 0; i < myDoorList.size(); ++i)
+			{
+				if(myDoorList[i]->getGeoType() == 17 && !myDoorList[i]->GetLocked())
+				{
+					cout << "You win!" << endl;
+				}
+			}
+		}
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
 
+	}
+}
 void SceneSP3::checkPickUpItem()
 {
 	float magnitudeFromTarget = 0.f;
@@ -1175,6 +1198,7 @@ void SceneSP3::UpdateEnemies(double dt)
 }
 void SceneSP3::UpdatePlay(double dt)
 {
+	checkWin();
 	UpdateInvisibility(dt);
 	UpdateNVM(dt);
 	UpdateCooldown(dt);

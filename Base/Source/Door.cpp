@@ -12,12 +12,12 @@ CDoor::~CDoor(void)
 {
 }
 
-void CDoor::SetLevel(char)
+void CDoor::SetLevel(char lockLevel)
 {
 	this->lockLevel = lockLevel;
 }
 
-void CDoor::SetLocked(bool)
+void CDoor::SetLocked(bool isLocked)
 {
 	this->isLocked = isLocked;
 }
