@@ -2052,12 +2052,12 @@ void SceneSP3::RenderWatch()
 	float hour;
 	int min;
 
-
 	hour = (int)(physicsEngine.GetWorldTime()*0.5);
-	min = (int)(physicsEngine.GetWorldTime())%60;
+	min =  ((int)(physicsEngine.GetWorldTime())%60) * 6;		//get the remainder of dividends of 60 to get minutes
 
 	//float theta = Math::RadianToDegree(atan2(min, hour));
 	RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -hour);
+	RenderMeshIn2D(meshList[GEO_WATCH_MIN_HAND_UI], 40, -60, 10, true, -min);
 }
 void SceneSP3::RenderCompass()
 {
