@@ -418,11 +418,19 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<
 	WindTimer += dt;
 	m_spawnRateTimer += (float)dt;
 	m_fRainTimer += (float)dt;
+	
+	/*if (GetEnableWeather() == true && particle->active == true)
+	{
+		if (m_fRainTimer > m_fRainRate)
+		{
+			particle->type = CParticle::PARTICLE_RAIN;
+			particle->scale.Set(1, 1, 1);
+			particle->vel.Set(0, 0, 0);
+			particle->pos.Set(Math::RandFloatMinMax(-2000, 2000), 1805, Math::RandIntMinMax(-2000, 2000));
 
-	
-	
-		
-	
+			m_fRainTimer = 0;
+		}
+	}*/
 
 	//Dynamically change in wind direction
 	if (WindTimer > 30.f)

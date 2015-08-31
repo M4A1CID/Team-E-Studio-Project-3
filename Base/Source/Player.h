@@ -73,9 +73,6 @@ public:
 	void Jump();
 	void Crouch();
 
-	// Throwing crap
-	void TakeDump();
-	void ThrowCrap();
 
 	// Get the inventory Vector for CItems
 	std::vector<CItem*> getItemVector();

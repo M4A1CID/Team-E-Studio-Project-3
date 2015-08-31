@@ -279,7 +279,6 @@ public:
 	void initMenu();
 	void initGameData();		//trigger this when restarting
 	void initPeeing();			//for peeing feature
-	void initPlayer();
 	void initEnemies();
 	void initUniforms();
 	void initVariables();
@@ -288,6 +287,8 @@ public:
 	void initMeshlist();
 	
 	void initLights();
+
+	void cleanUp(void);
 	
 	// Interactions
 	void checkPickUpItem();
