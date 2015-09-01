@@ -82,7 +82,7 @@ public:
 	void SetRainTimer(float);
 	float GetRainRate(void);
 
-
+	void setCurrent(Vector3);
 
 private:
 	Vector3 m_Gravity;

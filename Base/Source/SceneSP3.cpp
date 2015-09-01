@@ -1297,7 +1297,9 @@ void SceneSP3::Update(double dt)
 				camera.up.Set(0,1,0);
 				initPeeing();
 				initVariables();
-
+				physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+				glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+				glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
 
 			}
 			break;
@@ -2618,7 +2620,7 @@ void SceneSP3::RenderPassGPass()
 
 	//These matrices should change when light position or direction changes
 	if(lights[0].type == Light::LIGHT_DIRECTIONAL)
-		m_lightDepthProj.SetToOrtho(-SKYBOXSIZE,SKYBOXSIZE,-SKYBOXSIZE,SKYBOXSIZE,0.1,10000);
+		m_lightDepthProj.SetToOrtho(-TERRAIN_SCALE.x,TERRAIN_SCALE.x,-TERRAIN_SCALE.z,TERRAIN_SCALE.z,0.1,10000);
 	else
 		m_lightDepthProj.SetToPerspective(10,1.f,0.1,20);
 
@@ -2653,13 +2655,13 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight, bool enableFog)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
-	//if(m_renderPass == RENDER_PASS_PRE && !m_is_Nighttime) // Only apply shadow if it's Day Time
-	//{
-	//	Mtx44 lightDepthMVP = m_lightDepthProj * m_lightDepthView * modelStack.Top();
-	//	glUniformMatrix4fv(m_uiParameters[U_LIGHT_DEPTH_MVP_GPASS],1,GL_FALSE, &lightDepthMVP.a[0]);
-	//	mesh->Render();
-	//	return;
-	//}
+	if(m_renderPass == RENDER_PASS_PRE && (physicsEngine.GetWorldTime() < 1200 || physicsEngine.GetWorldTime() >= 360)) // Only apply shadow if it's Day Time
+	{
+		Mtx44 lightDepthMVP = m_lightDepthProj * m_lightDepthView * modelStack.Top();
+		glUniformMatrix4fv(m_uiParameters[U_LIGHT_DEPTH_MVP_GPASS],1,GL_FALSE, &lightDepthMVP.a[0]);
+		mesh->Render();
+		return;
+	}
 
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(m_uiParameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
