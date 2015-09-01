@@ -169,7 +169,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 1;
+	m_Current_Level = 3;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	initMenu();
@@ -2267,7 +2267,6 @@ void SceneSP3::RenderUI()
 
 	ss.str(std::string());
 	ss.precision(3);
-	ss << "Pos_X: " << camera.position.x;
 	ss << "X: " << camera.position.x;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 54.f);
 
@@ -2389,7 +2388,7 @@ void SceneSP3::RenderGamePlay()
 		}
 	}
 	RenderDebugWireframe();
-	RenderWayPoints();
+	//RenderWayPoints();
 	
 	RenderUI();
 }
@@ -2398,7 +2397,7 @@ void SceneSP3::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
+	//perspective.SetToOrtho(-80, 80, -60, 60, -19000, 1000);
 	projectionStack.LoadMatrix(perspective);
 	
 	// Camera matrix
