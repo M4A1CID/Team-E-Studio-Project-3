@@ -1,4 +1,4 @@
-
+-500		60		950		5		5		5		63		1
 
 //PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
 //GEOTYPE 20 == MIN SECURITY
