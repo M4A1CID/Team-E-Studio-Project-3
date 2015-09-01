@@ -707,6 +707,9 @@ void SceneSP3::initMeshlist()
 
 	//peeing particles
 	meshList[GEO_PEEING_PARTICLES] = MeshBuilder::GenerateSphere("GEO_PEEING_PARTICLES", Color(1, 1, 0), 18, 36, 1.f);
+
+	// Button
+	meshList[GEO_BUTTON] = MeshBuilder::GenerateSphere("GEO_BUTTON", Color(1, 0, 0), 18, 36, 1.f);
 }
 void SceneSP3::initVariables()
 {
@@ -783,6 +786,42 @@ void SceneSP3::checkDollFlip()
 		}
 	}
 }
+void SceneSP3::checkButtonPushed()
+{
+	float magnitudeFromTarget = 0.f;
+	float magnitudeFromPosition = 0.f;
+	float previous = 99.0f;
+	int chosen = 0;
+	Vector3 rotateVector(1, 0, 0);
+	for(unsigned int i = 0; i < myObjList.size(); ++i)
+	{
+		if(myObjList[i]->getGeoType() == 68) //If Doll is upright
+		{
+			//Distance between Camera Target and Item position = Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+			magnitudeFromTarget = sqrt((camera.target.x - myObjList[i]->getPosition().x) * (camera.target.x - myObjList[i]->getPosition().x) + 
+									   (camera.target.y - myObjList[i]->getPosition().y) * (camera.target.y - myObjList[i]->getPosition().y) +
+									   (camera.target.z - myObjList[i]->getPosition().z) * (camera.target.z - myObjList[i]->getPosition().z));
+
+			//Get lowest magnitude of Item from target
+			if(previous > magnitudeFromTarget)
+			{
+				previous = magnitudeFromTarget;
+				//Distance between Camera Position and Item position= Sqrt( (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 )
+				magnitudeFromPosition = sqrt((camera.target.x - myObjList[i]->getPosition().x) * (camera.target.x - myObjList[i]->getPosition().x) + 
+											(camera.target.y - myObjList[i]->getPosition().y) * (camera.target.y - myObjList[i]->getPosition().y) +
+											(camera.target.z - myObjList[i]->getPosition().z) * (camera.target.z - myObjList[i]->getPosition().z));
+				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
+				{
+					if(myObjList[i]->getGeoType() == 68 && myObjList[i]->getActive())
+					{
+						myObjList[i]->setActive(false);
+						cout << "Button pushed" << endl;
+					}
+				}
+			}
+		}
+	}
+}
 void SceneSP3::checkWin(void)
 {
 	switch(m_Current_Level)
@@ -822,6 +861,22 @@ void SceneSP3::checkWin(void)
 		}
 		break;
 	case 3:
+		{
+			for(unsigned int i = 0; i < myObjList.size(); ++i)
+			{
+				if(myObjList[i]->getGeoType() == 68 && !myObjList[i]->getActive())
+				{
+					cout << "You win!" << endl;
+					m_Current_Level = 4;
+					cleanUp();
+					camera.position.Set(0, 40, 0);
+					camera.target.Set(0, 40, 10);
+					initPeeing();
+					initVariables();
+				}
+			}
+
+		}
 		break;
 	case 4:
 		{
@@ -1402,6 +1457,7 @@ void SceneSP3::UpdateSceneControls()
 		checkPickUpItem();
 		checkOpenDoor();
 		checkDollFlip();
+		checkButtonPushed();
 	}
 	if(Application::IsKeyPressed('Q') && NVGet == true && Cooldown == false)
 	{

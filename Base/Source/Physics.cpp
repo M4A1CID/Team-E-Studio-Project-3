@@ -266,7 +266,7 @@ void CPhysics::UpdateSun(Light & light, double & dt)
 	m_time_interval +=  (float)dt;
 
 	light.position.x -= (float)dt * 5;
-	cout << light.position.x << endl;
+	//cout << light.position.x << endl;
 	//If it hits 24:00, set it back to 00:00 
 	if(m_In_World_Time > 1440)
 	{

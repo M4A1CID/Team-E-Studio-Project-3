@@ -227,6 +227,9 @@ class SceneSP3 : public Scene
 		// Peeing particles
 		GEO_PEEING_PARTICLES,
 
+		// Button
+		GEO_BUTTON,			// 68
+
 		//to render out the item UI on the bottom of screen
 		GEO_CROSSHAIR_UI,
 		GEO_ITEM_UI,
@@ -295,6 +298,7 @@ public:
 	void checkDollFlip();
 	void checkSpeech();
 	void checkWin();
+	void checkButtonPushed();
 
 	//Loading of stuff
 	bool LoadFromTextFileOBJ(const string mapString);
