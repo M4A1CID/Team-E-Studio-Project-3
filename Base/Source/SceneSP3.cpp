@@ -1248,6 +1248,15 @@ void SceneSP3::UpdatePlay(double dt)
 			physicsEngine.collisionResponseBetweenOBJ(camera,thePlayer,go,dt);
 		}
 	}
+	for(std::vector<CDoor *>::iterator it = myDoorList.begin(); it != myDoorList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
+		{
+			cout << "Collision detected!" << endl;
+			physicsEngine.collisionResponseBetweenOBJ(camera,thePlayer,go,dt);
+		}
+	}
 	for(std::vector<CLaser *>::iterator it = myLaserList.begin(); it != myLaserList.end(); ++it)
 	{
 		CLaser *go = (CLaser *)*it;
@@ -1892,7 +1901,7 @@ void SceneSP3::RenderSkyPlane(Mesh* mesh, Color color, int slices, float PlanetR
 void SceneSP3::RenderDebugWireframe()
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	for(std::vector<CDoor *>::iterator it = myDoorList.begin(); it != myDoorList.end(); ++it)
 	{
 		CObj *go = (CObj *)*it;
 

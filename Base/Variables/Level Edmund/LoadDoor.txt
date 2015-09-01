@@ -1,6 +1,6 @@
-330			80		-80			-90		0			1			0			10			10			10			0			0			0			1			15			1
--230		60		-523		-180	0			1			0			10			10			10			0			0			0			1			16			1
--1045		100		0			-180	0			1			0			10			10			10			0			0			0			1			17			1
+330			80		-80			-90		0			1			0			10			10			10			15			25			1			1			15			1
+-230		60		-523		-180	0			1			0			10			10			10			1			25			15			1			16			1
+-1045		100		0			-180	0			1			0			10			10			10			1			25			15			1			17			1
 
 //PosX,		PosY,   	PosZ,	Angle,	RotateX,	RotateY,	RotateZ,	ScaleX, 	ScaleY, 	ScaleZ,	    OffsetX,	OffsetY,	OffsetZ,	LockBool,	GeoType,  	Active
 
