@@ -169,7 +169,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 2;
+	m_Current_Level = 1;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	initMenu();

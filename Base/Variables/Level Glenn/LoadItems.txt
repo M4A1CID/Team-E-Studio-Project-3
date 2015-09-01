@@ -1,10 +1,13 @@
--50		75		-110		2		2		2		20		1
--30		75		-110		2		2		2		21		1
--10		75		-110		2		2		2		22		1
-10		75		-110		2		2		2		63		1
-30		75		-110		2		2		2		64		1
+10			75			-110	2			2			2			63			1
+30			75			-110	2			2			2			64			1
+		
+-85			75			-490	2			2			2			20			1
+-670		75			1700	2			2			2			21			1
+280			75			-390	2			2			2			64			1
+280			75			-850	2			2			2			64			1
+-740		75			-900	2			2			2			63			1
 
-//PosX,		PosY,		PosZ,		ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
+//PosX,		PosY,		PosZ,	ScaleX,		ScaleY,		ScaleZ,		GeoType,	Active
 //GEOTYPE 20 == MIN SECURITY
 //GEOTYPE 21 == MED SECURITY
 //GEOTYPE 22 == MAX SECURITY
