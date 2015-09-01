@@ -27,6 +27,8 @@ SceneSP3::SceneSP3()
 	, RechargeTime(20)
 	, m_speed(1)
 	, m_RainCount(0)
+	, win(false)
+	, lose(false)
 {
 }
 
@@ -169,7 +171,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 2;
+	m_Current_Level = 1;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	initMenu();
@@ -710,6 +712,28 @@ void SceneSP3::initMeshlist()
 
 	// Button
 	meshList[GEO_BUTTON] = MeshBuilder::GenerateSphere("GEO_BUTTON", Color(1, 0, 0), 18, 36, 1.f);
+	
+	meshList[GEO_INSTRUCTIONS_1] = MeshBuilder::GenerateQuad("GEO_INSTRUCTIONS_1", Color(1, 1, 1), 1.f);
+	meshList[GEO_INSTRUCTIONS_1]->textureID = LoadTGA("Image//instructions_1.tga");
+
+	meshList[GEO_INSTRUCTIONS_2] = MeshBuilder::GenerateQuad("GEO_INSTRUCTIONS_2", Color(1, 1, 1), 1.f);
+	meshList[GEO_INSTRUCTIONS_2]->textureID = LoadTGA("Image//instructions_2.tga");
+
+	meshList[GEO_INSTRUCTIONS_3] = MeshBuilder::GenerateQuad("GEO_INSTRUCTIONS_3", Color(1, 1, 1), 1.f);
+	meshList[GEO_INSTRUCTIONS_3]->textureID = LoadTGA("Image//instructions_3.tga");
+
+	meshList[GEO_INSTRUCTIONS_4] = MeshBuilder::GenerateQuad("GEO_INSTRUCTIONS_4", Color(1, 1, 1), 1.f);
+	meshList[GEO_INSTRUCTIONS_4]->textureID = LoadTGA("Image//instructions_4.tga");
+
+	meshList[GEO_CREDITS] = MeshBuilder::GenerateQuad("GEO_CREDITS", Color(1, 1, 1), 1.f);
+	meshList[GEO_CREDITS]->textureID = LoadTGA("Image//credits.tga");
+
+	meshList[GEO_LOSE] = MeshBuilder::GenerateQuad("GEO_LOSE", Color(1, 1, 1), 1.f);
+	meshList[GEO_LOSE]->textureID = LoadTGA("Image//lose.tga");
+
+	meshList[GEO_WIN] = MeshBuilder::GenerateQuad("GEO_WIN", Color(1, 1, 1), 1.f);
+	meshList[GEO_WIN]->textureID = LoadTGA("Image//win.tga");
+
 }
 void SceneSP3::initVariables()
 {
@@ -833,6 +857,7 @@ void SceneSP3::checkWin(void)
 				if(myDoorList[i]->getGeoType() == 16 && !myDoorList[i]->GetLocked())
 				{
 					cout << "You win!" << endl;
+					win = true;
 					m_Current_Level = 2;
 					cleanUp();
 					camera.position.Set(0, 40, 0);
@@ -850,6 +875,7 @@ void SceneSP3::checkWin(void)
 				if(myDoorList[i]->getGeoType() == 17 && !myDoorList[i]->GetLocked())
 				{
 					cout << "You win!" << endl;
+					win = true;
 					m_Current_Level = 0;
 					cleanUp();
 					camera.position.Set(0, 40, 0);
@@ -1365,6 +1391,12 @@ void SceneSP3::Update(double dt)
 	//update the game if not paused/ in menu
 	case m_cStates->PLAY_GAME:
 		UpdatePlay(dt);
+		break;
+	case m_cStates->INSTRUCTIONS:
+		m_cStates->UpdateInstructions(dt);
+		break;
+	case m_cStates->CREDITS:
+		m_cStates->UpdateCredits(dt);
 		break;
 	case m_cStates->PAUSE_MENU:
 		m_cStates->UpdatePauseMenu(dt);
@@ -2345,6 +2377,91 @@ void SceneSP3::RenderUI()
 	SetHUD(false);
 	
 }
+void SceneSP3::RenderCredits()
+{
+	//============================PRE RENDER PASS =============================
+	RenderPassGPass();
+	//============================ MAIN RENDER PASS ===========================
+	RenderPassMain();
+	//============================= HUD displayed on screen ====================================
+	SetHUD(true);
+
+	if(m_cStates->GetCreditsState() == m_cStates->CREDITS_BACK)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_CREDITS], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+	if(m_cStates->GetGameState() == m_cStates->CREDITS)
+	{
+		if(m_cStates->GetCreditsState() == m_cStates->CREDITS_BACK)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Back", Color(1, 1, 1), 8, 10, 1);
+	}
+	SetHUD(false);
+}
+void SceneSP3::RenderWinLose()
+{
+	if(win && !lose)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_WIN], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+	if(lose && !win)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_LOSE], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+}
+void SceneSP3::RenderInstructions()
+{
+	//============================PRE RENDER PASS =============================
+	RenderPassGPass();
+	//============================ MAIN RENDER PASS ===========================
+	RenderPassMain();
+	//============================= HUD displayed on screen ====================================
+	SetHUD(true);
+	
+	if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_1)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_1], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+	else if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_2)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_2], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+	else if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_3)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_3], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+	else if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_4)
+	{
+		modelStack.PushMatrix();
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_4], 140.f, 0, 0);
+		modelStack.PopMatrix();
+	}
+	
+
+	if(m_cStates->GetGameState() == m_cStates->INSTRUCTIONS)
+	{
+		if(m_cStates->GetInstructionsButtonState() == m_cStates->INSTRUCTIONS_BACK)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Back", Color(1, 1, 1), 8, 10, 1);
+		else
+			RenderTextOnScreen(meshList[GEO_TEXT], "Back", Color(1, 0, 0), 7, 10, 1);
+		if(m_cStates->GetInstructionsButtonState() == m_cStates->INSTRUCTIONS_NEXT)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Next", Color(1, 1, 1), 8, 50, 1);
+		else
+			RenderTextOnScreen(meshList[GEO_TEXT], "Next", Color(1, 0, 0), 7, 50, 1);
+	}
+	SetHUD(false);
+}
 void SceneSP3::RenderMainMenu()
 {
 	//============================PRE RENDER PASS =============================
@@ -2355,33 +2472,33 @@ void SceneSP3::RenderMainMenu()
 	SetHUD(true);
 	
 	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_MENU_BACKGROUND], 160.f, 0, 0);
+	RenderMeshIn2D(meshList[GEO_MENU_BACKGROUND], 140.f, 0, 0);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	RenderMeshIn2D(meshList[GEO_MENU], 80.f, 0, 0);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	if(m_cStates->GetGameState() == m_cStates->GAME_MENU)
 	{
-		cout << m_cStates->GetMenuButtonState() << endl;
+		//State penitentiary 3 'escape'
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_PLAY)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 1), 8, 10, 20);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 0), 7, 10, 20);
 		
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_INSTRUCTIONS)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Inst", Color(1, 1, 0), 7, 28, 35);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Inst", Color(1, 1, 1), 8, 15, 15);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Inst", Color(0, 1, 0), 7, 28, 35);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Inst", Color(1, 0, 0), 7, 15, 15);
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_CREDITS)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 1, 0), 7, 28, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 1, 1), 8, 20, 10);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(0, 1, 0), 7, 28, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 0, 0), 7, 20, 10);
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_EXIT)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 1);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 1), 7, 28, 1);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 1);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 0, 0), 7, 28, 1);
 
 	}
 	SetHUD(false);
@@ -2392,6 +2509,7 @@ void SceneSP3::RenderPauseMenu()
 	RenderPassGPass();
 	//============================ MAIN RENDER PASS ===========================
 	RenderPassMain();
+	RenderWorld();
 	//============================= HUD displayed on screen ====================================
 	SetHUD(true);
 	
@@ -2399,26 +2517,26 @@ void SceneSP3::RenderPauseMenu()
 	RenderMeshIn2D(meshList[GEO_PAUSE_BACKGROUND], 160.f, 0, 0);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	RenderMeshIn2D(meshList[GEO_MENU], 80.f, 0, 0);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	if(m_cStates->GetGameState() == m_cStates->PAUSE_MENU)
 	{
 		if(m_cStates->GetPauseState() == m_cStates->PAUSE_PLAY)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 1), 8, 10, 20);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 0), 7, 10, 20);
 		
 		if(m_cStates->GetPauseState() == m_cStates->PAUSE_RESTART)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 1, 0), 7, 28, 27);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 1, 1), 8, 15, 15);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(0, 1, 0), 7, 28, 27);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 0, 0), 7, 15, 15);
 
 		if(m_cStates->GetPauseState() == m_cStates->PAUSE_EXIT)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 14);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 1), 8, 20, 10);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 14);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 0, 0), 7, 20, 10);
 	}
 	SetHUD(false);
 }
@@ -2483,11 +2601,18 @@ void SceneSP3::Render()
 	case m_cStates->PAUSE_MENU:
 		RenderPauseMenu();
 		break;
+	case m_cStates->INSTRUCTIONS:
+		RenderInstructions();
+		break;
+	case m_cStates->CREDITS:
+		RenderCredits();
+		break;
 	case m_cStates->PLAY_GAME:
 		//Render gameplay
 		RenderGamePlay();
 		break;
 	}
+	RenderWinLose();
 }
 void SceneSP3::RenderPassMain()
 {
@@ -2902,6 +3027,8 @@ void SceneSP3::cleanUp(void)
 	MinCollected = false;
 	NVGet = false;
 	Invis = false;
+	win = false;
+	lose = false;
 
 
 	if(m_cPeeing)

@@ -5,22 +5,44 @@ CMenu_States::CMenu_States(void)
 	: m_Current_Game_State(GAME_MENU)
 	, m_Menu_State(MENU_PLAY)
 	, m_Pause_State(PAUSE_PLAY)
+	, m_Instructions_Button_State(INSTRUCTIONS_BACK)
+	, m_Instructions_State(INSTRUCTIONS_1)
+	, m_Credits_State(CREDITS_BACK)
 	, m_bQuit(false)
 	, m_bRestart(false)
+	, m_bInstructionsButtonPressed(false)
+	, m_bCreditsState(false)
 	, m_bPauseActive(false)
 	, dTimer(0.5)
+	, dTimer2(0.5)
 {
 }
 CMenu_States::~CMenu_States(void)
 {
 }
-void CMenu_States::SetInstructionsButtonState(CMenu_States::INSTRUCTIONS_BUTTONS m_Instructions_State)
+void CMenu_States::SetCreditsState(CMenu_States::CREDITS_STATES m_Credits_State)
+{
+	this->m_Credits_State = m_Credits_State;
+}
+CMenu_States::CREDITS_STATES CMenu_States::GetCreditsState(void)
+{
+	return m_Credits_State;
+}
+void CMenu_States::SetInstructionsState(CMenu_States::INSTRUCTIONS_STATES m_Instructions_State)
 {
 	this->m_Instructions_State = m_Instructions_State;
 }
-CMenu_States::INSTRUCTIONS_BUTTONS CMenu_States::GetInstructionsButtonState(void)
+CMenu_States::INSTRUCTIONS_STATES CMenu_States::GetInstructionsState(void)
 {
 	return m_Instructions_State;
+}
+void CMenu_States::SetInstructionsButtonState(CMenu_States::INSTRUCTIONS_BUTTONS m_Instructions_Button_State)
+{
+	this->m_Instructions_Button_State = m_Instructions_Button_State;
+}
+CMenu_States::INSTRUCTIONS_BUTTONS CMenu_States::GetInstructionsButtonState(void)
+{
+	return m_Instructions_Button_State;
 }
 void CMenu_States::SetMenuButtonState(CMenu_States::MENU_BUTTONS m_Menu_State)
 {
@@ -78,6 +100,89 @@ double CMenu_States::GetTimer(void)
 {
 	return dTimer;
 }
+void CMenu_States::UpdateCredits(double &dt)
+{
+	//Using the left button
+	static bool bLeftButton = false;
+	if(!bLeftButton && Application::IsKeyPressed(VK_LEFT))
+	{
+		bLeftButton = true;
+		{
+			//check that the player is already inside instructions menu
+			if(m_Current_Game_State == CREDITS)
+			{
+				//check the instructions button state
+				if(m_Credits_State == CREDITS_BACK)
+					m_Credits_State = CREDITS_EXIT;
+				else
+					m_Credits_State = CREDITS_BACK;
+			}
+		}
+	}
+	else if(bLeftButton && !Application::IsKeyPressed(VK_LEFT))
+	{
+		bLeftButton = false;
+	}
+	//Using the right button. It doesn't really matter anyway since there are only 2 options
+	static bool bRightButton = false;
+	if(!bRightButton && Application::IsKeyPressed(VK_RIGHT))
+	{
+		bRightButton = true;
+		{
+			//check that the player is already inside instructions menu
+			if(m_Current_Game_State == CREDITS)
+			{
+				//check the instructions button state
+				if(m_Credits_State == CREDITS_EXIT)
+					m_Credits_State = CREDITS_BACK;
+				else
+					m_Credits_State = CREDITS_EXIT;
+			}
+		}
+	}
+	else if(bRightButton && !Application::IsKeyPressed(VK_RIGHT))
+	{
+		bRightButton = false;
+	}
+
+	static bool bEnterButton = false;
+	//Handle the Enter Button
+	if(Application::IsKeyPressed(VK_RETURN) && !bEnterButton && !m_bCreditsState) // if ESC pressed and not in pause - make sure only when pressed then update
+	{
+		bEnterButton = true;
+		m_bCreditsState = true;
+
+		if(dTimer == 0.5)
+		{
+			if(m_Credits_State == CREDITS_BACK)
+			{
+				cout << "Credits" << endl;
+				m_Current_Game_State = GAME_MENU;
+			}
+			else if(m_Credits_State == CREDITS_EXIT)
+			{
+				cout << "Credits" << endl;
+				m_Current_Game_State = GAME_MENU;
+			}
+		}	
+	}
+	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = false;
+	}
+	if(m_bCreditsState)
+	{
+		dTimer -= dt;	//countdown timer
+	}
+	else
+	{
+		dTimer = 0.5;
+	}
+	if(dTimer < 0)
+	{
+		m_bCreditsState = false;
+	}
+}
 void CMenu_States::UpdateInstructions(double &dt)
 {
 	//Using the left button
@@ -89,10 +194,11 @@ void CMenu_States::UpdateInstructions(double &dt)
 			//check that the player is already inside instructions menu
 			if(m_Current_Game_State == INSTRUCTIONS)
 			{
-				if(m_Instructions_State == INSTRUCTIONS_NEXT)
-					m_Instructions_State = INSTRUCTIONS_BACK;
+				//check the instructions button state
+				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
+					m_Instructions_Button_State = INSTRUCTIONS_NEXT;
 				else
-					m_Instructions_State = INSTRUCTIONS_BACK;
+					m_Instructions_Button_State = INSTRUCTIONS_BACK;
 			}
 		}
 	}
@@ -109,10 +215,11 @@ void CMenu_States::UpdateInstructions(double &dt)
 			//check that the player is already inside instructions menu
 			if(m_Current_Game_State == INSTRUCTIONS)
 			{
-				if(m_Instructions_State == INSTRUCTIONS_NEXT)
-					m_Instructions_State = INSTRUCTIONS_BACK;
+				//check the instructions button state
+				if(m_Instructions_Button_State == INSTRUCTIONS_NEXT)
+					m_Instructions_Button_State = INSTRUCTIONS_BACK;
 				else
-					m_Instructions_State = INSTRUCTIONS_BACK;
+					m_Instructions_Button_State = INSTRUCTIONS_NEXT;
 			}
 		}
 	}
@@ -121,7 +228,96 @@ void CMenu_States::UpdateInstructions(double &dt)
 		bRightButton = false;
 	}
 
+	static bool bEnterButton = false;
+	//Handle the Enter Button
+	if(Application::IsKeyPressed(VK_RETURN) && !bEnterButton && !m_bInstructionsButtonPressed) // if ESC pressed and not in pause - make sure only when pressed then update
+	{
+		bEnterButton = true;
+		m_bInstructionsButtonPressed = true;
 
+		if(dTimer == 0.5)
+		{
+			if(m_Instructions_State == INSTRUCTIONS_1)
+			{
+				cout << "Instructions 1" << endl;
+				//assuming that the player triggers enter while back button state is active, return to game menu
+				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
+				{
+					m_Current_Game_State = GAME_MENU;
+					m_bInstructionsButtonPressed = true;
+				}
+				else if(m_Instructions_Button_State == INSTRUCTIONS_NEXT)
+				{
+					m_Instructions_State = INSTRUCTIONS_2;
+					m_bInstructionsButtonPressed = true;
+				}
+			}
+			else if(m_Instructions_State == INSTRUCTIONS_2)
+			{
+				cout << "Instructions 2" << endl;
+				//if the player wants to go back, return to screen 1
+				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
+				{
+					m_Instructions_State = INSTRUCTIONS_1;
+					m_bInstructionsButtonPressed = true;
+				}
+				else if(m_Instructions_Button_State == INSTRUCTIONS_NEXT)
+				{
+					//m_Current_Game_State = GAME_MENU;
+					m_Instructions_State = INSTRUCTIONS_3;
+					m_bInstructionsButtonPressed = true;
+				}
+			}
+			else if(m_Instructions_State == INSTRUCTIONS_3)
+			{
+				cout << "Instructions 3" << endl;
+				//if the player wants to go back, return to screen 2
+				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
+				{
+					m_Instructions_State = INSTRUCTIONS_2;
+					m_bInstructionsButtonPressed = true;
+				}
+				else if(m_Instructions_Button_State == INSTRUCTIONS_NEXT)
+				{
+					//m_Current_Game_State = GAME_MENU;
+					m_Instructions_State = INSTRUCTIONS_4;
+					m_bInstructionsButtonPressed = true;
+				}
+			}
+			else if(m_Instructions_State == INSTRUCTIONS_4)
+			{
+				cout << "Instructions 3" << endl;
+				//if the player wants to go back, return to screen 3
+				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
+				{
+					m_Instructions_State = INSTRUCTIONS_3;
+					m_bInstructionsButtonPressed = true;
+				}
+				else if(m_Instructions_Button_State == INSTRUCTIONS_NEXT)
+				{
+					m_Current_Game_State = GAME_MENU;
+					m_Instructions_State = INSTRUCTIONS_1;
+					m_bInstructionsButtonPressed = true;
+				}
+			}
+		}	
+	}
+	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = false;
+	}
+	if(m_bInstructionsButtonPressed)
+	{
+		dTimer -= dt;	//countdown timer
+	}
+	else
+	{
+		dTimer = 0.5;
+	}
+	if(dTimer < 0)
+	{
+		m_bInstructionsButtonPressed = false;
+	}
 }
 void CMenu_States::UpdatePauseMenu(double &dt)
 {
@@ -284,6 +480,15 @@ void CMenu_States::UpdateMenu(double &dt)
 		{
 			m_Current_Game_State = PLAY_GAME;
 		}
+		else if(m_Menu_State == MENU_INSTRUCTIONS && !m_bInstructionsButtonPressed)
+		{
+			m_Current_Game_State = INSTRUCTIONS;
+			m_bInstructionsButtonPressed = true;
+		}
+		else if(m_Menu_State == MENU_CREDITS && !m_bCreditsState)
+		{
+			m_Current_Game_State = CREDITS;
+		}
 		else if(m_Menu_State == MENU_EXIT)
 		{
 			m_bQuit = true;
@@ -297,6 +502,31 @@ void CMenu_States::UpdateMenu(double &dt)
 	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
 	{
 		bEnterButton = false;
+	}
+	if(m_bInstructionsButtonPressed)
+	{
+		dTimer -= dt;
+	}
+	else
+	{
+		dTimer = 0.5;
+	}
+	if(dTimer < 0)
+	{
+		m_bInstructionsButtonPressed = false;
+	}
+
+	if(m_bCreditsState)
+	{
+		dTimer2 -= dt;
+	}
+	else
+	{
+		dTimer2 = 0.5;
+	}
+	if(dTimer2 < 0)
+	{
+		m_bCreditsState = false;
 	}
 
 	//Handle the escape key. Ensure that it doesn't trigger pause menu

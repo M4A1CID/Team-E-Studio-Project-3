@@ -249,7 +249,13 @@ class SceneSP3 : public Scene
 		GEO_MENU_BACKGROUND,
 		GEO_MENU,
 		GEO_PAUSE_BACKGROUND,
-		
+		GEO_INSTRUCTIONS_1,
+		GEO_INSTRUCTIONS_2,
+		GEO_INSTRUCTIONS_3,
+		GEO_INSTRUCTIONS_4,
+		GEO_CREDITS,
+		GEO_WIN,
+		GEO_LOSE,
 
 		//TSL
 		GEO_SKYPLANE,
@@ -341,6 +347,7 @@ public:
 	void RenderInstructions();
 	void RenderCredits();
 	void RenderPauseMenu();
+	void RenderWinLose();
 	void RenderGamePlay();
 	void RenderWayPoints();
 	void RenderDebugWireframe();
@@ -360,6 +367,7 @@ public:
 
 	virtual void UpdatePlayerStatus(const unsigned char key);
 	virtual void UpdateCameraStatus( const unsigned char key);
+	void UpdateInstructions(double dt);
 	void UpdatePlay(double dt);
 	void UpdateEnemies(double dt);
 	void UpdateSceneControls();
@@ -458,6 +466,9 @@ private:
 	double RechargeTime;
 	double NVTime;
 	double InvisTime;
+
+	bool win;
+	bool lose;
 
 	ISoundEngine* engine;
 	ISound* music ;
