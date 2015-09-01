@@ -277,7 +277,6 @@ public:
 	virtual void Exit();
 	
 	void initMenu();
-	void initGameData();		//trigger this when restarting
 	void initPeeing();			//for peeing feature
 	void initEnemies();
 	void initUniforms();
@@ -335,6 +334,8 @@ public:
 	void RenderInmateList();
 	void RenderUI();
 	void RenderMainMenu();
+	void RenderInstructions();
+	void RenderCredits();
 	void RenderPauseMenu();
 	void RenderGamePlay();
 	void RenderWayPoints();

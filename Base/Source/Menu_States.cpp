@@ -14,6 +14,14 @@ CMenu_States::CMenu_States(void)
 CMenu_States::~CMenu_States(void)
 {
 }
+void CMenu_States::SetInstructionsButtonState(CMenu_States::INSTRUCTIONS_BUTTONS m_Instructions_State)
+{
+	this->m_Instructions_State = m_Instructions_State;
+}
+CMenu_States::INSTRUCTIONS_BUTTONS CMenu_States::GetInstructionsButtonState(void)
+{
+	return m_Instructions_State;
+}
 void CMenu_States::SetMenuButtonState(CMenu_States::MENU_BUTTONS m_Menu_State)
 {
 	this->m_Menu_State = m_Menu_State;
@@ -69,6 +77,51 @@ void CMenu_States::SetTimer(double dTimer)
 double CMenu_States::GetTimer(void)
 {
 	return dTimer;
+}
+void CMenu_States::UpdateInstructions(double &dt)
+{
+	//Using the left button
+	static bool bLeftButton = false;
+	if(!bLeftButton && Application::IsKeyPressed(VK_LEFT))
+	{
+		bLeftButton = true;
+		{
+			//check that the player is already inside instructions menu
+			if(m_Current_Game_State == INSTRUCTIONS)
+			{
+				if(m_Instructions_State == INSTRUCTIONS_NEXT)
+					m_Instructions_State = INSTRUCTIONS_BACK;
+				else
+					m_Instructions_State = INSTRUCTIONS_BACK;
+			}
+		}
+	}
+	else if(bLeftButton && !Application::IsKeyPressed(VK_LEFT))
+	{
+		bLeftButton = false;
+	}
+	//Using the right button. It doesn't really matter anyway since there are only 2 options
+	static bool bRightButton = false;
+	if(!bRightButton && Application::IsKeyPressed(VK_RIGHT))
+	{
+		bRightButton = true;
+		{
+			//check that the player is already inside instructions menu
+			if(m_Current_Game_State == INSTRUCTIONS)
+			{
+				if(m_Instructions_State == INSTRUCTIONS_NEXT)
+					m_Instructions_State = INSTRUCTIONS_BACK;
+				else
+					m_Instructions_State = INSTRUCTIONS_BACK;
+			}
+		}
+	}
+	else if(bRightButton && !Application::IsKeyPressed(VK_RIGHT))
+	{
+		bRightButton = false;
+	}
+
+
 }
 void CMenu_States::UpdatePauseMenu(double &dt)
 {
@@ -182,9 +235,12 @@ void CMenu_States::UpdateMenu(double &dt)
 		{
 			//check the menu state
 			if(m_Menu_State == MENU_PLAY)
+				m_Menu_State = MENU_INSTRUCTIONS;
+			else if(m_Menu_State == MENU_INSTRUCTIONS)
+				m_Menu_State = MENU_CREDITS;
+			else if(m_Menu_State == MENU_CREDITS)
 				m_Menu_State = MENU_EXIT;
-			//reset the pointer
-			else
+			else if(m_Menu_State == MENU_EXIT)
 				m_Menu_State = MENU_PLAY;
 		}
 	}
@@ -204,8 +260,12 @@ void CMenu_States::UpdateMenu(double &dt)
 			//check the menu state
 			if(m_Menu_State == MENU_PLAY)
 				m_Menu_State = MENU_EXIT;
-			else
+			else if(m_Menu_State == MENU_INSTRUCTIONS)
 				m_Menu_State = MENU_PLAY;
+			else if(m_Menu_State == MENU_CREDITS)
+				m_Menu_State = MENU_INSTRUCTIONS;
+			else if(m_Menu_State == MENU_EXIT)
+				m_Menu_State = MENU_CREDITS;
 		}
 	}
 	else if(bUpButton && !Application::IsKeyPressed(VK_UP))

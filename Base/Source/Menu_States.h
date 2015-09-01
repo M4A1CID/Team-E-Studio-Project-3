@@ -5,6 +5,8 @@ public:
 	enum MENU_BUTTONS
 	{
 		MENU_PLAY = 0,
+		MENU_INSTRUCTIONS,
+		MENU_CREDITS,
 		MENU_BACK,
 		MENU_EXIT,
 	};
@@ -14,11 +16,18 @@ public:
 		PAUSE_RESTART,
 		PAUSE_EXIT
 	};
+	enum INSTRUCTIONS_BUTTONS
+	{
+		INSTRUCTIONS_NEXT = 0,
+		INSTRUCTIONS_BACK
+	};
 	enum GAME_STATES
 	{
 		GAME_MENU = 0,
 		PAUSE_MENU,
 		PLAY_GAME,
+		INSTRUCTIONS,
+		CREDITS,
 		WIN_LOSE_MENU,
 		NUM_GAME_STATES
 	};
@@ -28,6 +37,9 @@ public:
 
 	void SetMenuButtonState(CMenu_States::MENU_BUTTONS);
 	CMenu_States::MENU_BUTTONS GetMenuButtonState(void);
+
+	void SetInstructionsButtonState(CMenu_States::INSTRUCTIONS_BUTTONS);
+	CMenu_States::INSTRUCTIONS_BUTTONS GetInstructionsButtonState(void);
 
 	void SetGameState(CMenu_States::GAME_STATES);
 	CMenu_States::GAME_STATES GetGameState(void);
@@ -49,11 +61,15 @@ public:
 
 	void UpdatePauseMenu(double&);
 	void UpdateMenu(double&);
+	void UpdateInstructions(double&);
+	void UpdateCredits(double&);
 private:
 	//Handler for the menu states
-	CMenu_States::GAME_STATES m_Current_Game_State;		//for the game
-	CMenu_States::MENU_BUTTONS m_Menu_State;				//for the menu
-	CMenu_States::PAUSE_BUTTONS m_Pause_State;				//for the pause menu
+	CMenu_States::GAME_STATES m_Current_Game_State;				//for the game
+	CMenu_States::MENU_BUTTONS m_Menu_State;					//for the menu
+	CMenu_States::PAUSE_BUTTONS m_Pause_State;					//for the pause menu
+	CMenu_States::INSTRUCTIONS_BUTTONS m_Instructions_State;	//for the instructions menu
+
 	bool m_bQuit;					//trigger for exiting application
 	bool m_bRestart;				//trigger for restarting the game		
 	bool m_bPauseActive;			//trigger true if pause button is triggered.

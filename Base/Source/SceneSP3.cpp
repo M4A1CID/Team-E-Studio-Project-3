@@ -22,7 +22,7 @@ SceneSP3::SceneSP3()
 	, NVM(false)
 	, NVTime(10)
 	, Invis(false)
-	, InvisTime(15)
+	, InvisTime(10)
 	, Cooldown(false)
 	, RechargeTime(20)
 	, m_speed(1)
@@ -179,8 +179,8 @@ void SceneSP3::Init()
 	initMeshlist();
 	initVariables();
 
-	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
-	
+	//camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
+	camera.Init(Vector3(-900, 30, -1120), Vector3(-900, 30, -1130), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -451,7 +451,7 @@ void SceneSP3::initMeshlist()
 		meshList[i] = NULL;
 	}
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//AGBookStencil.tga");
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 5.f);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	
@@ -708,57 +708,6 @@ void SceneSP3::initMeshlist()
 	//peeing particles
 	meshList[GEO_PEEING_PARTICLES] = MeshBuilder::GenerateSphere("GEO_PEEING_PARTICLES", Color(1, 1, 0), 18, 36, 1.f);
 }
-void SceneSP3::initGameData()
-{
-	Math::InitRNG();
-	m_bLightEnabled = true;
-	TERRAIN_SCALE.Set(4000.f,150.f,4000.f);		//this is the set of values for scaling the terrain
-	
-	m_Current_Level = 0;
-	
-	camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
-	
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
-	Mtx44 perspective;
-	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
-	projectionStack.LoadMatrix(perspective);
-
-	//reset the keys and doors
-	for(unsigned int i = 0; i < myKeyList.size(); ++i)
-	{
-		//if the items have been picked up previously, drop all items from inventory
-		if(!myKeyList[i]->getActive()) 
-		{
-			//reset it to be actively rendered out in the environment
-			myKeyList[i]->setActive(true);
-
-			switch(myKeyList[i]->getGeoType())
-			{
-			case 18:
-				{
-					myKeyList[i]->SetLevel(1); 
-					MinCollected = false;
-				}
-				break;
-			case 19:
-				{
-					myKeyList[i]->SetLevel(2);
-					MedCollected = false;
-				}
-				break;
-			case 20:
-				{
-					myKeyList[i]->SetLevel(3);
-					MaxCollected = false;
-				}
-				break;
-			default:
-				break;
-			}
-		}
-	}
-}
 void SceneSP3::initVariables()
 {
 	
@@ -839,6 +788,21 @@ void SceneSP3::checkWin(void)
 	switch(m_Current_Level)
 	{
 	case 1:
+		{
+			for(unsigned int i = 0; i < myDoorList.size(); ++i)
+			{
+				if(myDoorList[i]->getGeoType() == 16 && !myDoorList[i]->GetLocked())
+				{
+					cout << "You win!" << endl;
+					m_Current_Level = 2;
+					cleanUp();
+					camera.position.Set(0, 40, 0);
+					camera.target.Set(0, 40, 10);
+					initPeeing();
+					initVariables();
+				}
+			}
+		}
 		break;
 	case 2:
 		{
@@ -2330,15 +2294,24 @@ void SceneSP3::RenderMainMenu()
 
 	if(m_cStates->GetGameState() == m_cStates->GAME_MENU)
 	{
+		cout << m_cStates->GetMenuButtonState() << endl;
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_PLAY)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 0), 7, 28, 40);
 		else
 			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(0, 1, 0), 7, 28, 40);
-
-		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_EXIT)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 27);
+		
+		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_INSTRUCTIONS)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Inst", Color(1, 1, 0), 7, 28, 35);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 27);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Inst", Color(0, 1, 0), 7, 28, 35);
+		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_CREDITS)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(1, 1, 0), 7, 28, 30);
+		else
+			RenderTextOnScreen(meshList[GEO_TEXT], "Credits", Color(0, 1, 0), 7, 28, 30);
+		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_EXIT)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 0), 7, 28, 1);
+		else
+			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(0, 1, 0), 7, 28, 1);
 
 	}
 	SetHUD(false);
@@ -2503,7 +2476,7 @@ void SceneSP3::RenderWorld()
 
 
 	//RenderTileMap();
-	//RenderWayPoints();
+	RenderWayPoints();
 	//RenderMesh(meshList[GEO_AXES], false);
 
 	RenderMesh(meshList[GEO_AXES], false);
