@@ -169,7 +169,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 3;
+	m_Current_Level = 2;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	initMenu();
@@ -899,6 +899,7 @@ void SceneSP3::checkPickUpItem()
 						{
 							cout << "YOU GOT : NIGHT VISION GOGGLES" << endl;
 							NVGet = true;
+							myKeyList[i]->setActive(false);
 							if (NVGet == true)
 							{
 								cout << "YOU ALREADY HAVE : NIGHT VISION GOGGLES" << endl;
@@ -910,6 +911,7 @@ void SceneSP3::checkPickUpItem()
 							cout << "YOU GOT : INVISIBILITY" << endl;
 							//
 							Invis = true;
+							myKeyList[i]->setActive(false);
 						}
 						break;
 					default:
@@ -1227,6 +1229,7 @@ void SceneSP3::UpdatePlay(double dt)
 	for(std::vector<CDoor *>::iterator it = myDoorList.begin(); it != myDoorList.end(); ++it)
 	{
 		CObj *go = (CObj *)*it;
+		if(go->getActive())
 		if(physicsEngine.checkCollisionBetweenOBJ(thePlayer,go))
 		{
 			cout << "Collision detected!" << endl;
