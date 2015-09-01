@@ -105,7 +105,7 @@ void SceneSP3::initTokenForEnemyPathfinding()
 {
 	ofstream fout( "Variables/"+ m_fileBuffer[m_Current_Level] +"/EnemyPathFinding.csv" );
 	int tempArray[32][32];
-	for(int i = 0; i < myObjList.size(); ++i)
+	for(unsigned int i = 0; i < myObjList.size(); ++i)
 	{
 		cout << "Taking 1 obj" << endl;
 		for(int x = 0; x < 32; ++x)
@@ -116,8 +116,8 @@ void SceneSP3::initTokenForEnemyPathfinding()
 				{
 					break;
 				}
-				int checkPositionX = myObjList[i]->getPosition().x/MAP_BOX_SIZE + AI_PATH_OFFSET_X;
-				int checkPositionZ =  myObjList[i]->getPosition().z/MAP_BOX_SIZE + AI_PATH_OFFSET_Z;
+				int checkPositionX = (int)myObjList[i]->getPosition().x/MAP_BOX_SIZE + AI_PATH_OFFSET_X;
+				int checkPositionZ = (int) myObjList[i]->getPosition().z/MAP_BOX_SIZE + AI_PATH_OFFSET_Z;
 				if( (checkPositionX == x && checkPositionZ == z) ||
 					(checkPositionX+1 == x && checkPositionZ == z) ||
 					(checkPositionX == x && checkPositionZ+1 == z) )
@@ -1090,7 +1090,7 @@ void SceneSP3::UpdateEnemies(double dt)
 
 		if(enemy->getActive())
 		{
-			static float constant = dt * 150;
+			static float constant = (float)dt * 150;
 			switch(enemy->getCurrentState())
 			{
 			case CEnemy::STATE_IDLE:
@@ -1268,7 +1268,7 @@ void SceneSP3::UpdatePlay(double dt)
 		particle->type = CParticle::PARTICLE_RAIN;
 		particle->scale.Set(1, 1, 1);
 		particle->vel.Set(0, 0, 0);
-		particle->pos.Set(Math::RandFloatMinMax(-2000, 2000), 1500, Math::RandIntMinMax(-2000, 2000));
+		particle->pos.Set((float)Math::RandFloatMinMax(-2000.f, 2000.f), 1500.f, Math::RandFloatMinMax(-2000.f, 2000.f));
 
 		physicsEngine.SetRainTimer(0.f);
 	}
@@ -1351,14 +1351,14 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 	{
 		CParticle *go = FetchParticle();
 
-		m_cPeeing->setFiring(m_cPeeing->getFiring() - dt);
+		m_cPeeing->setFiring(m_cPeeing->getFiring() - (float)dt);
 		
 		go->active = true;
 		go->type = CParticle::PARTICLE_PEE;
-		go->scale.Set(0.1, 0.1, 0.1);
+		go->scale.Set(0.1f, 0.1f, 0.1f);
 		Vector3 dirVec = (camera.target-camera.position).Normalized();
 		dirVec *= 20.f;
-		go->vel.Set( dirVec.x + Math::RandFloatMinMax(-0.2,0.2),dirVec.y+5,dirVec.z + Math::RandFloatMinMax(-0.5,0.5));
+		go->vel.Set( dirVec.x + Math::RandFloatMinMax(-0.2f,0.2f),dirVec.y+5,dirVec.z + Math::RandFloatMinMax(-0.5f,0.5f));
 		go->pos.Set(camera.position.x, camera.target.y - 2, camera.position.z);
 
 		if(m_cPeeing->getIsFiring())
@@ -1383,7 +1383,7 @@ void SceneSP3::UpdatePeeingStatus(double dt)
 	//call the need reload
 	if(m_cPeeing->getNeedReload())
 	{
-		m_cPeeing->setReload(m_cPeeing->getReload() + dt);
+		m_cPeeing->setReload(m_cPeeing->getReload() + (float)dt);
 		
 		//about 3 seconds of reload
 		if(m_cPeeing->getReload() > 1.5f)
@@ -1615,7 +1615,7 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 			door->setActive(active);
 			door->setPosition(Pos);
 			door->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
-			door->setRotation(Angle,Rotation);
+			door->setRotation((float)Angle,Rotation);
 			door->setGeoType(geotype);
 			door->SetLocked(LockBool);
 			door->setOffset(Offset);
@@ -1849,8 +1849,8 @@ bool SceneSP3::LoadFromTextFileWaypoints(void)
 		{
 			int m = k ;
 			int h =  i;
-			float x = h*m_cMap->GetTileSize() - m_cMap->GetScreenHeight() * 0.5;
-			float z = m*m_cMap->GetTileSize() - m_cMap->GetScreenWidth() * 0.5;
+			float x = h*m_cMap->GetTileSize() - m_cMap->GetScreenHeight() * 0.5f;
+			float z = m*m_cMap->GetTileSize() - m_cMap->GetScreenWidth() * 0.5f;
 			float y = GetHeightMapY(x,z);
 
 			if(m_cMap->theScreenMap[m][h] == 0)
@@ -1939,10 +1939,10 @@ void SceneSP3::RenderTileMap()
 			{
 				m = k ;
 				h =  i;
-				float x = h*m_cMap->GetTileSize() - m_cMap->GetScreenHeight() * 0.5;
-				float z = m*m_cMap->GetTileSize() - m_cMap->GetScreenWidth() * 0.5;
+				float x = h*m_cMap->GetTileSize() - m_cMap->GetScreenHeight() * 0.5f;
+				float z = m*m_cMap->GetTileSize() - m_cMap->GetScreenWidth() * 0.5f;
 				float y = GetHeightMapY(x,z);
-				if(CubeInFrustumBool(x,y,z,m_cMap->GetTileSize()))
+				if(CubeInFrustumBool(x,y,z,(float)m_cMap->GetTileSize()))
 				{
 					switch(m_cMap->theScreenMap[m][h])
 					{
@@ -1951,7 +1951,7 @@ void SceneSP3::RenderTileMap()
 							glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 							modelStack.PushMatrix();
 							modelStack.Translate(x,GetHeightMapY(x,z),z);
-							modelStack.Scale(m_cMap->GetTileSize(),m_cMap->GetTileSize(),m_cMap->GetTileSize());
+							modelStack.Scale((float)m_cMap->GetTileSize(),(float)m_cMap->GetTileSize(),(float)m_cMap->GetTileSize());
 							RenderMesh(meshList[GEO_DEBUG_AI], false);
 							modelStack.PopMatrix();
 							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2105,10 +2105,10 @@ void SceneSP3::RenderWatch()
 	RenderMeshIn2D(meshList[GEO_WATCH_UI], 40, -60, 10);
 
 	float hour;
-	int min;
+	float min;
 
-	hour = (int)(physicsEngine.GetWorldTime()*0.5);
-	min =  ((int)(physicsEngine.GetWorldTime())%60) * 6;		//get the remainder of dividends of 60 to get minutes
+	hour = physicsEngine.GetWorldTime()*0.5f;
+	min =  (float)(((int)physicsEngine.GetWorldTime())%60) * 6;		//get the remainder of dividends of 60 to get minutes
 
 	//float theta = Math::RadianToDegree(atan2(min, hour));
 	RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -hour);
@@ -2174,17 +2174,17 @@ void SceneSP3::RenderUI()
 		std::ostringstream speech;
 		speech.precision(3);
 		speech << mySpeechList[1];
-		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5, 0.9, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5f, 0.9f, 7.f);
 
 		speech.str(std::string());
 		speech.precision(3);
 		speech << mySpeechList[2];
-		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5, 0.9, 4);
+		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5f, 0.9f, 4.f);
 
 		speech.str(std::string());
 		speech.precision(3);
 		speech << mySpeechList[3];
-		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5, 0.9, 1);
+		RenderTextOnScreen(meshList[GEO_TEXT], speech.str(), Color(0, 1, 0), 2.5f, 0.9f, 1.f);
 	}
 
 		//thePlayer->GetActive();
@@ -2198,7 +2198,7 @@ void SceneSP3::RenderUI()
 			std::ostringstream playerpos;
 			playerpos.precision(3);
 			playerpos << "                    Min";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
 
 			/*std::ostringstream playerpos;
 			playerpos.precision(3);
@@ -2208,13 +2208,13 @@ void SceneSP3::RenderUI()
 		if(MedCollected == true)
 		{
 			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 50, 50);
+			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 50.f, 50.f);
 			modelStack.PopMatrix();
 
 			std::ostringstream playerpos;
 			playerpos.precision(3);
 			playerpos << "                        Med";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
 
 			/*std::ostringstream playerpos;
 			playerpos.precision(3);
@@ -2224,18 +2224,18 @@ void SceneSP3::RenderUI()
 		if(MaxCollected == true)
 		{
 			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 70, 50);
+			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 70.f, 50.f);
 			modelStack.PopMatrix();
 
 			std::ostringstream playerpos;
 			playerpos.precision(3);
 			playerpos << "                            Max";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
 
 			playerpos.str(std::string());
 			playerpos.precision(3);
 			playerpos << "                            Max";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
 
 			/*std::ostringstream playerpos;
 			playerpos.precision(3);
@@ -2282,20 +2282,20 @@ void SceneSP3::RenderUI()
 	ss.precision(3);
 	ss << "Pos_X: " << camera.position.x;
 	ss << "X: " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 54);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 54.f);
 
 	ss.str(std::string());
 	ss.precision(3);
 	ss << "Z: " << camera.position.z;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 51);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 51.f);
 
 	ss.str(std::string());
 	ss << "Time: " << physicsEngine.GetHourTime() << ":" << physicsEngine.GetMinuteTime();
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 45);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
 
 	ss.str(std::string());
 	ss << "Speed: " << m_speed;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5, 0.9, 48);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
 	
 	SetHUD(false);
 	

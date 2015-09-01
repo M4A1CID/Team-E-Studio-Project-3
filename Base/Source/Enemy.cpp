@@ -567,7 +567,7 @@ void CEnemy::setRotateForward(bool rotateForward)
 	this->rotateForward = rotateForward;
 }
 // Get current state
-int CEnemy::getRotateForward(void)
+bool CEnemy::getRotateForward(void)
 {
 	return rotateForward;
 }

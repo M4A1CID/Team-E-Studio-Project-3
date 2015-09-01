@@ -69,7 +69,7 @@ public:
 
 	void setIsAlert(bool);
 	bool getIsAlert(void);
-	bool rotateForward;
+	
 
 	// Animations
 	void Walking();
@@ -153,7 +153,7 @@ public:
 
 
 	void setRotateForward(bool);
-	int getRotateForward(void);
+	bool getRotateForward(void);
 
 	// Set visibility range
 	void setVisibility(float);
@@ -169,6 +169,7 @@ private:
 	bool active;			// Enemy's active
 	bool isAlerted;			// Enemy's detection of the player
 	int currentState;		// Enemy's current state
+	bool rotateForward;
 
 	/**************************
 		GeoTypes values
