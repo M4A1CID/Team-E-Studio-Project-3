@@ -824,6 +824,18 @@ void SceneSP3::checkWin(void)
 	case 3:
 		break;
 	case 4:
+		{
+			if(thePlayer->GetPositionX() < -11 && thePlayer->GetPositionX() > -431 && thePlayer->GetPositionZ() < -1061 && thePlayer->GetPositionZ() > - 1481)
+			{
+				cout << "You win!" << endl;
+				//m_Current_Level = 0;
+				//cleanUp();
+				//camera.position.Set(0, 40, 0);
+				//camera.target.Set(0, 40, 10);
+				//initPeeing();
+				//initVariables();
+			}
+		}
 		break;
 
 	}
