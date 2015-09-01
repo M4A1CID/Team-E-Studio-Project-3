@@ -3,7 +3,7 @@
 
 CKey::CKey(void)
 {
-	level = 0;
+	level = '0';
 }
 
 
@@ -11,7 +11,7 @@ CKey::~CKey(void)
 {
 }
 
-void CKey::SetLevel(char)
+void CKey::SetLevel(char level)
 {
 	this->level = level;
 }

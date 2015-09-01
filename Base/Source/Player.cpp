@@ -21,7 +21,21 @@ CPlayer::CPlayer(bool active, Vector3 pos, Vector3 scale)
 //the destructor. nothing to destroy right now
 CPlayer::~CPlayer(void)
 {
+	while(KeyList.size() > 0)
+	{
+		CKey* go = KeyList.back();
+		if(go != NULL)
+			delete go;
+		KeyList.pop_back();
+	}
 
+	while(InventoryList.size() > 0)
+	{
+		CItem* go = InventoryList.back();
+		if(go != NULL)
+		delete go;
+		InventoryList.pop_back();
+	}
 }
 
 //void CPlayer::Init(bool active, Vector3 pos, Vector3 scale, int itemsHeld, int maxItemCap)

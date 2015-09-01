@@ -890,32 +890,33 @@ void SceneSP3::checkPickUpItem()
 
 				if(magnitudeFromPosition <= INTERACTION_DISTANCE)
 				{
-					thePlayer->setKeyList(myKeyList[i]);
-					myKeyList[i]->setActive(false);
+					
 					switch(myKeyList[i]->getGeoType())
 					{
 					case 20:
 						{
 							cout << "YOU GOT : MINIMUM SECURITY CARD" << endl;
-							myKeyList[i]->SetLevel(1); 
+						
 							thePlayer->SetDetected(true);
 							MinCollected = true;
+							myKeyList[i]->setActive(false);
 						}
 						break;
 					case 21:
 						{
 							cout << "YOU GOT : MEDIUM SECURITY CARD" << endl;
-							myKeyList[i]->SetLevel(2);
+							
 							thePlayer->SetDetected(true);
 							MedCollected = true;
+							myKeyList[i]->setActive(false);
 						}
 						break;
 					case 22:
 						{
 							cout << "YOU GOT : MAXIMUM SECURITY CARD" << endl;
-							myKeyList[i]->SetLevel(3);
 							thePlayer->SetDetected(true);
 							MaxCollected = true;
+							myKeyList[i]->setActive(false);
 						}
 						break;
 					case 63:
@@ -1282,7 +1283,34 @@ void SceneSP3::Update(double dt)
 	//when restart button is triggered
 	if(m_cStates->GetRestartState())
 	{
-		initGameData();
+		switch(m_Current_Level)
+		{
+		case 1:
+			break;
+		case 2:
+			{
+
+				m_Current_Level = 2;
+				cleanUp();
+				camera.position.Set(0, 40, 10);
+				camera.target.Set(0, 40, 0);
+				camera.up.Set(0,1,0);
+				initPeeing();
+				initVariables();
+
+
+			}
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+
+		}
+
+
+
+		//initGameData();
 		m_cStates->SetRestartState(false);
 		m_cStates->SetPauseActive(false);
 	}
@@ -2815,12 +2843,13 @@ const std::vector<unsigned char>SceneSP3::GetHeightMap()
 
 void SceneSP3::cleanUp(void)
 {
-	if(thePlayer != NULL)
-	{
-		delete thePlayer;
-		thePlayer = NULL;
-	}
-	
+	MaxCollected = false;
+	MedCollected = false;
+	MinCollected = false;
+	NVGet = false;
+	Invis = false;
+
+
 	if(m_cPeeing)
 	{
 		delete m_cPeeing;
@@ -2844,9 +2873,15 @@ void SceneSP3::cleanUp(void)
 		delete go;
 		myKeyList.pop_back();
 	}
+	if(thePlayer != NULL)
+	{
+		delete thePlayer;
+		thePlayer = NULL;
+	}
 	while(myInmateList.size() > 0)
 	{
 		CInmate *go = myInmateList.back();
+
 		delete go;
 		myInmateList.pop_back();
 	}
