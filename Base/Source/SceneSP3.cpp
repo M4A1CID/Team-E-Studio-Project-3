@@ -3321,6 +3321,7 @@ void SceneSP3::Exit()
 	//	fire->drop();
 	//engine->drop(); // delete engine
 	
+	
 
 	glDeleteProgram(m_programID);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
