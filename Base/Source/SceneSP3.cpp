@@ -1467,6 +1467,8 @@ void SceneSP3::Update(double dt)
 		physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
 		glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
 		glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+
+		m_cStates->SetReturnToMainMenuState(false);
 	}
 
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
