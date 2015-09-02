@@ -2785,7 +2785,8 @@ void SceneSP3::RenderWorld()
 	RenderDoorList();
 	RenderInmateList();
 	RenderEnemyList();
-	RenderLaserList();
+	if(NVM == true)
+		RenderLaserList();
 	RenderDollList();
 	
 	RenderSkyPlane(meshList[GEO_SKYPLANE], Color(1.f, 1.f, 1.f), 256, 100000.f, 2000.f, 1.f, 1.f);
@@ -3129,7 +3130,12 @@ void SceneSP3::cleanUp(void)
 	MedCollected = false;
 	MinCollected = false;
 	NVGet = false;
+	NVM = false;
+	Cooldown = false;
+	RechargeTime = 20;
+	NVTime = 10;
 	Invis = false;
+	InvisTime = 10;
 	win = false;
 	lose = false;
 
