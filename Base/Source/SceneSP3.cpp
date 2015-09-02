@@ -693,6 +693,12 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_WARNING_UI] = MeshBuilder::GenerateQuad("GEO_WARNING_UI", Color(1, 1, 1), 1.f);
 	meshList[GEO_WARNING_UI]->textureID = LoadTGA("Image//warningEnemy.tga");
 
+	meshList[GEO_IG_UI] = MeshBuilder::GenerateQuad("GEO_IG_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_IG_UI]->textureID = LoadTGA("Image//IG_UI.tga");
+
+	meshList[GEO_NVG_UI] = MeshBuilder::GenerateQuad("GEO_NVG_UI", Color(1, 1, 1), 1.f);
+	meshList[GEO_NVG_UI]->textureID = LoadTGA("Image//NVG_UI.tga");
+
 	meshList[GEO_OBJECTIVE_UI] = MeshBuilder::GenerateQuad("GEO_OBJECTIVE_UI",Color(1,1,1),1.f);
 	meshList[GEO_OBJECTIVE_UI]->textureArray[0] = LoadTGA("Image//objective.tga");
 
@@ -2395,9 +2401,11 @@ void SceneSP3::RenderUI()
 
 	RenderMeshIn2D(meshList[GEO_CROSSHAIR_UI], 16.f);
 
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 50);
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 50);
-	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 50);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, -10, 47.f);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 10, 47.f);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 30, 47.f);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 50, 47.f);
+	RenderMeshIn2D(meshList[GEO_ITEM_UI], 20.f, 70, 47.f);
 
 	if(Speech == true)
 	{
@@ -2420,107 +2428,111 @@ void SceneSP3::RenderUI()
 
 		//thePlayer->GetActive();
 
-		if(MinCollected == true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 50);
-			modelStack.PopMatrix();
+	if(MinCollected == true)
+	{
+		modelStack.PushMatrix();
+		RenderMeshUI(meshList[GEO_MIN_UI], 10.f, 15.f, 1.f, 30, 47.f);
+		modelStack.PopMatrix();
 
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                    Min";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
+		std::ostringstream playerpos;
+		playerpos.precision(3);
+		playerpos << "                    Min";
+		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
 
-			/*std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "YOU GOT : MINUMUM SECURITY KEY";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 36);*/
-		}
-		if(MedCollected == true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 50.f, 50.f);
-			modelStack.PopMatrix();
+		/*std::ostringstream playerpos;
+		playerpos.precision(3);
+		playerpos << "YOU GOT : MINUMUM SECURITY KEY";
+		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 36);*/
+	}
+	if(MedCollected == true)
+	{
+		modelStack.PushMatrix();
+		RenderMeshUI(meshList[GEO_MED_UI], 10.f, 15.f, 1.f, 50.f, 47.f);
+		modelStack.PopMatrix();
 
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                        Med";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
+		std::ostringstream playerpos;
+		playerpos.precision(3);
+		playerpos << "                        Med";
+		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
 
-			/*std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "YOU GOT : MEDIUM SECURITY KEY";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
-		}
-		if(MaxCollected == true)
-		{
-			modelStack.PushMatrix();
-			RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 70.f, 50.f);
-			modelStack.PopMatrix();
-
-			std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "                            Max";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
-
-			playerpos.str(std::string());
-			playerpos.precision(3);
-			playerpos << "                            Max";
-			RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
-
-			/*std::ostringstream playerpos;
-			playerpos.precision(3);
-			playerpos << "YOU GOT : MAXIMUM SECURITY KEY";
+		/*std::ostringstream playerpos;
+		playerpos.precision(3);
+		playerpos << "YOU GOT : MEDIUM SECURITY KEY";
 		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
+	}
+	if(MaxCollected == true)
+	{
+		modelStack.PushMatrix();
+		RenderMeshUI(meshList[GEO_MAX_UI], 10.f, 15.f, 1.f, 70.f, 47.f);
+		modelStack.PopMatrix();
+
+		std::ostringstream playerpos;
+		playerpos.precision(3);
+		playerpos << "                            Max";
+		RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
+
+		/*std::ostringstream playerpos;
+		playerpos.precision(3);
+		playerpos << "YOU GOT : MAXIMUM SECURITY KEY";
+	RenderTextOnScreen(meshList[GEO_TEXT], playerpos.str(), Color(0, 1, 0), 2.5, 0.9, 48);*/
 	}
 
 	if(Invis)
 	{
-		std::ostringstream ss;
-		ss.precision(3);
-		ss << "Invis Time: " << InvisTime;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 49.f);
-	}
+		modelStack.PushMatrix();
+		RenderMeshUI(meshList[GEO_IG_UI], 10.f, 15.f, 1.f, -10.f, 47.f);
+		modelStack.PopMatrix();
 
+		std::ostringstream ss;
+		ss.precision(2);
+		ss << "            " << InvisTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
+	}
+	if(NVGet == true)
+	{
+		modelStack.PushMatrix();
+		RenderMeshUI(meshList[GEO_NVG_UI], 10.f, 15.f, 1.f, 10.f, 47.f);
+		modelStack.PopMatrix();
+	}
 	if(NVM == true)
 	{
 		std::ostringstream ss;
-		ss.precision(3);
-		ss << "Night Vision Time: " << NVTime;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 52.f);
+		ss.precision(2);
+		ss << "                " << NVTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
 	}
 	if(Cooldown == true)
 	{
 		std::ostringstream ss;
-		ss.precision(3);
-		ss << "Cooldown Time: " << RechargeTime;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 52.f);
+		ss.precision(2);
+		ss << "                " << RechargeTime;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
 	}
 	if(Cooldown == false && NVM == false && NVGet == true)
 	{
 		std::ostringstream ss;
-		ss.precision(3);
-		ss << "Ready to use!";
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 52.f);
+		ss.precision(2);
+		ss << "               Ready!";
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
 	}
 
 	switch(m_Current_Level)
 	{
 	case 0:
-		RenderTextOnScreen(meshList[GEO_TEXT], "Sandbox", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Sandbox", Color(0, 1, 0), 3.f, 0.9f, 57.f);
 		break;
 
 	case 1:
-		RenderTextOnScreen(meshList[GEO_TEXT], "Cell Block A", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Cell Block A", Color(0, 1, 0), 3.f, 0.9f, 57.f);
 		break;
 	case 2:
-		RenderTextOnScreen(meshList[GEO_TEXT], "Cell Block B", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Cell Block B", Color(0, 1, 0), 3.f, 0.9f, 57.f);
 		break;
 	case 3:
-		RenderTextOnScreen(meshList[GEO_TEXT], "Security Block", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Security Block", Color(0, 1, 0), 3.f, 0.9f, 57.f);
 		break;
 	case 4:
-		RenderTextOnScreen(meshList[GEO_TEXT], "The Final Moment", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "The Final Moment", Color(0, 1, 0), 3.f, 0.9f, 57.f);
 		break;
 	}
 

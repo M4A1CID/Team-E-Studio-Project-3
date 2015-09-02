@@ -243,6 +243,8 @@ class SceneSP3 : public Scene
 		GEO_WATCH_UI,
 		GEO_WATCH_HOUR_HAND_UI,
 		GEO_WATCH_MIN_HAND_UI,
+		GEO_IG_UI,
+		GEO_NVG_UI,
 
 		//Menu system
 		GEO_MENU_BACKGROUND,
