@@ -9,7 +9,6 @@ Camera3::Camera3()
 
 Camera3::~Camera3()
 {
-	
 }
 static float CAMERA_SPEED = 100.f;
 static float const CAMERA_LOOK_SPEED = 250.f;
@@ -185,7 +184,7 @@ void Camera3::UpdateJump(const double dt)
 	if(m_bJumping)
 	{
 		//Factor in gravity
-		JumpVel += GRAVITY *(float) dt;
+		JumpVel += GRAVITY * (float)dt;
 
 		//Update the camera and target position
 		position.y += JumpVel * (float)dt;
@@ -203,7 +202,7 @@ void Camera3::UpdateJump(const double dt)
 	if(position.y > JumpHeight)
 	{
 		//Factor in gravity
-		JumpVel += GRAVITY *(float) dt;
+		JumpVel += GRAVITY * (float)dt;
 
 		//Update the camera and target position
 		position.y += JumpVel * (float)dt;

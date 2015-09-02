@@ -18,6 +18,7 @@ SceneSP3::SceneSP3()
 	, m_cMap(NULL)
 	, m_cStates(NULL)
 	, m_cPeeing(NULL)
+	, TheSound(NULL)
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
@@ -29,11 +30,17 @@ SceneSP3::SceneSP3()
 	, RechargeTime(-20)
 	, m_speed(1)
 	, m_RainCount(0)
+	, m_fSoundTimer(0)
 {
 }
 
 SceneSP3::~SceneSP3()
 {
+	if(TheSound)
+	{
+		delete TheSound;
+		TheSound = NULL;
+	}
 	if(m_cMinimap)
 	{
 		delete m_cMinimap;
@@ -175,6 +182,12 @@ void SceneSP3::Init()
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	debug = false;
+
+	if(TheSound == NULL)
+	{
+		TheSound = new CSound();
+	}
+
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
 
@@ -1344,6 +1357,8 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_CHASE:
 				{
+					//trigger the alert sound
+					TheSound->Alert();
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1477,21 +1492,6 @@ void SceneSP3::UpdatePlay(double dt)
 	glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
 	m_fFps = (float)(1.f / dt);
 }
-void SceneSP3::UpdateSounds()
-{
-	switch(m_Current_Level)
-	{
-		case 1:
-			//soundEngine->Level1();
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-	}
-}
 void SceneSP3::UpdateRestart()
 {
 	//when restart button is triggered or when the lose menu is triggered
@@ -1604,7 +1604,10 @@ void SceneSP3::Update(double dt)
 		m_cStates->UpdateLose(dt);
 		break;
 	default:
-		m_cStates->UpdateMenu(dt);
+		{
+			TheSound->Music();
+			m_cStates->UpdateMenu(dt);
+		}
 		break;
 	}
 }
@@ -3431,7 +3434,12 @@ void SceneSP3::Exit()
 	}
 	
 	
-	
+	if(TheSound != NULL)
+	{
+		delete TheSound;
+		TheSound = NULL;
+	}
+
 	if(m_cStates != NULL)
 	{
 		delete m_cStates;

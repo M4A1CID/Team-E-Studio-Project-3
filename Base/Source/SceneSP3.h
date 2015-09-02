@@ -471,9 +471,10 @@ private:
 	double NVTime;
 	double InvisTime;
 
-	ISoundEngine* engine;
-	ISound* music ;
-	ISound* fire;
+	float m_fSoundTimer;
+
+	//Handle the sounds
+	CSound* TheSound;
 
 	// Rain Count
 	int m_RainCount;
@@ -497,8 +498,6 @@ private:
 	CPhysics physicsEngine;
 	
 	CPeeing* m_cPeeing;
-
-	CSound soundEngine;
 
 	//Light Depth Buffer
 	unsigned m_gPassShaderID;

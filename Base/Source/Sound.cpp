@@ -2,61 +2,74 @@
 
 
 CSound::CSound(void)
+	: engine(NULL)
+	, music(NULL)
+	, footsteps(NULL)
+	, alert(NULL)
+	, lose(NULL)
+	, rain(NULL)
+	, win(NULL)
 {
-	engine = createIrrKlangDevice();
-	level1 = NULL;
+	//use a singleton approach to ensure that engine is not initialised more than once
+	if(engine == NULL)
+		engine = createIrrKlangDevice();
 }
 
 
 CSound::~CSound(void)
 {
-	
-	if(level1)
+	if(engine)
 	{
-		level1->drop();
+		engine->drop();
 	}
 }
-
+ISoundEngine* CSound::getEngine(void)
+{
+	return this->engine;
+}
 void CSound::Music()
 {
-	if (!engine)
+	if(music == NULL)
+		music = engine->play2D("Sounds//Music.mp3", false, true);
+	//trigger this sound
+	if(music->getIsPaused())
 	{
-		return;
+		music->setIsPaused(false);
 	}
-
-	ISound* music = NULL;
-	music = engine->play2D("Sounds//Music.mp3", true);
+	if(music->isFinished())
+	{
+		music = NULL;
+	}
 }
 
 void CSound::Footsteps()
 {
-	ISound* footsteps = NULL;
-	footsteps = engine->play2D("Sounds//Footstep.mp3");
-	//engine->setListenerPosition();
+	if(footsteps == NULL)
+		footsteps = engine->play2D("Sounds//Footstep.mp3");
 }
 
 void CSound::Alert()
 {
-	ISound* alert = NULL;
-	alert = engine->play2D("Sounds//Alert.mp3");
+	if(alert == NULL)
+		alert = engine->play2D("Sounds//Alert.mp3", false, true);
+	//trigger this sound
+	if(alert->getIsPaused())
+	{
+		alert->setIsPaused(false);
+	}
 }
 void CSound::Lose()
 {
-	ISound* lose;
-	lose = engine->play2D("Sounds//Lose.mp3");
+	if(lose == NULL)
+		lose = engine->play2D("Sounds//Lose.mp3");
 }
 void CSound::Rainfall()
 {
-	ISound* rain = NULL;
-	rain = engine->play2D("Sounds//Rain.mp3");
+	if(rain == NULL)
+		rain = engine->play2D("Sounds//Rain.mp3");
 }
 void CSound::Win()
 {
-	ISound* win = NULL;
-	win = engine->play2D("Sounds//Win.mp3");
-}
-void CSound::Level1()
-{
-	if(!level1)
-		level1 = engine->play2D("Sounds//Kouyou.mp3", false,false,true);
+	if(win == NULL)
+		win = engine->play2D("Sounds//Win.mp3");
 }

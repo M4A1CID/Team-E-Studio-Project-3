@@ -22,7 +22,6 @@ CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
 
 CEnemy::~CEnemy(void)
 {
-	
 }
 
 //Set the position of this Enemy
