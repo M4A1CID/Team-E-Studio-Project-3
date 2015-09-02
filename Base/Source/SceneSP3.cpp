@@ -878,9 +878,9 @@ void SceneSP3::checkWin(void)
 				{
 					cout << "You win!" << endl;
 					win = true;
-					m_Current_Level = 0;
+					m_Current_Level = 3;
 					cleanUp();
-					camera.position.Set(0, 40, 0);
+					camera.position.Set(-1300, 40, 1750);
 					camera.target.Set(0, 40, 10);
 					initPeeing();
 					initVariables();
@@ -897,7 +897,7 @@ void SceneSP3::checkWin(void)
 					cout << "You win!" << endl;
 					m_Current_Level = 4;
 					cleanUp();
-					camera.position.Set(0, 40, 0);
+					camera.position.Set(0, 40, 800);
 					camera.target.Set(0, 40, 10);
 					initPeeing();
 					initVariables();
@@ -1359,6 +1359,18 @@ void SceneSP3::Update(double dt)
 		switch(m_Current_Level)
 		{
 		case 1:
+			{
+				m_Current_Level = 1;
+				cleanUp();
+				camera.position.Set(-900, 40, -1120);
+				camera.target.Set(0, 40, 0);
+				camera.up.Set(0,1,0);
+				initPeeing();
+				initVariables();
+				physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+				glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+				glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+			}
 			break;
 		case 2:
 			{
@@ -1377,8 +1389,32 @@ void SceneSP3::Update(double dt)
 			}
 			break;
 		case 3:
+			{
+				m_Current_Level = 3;
+				cleanUp();
+				camera.position.Set(-1300, 40, 1750);
+				camera.target.Set(0, 40, 0);
+				camera.up.Set(0,1,0);
+				initPeeing();
+				initVariables();
+				physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+				glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+				glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+			}
 			break;
 		case 4:
+			{
+				m_Current_Level = 4;
+				cleanUp();
+				camera.position.Set(0, 40, 800);
+				camera.target.Set(0, 40, 0);
+				camera.up.Set(0,1,0);
+				initPeeing();
+				initVariables();
+				physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+				glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+				glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+			}
 			break;
 
 		}
