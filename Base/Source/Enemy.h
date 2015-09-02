@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "Map.h"
 #include "Player.h"
+#include "Sound.h"
 
 class CEnemy
 {
@@ -209,4 +210,6 @@ private:
 
 	//CStrategy* theStrategy;	// Enemy's strategy
 
+	CSound* soundEngine;
+	float m_fSoundTimer;
 };

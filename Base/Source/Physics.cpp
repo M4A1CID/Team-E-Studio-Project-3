@@ -13,6 +13,7 @@ CPhysics::CPhysics(void)
 	m_spawnRateTimer = 0.f;
 	m_fRainTimer = 0.f;
 	m_fRainRate = 0.01f;
+	m_fSoundTimer = 0.f;
 }
 
 CPhysics::~CPhysics(void)
@@ -424,6 +425,7 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<
 {
 	float offset = 20.f;
 	WindTimer += dt;
+	m_fSoundTimer += dt;
 	m_spawnRateTimer += (float)dt;
 	m_fRainTimer += (float)dt;
 	
@@ -488,6 +490,12 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<
 
 			go->active = false;
 		}
+	}
+
+	if (m_fSoundTimer > 2.f && m_bEnableWeather == true)
+	{
+		soundEngine->Rainfall();
+		m_fSoundTimer = 0.f;
 	}
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Sound.h"
 class CMenu_States
 {
 public:
@@ -103,5 +104,7 @@ private:
 	CMenu_States::MENU_BUTTONS MenuState;
 	CMenu_States::PAUSE_BUTTONS PauseState;
 	CMenu_States::GAME_STATES GameState;
+
+	CSound* soundEngine;
 };
 

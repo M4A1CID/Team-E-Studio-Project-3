@@ -9,6 +9,7 @@
 #include "Particle.h"
 #include "Enemy.h"
 #include "Peeing.h"
+#include "Sound.h"
 #include <iostream>
 #include <sstream>
 
@@ -101,4 +102,7 @@ private:
 	float m_spawnRateTimer;
 	float m_fRainTimer;
 	float m_fRainRate;
+
+	CSound* soundEngine;
+	float m_fSoundTimer;
 };

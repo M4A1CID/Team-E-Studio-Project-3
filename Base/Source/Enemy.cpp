@@ -6,6 +6,7 @@ CEnemy::CEnemy(void)
 	prev.SetZero();
 	currentState = STATE_IDLE;
 	VisibilityRange = ENEMY_VIEW_DISTANCE;
+	m_fSoundTimer = 0.f;
 }
 CEnemy::CEnemy(Vector3 Pos, Vector3 Scale, int geoType, bool active)
 {
@@ -256,6 +257,11 @@ void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
 		if(LeftView.Dot(temp) > 0 && RightView.Dot(temp) > 0)
 		{
 			cout << "Player detected!" << endl;
+			if (m_fSoundTimer> 1.f)
+			{
+				soundEngine->Alert();
+				m_fSoundTimer = 0.f;
+			}
 			currentState = STATE_CHASE;
 		}
 	}
@@ -278,6 +284,8 @@ Vector3 CEnemy::RotateByDegree(int degree)
 //Waypoint update
 void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double & dt,CMap* m_cMap)
 {
+	m_fSoundTimer += dt;
+
 	switch(currentState)
 	{
 	case STATE_WANDER:

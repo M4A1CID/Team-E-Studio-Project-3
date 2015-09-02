@@ -90,5 +90,6 @@ private:
 
 	std::vector<CItem*> InventoryList;	// the list of items inside player's inventory
 	std::vector<CKey*> KeyList;			//List of keys inside player's inventory
+
 };
 #endif

@@ -407,9 +407,14 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
-			if (m_fSoundTimer > 0.2f)
+			if (m_fSoundTimer > 0.2f && m_bJumping == false)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
+				m_fSoundTimer = 0.f;
+			}
+			else if (m_fSoundTimer > 0.2f * 1 / 0.25f && m_bJumping == true)
+			{
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_SHIFT] = false;
@@ -420,15 +425,20 @@ void Camera3::Update(double dt)
 			CAMERA_SPEED = crouchWalkSpeed;
 			if (m_fSoundTimer > 1.f && m_bCrouching == true)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveForward(dt);
-		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false && m_bJumping == false)
 		{
-			soundEngine->Footsteps(dt);
+			soundEngine->Footsteps();
+			m_fSoundTimer = 0.f;
+		}
+		else if (m_fSoundTimer > 0.5f * 1 / 0.25f && m_bCrouching == false && m_bJumping == true)
+		{
+			soundEngine->Footsteps();
 			m_fSoundTimer = 0.f;
 		}
 		myKeys['w'] = false;
@@ -442,15 +452,20 @@ void Camera3::Update(double dt)
 			CAMERA_SPEED = crouchWalkSpeed;
 			if (m_fSoundTimer > 1.f && m_bCrouching == true)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveBackward(dt);
-		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false && m_bJumping == false)
 		{
-			soundEngine->Footsteps(dt);
+			soundEngine->Footsteps();
+			m_fSoundTimer = 0.f;
+		}
+		else if (m_fSoundTimer > 0.5f * 1 / 0.25f && m_bCrouching == false && m_bJumping == true)
+		{
+			soundEngine->Footsteps();
 			m_fSoundTimer = 0.f;
 		}
 		myKeys['s'] = false;
@@ -461,9 +476,14 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
-			if (m_fSoundTimer > 0.2f)
+			if (m_fSoundTimer > 0.2f && m_bJumping == false)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
+				m_fSoundTimer = 0.f;
+			}
+			else if (m_fSoundTimer > 0.2f * 1 / 0.25f && m_bJumping == true)
+			{
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_SHIFT] = false;
@@ -474,15 +494,20 @@ void Camera3::Update(double dt)
 			CAMERA_SPEED = crouchWalkSpeed;
 			if (m_fSoundTimer > 1.f && m_bCrouching == true)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveLeft(dt);
-		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false && m_bJumping == false)
 		{
-			soundEngine->Footsteps(dt);
+			soundEngine->Footsteps();
+			m_fSoundTimer = 0.f;
+		}
+		else if (m_fSoundTimer > 0.5f * 1 / 0.25f && m_bCrouching == false && m_bJumping == true)
+		{
+			soundEngine->Footsteps();
 			m_fSoundTimer = 0.f;
 		}
 		myKeys['a'] = false;
@@ -493,9 +518,14 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
-			if (m_fSoundTimer > 0.2f)
+			if (m_fSoundTimer > 0.2f && m_bJumping == false)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
+				m_fSoundTimer = 0.f;
+			}
+			else if (m_fSoundTimer > 0.2f * 1 / 0.25f && m_bJumping == true)
+			{
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_SHIFT] = false;
@@ -506,17 +536,23 @@ void Camera3::Update(double dt)
 			CAMERA_SPEED = crouchWalkSpeed;
 			if (m_fSoundTimer > 1.f && m_bCrouching == true)
 			{
-				soundEngine->Footsteps(dt);
+				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveRight(dt);
-		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false && m_bJumping == false)
 		{
-			soundEngine->Footsteps(dt);
+			soundEngine->Footsteps();
 			m_fSoundTimer = 0.f;
 		}
+		else if (m_fSoundTimer > 0.5f * 1 / 0.25f && m_bCrouching == false && m_bJumping == true)
+		{
+			soundEngine->Footsteps();
+			m_fSoundTimer = 0.f;
+		}
+
 		myKeys['d'] = false;
 	}
 

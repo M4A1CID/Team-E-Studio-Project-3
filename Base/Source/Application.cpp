@@ -172,8 +172,8 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(m_ksiWindow_width, m_ksiWindow_height, "DM2231_Framework", NULL, NULL);
-	//m_window = glfwCreateWindow(m_ksiWindow_width, m_ksiWindow_height, "DM2231_Framework", glfwGetPrimaryMonitor(), NULL);
+	m_window = glfwCreateWindow(m_ksiWindow_width, m_ksiWindow_height, "DM2231_Framework",/* glfwGetPrimaryMonitor() */NULL, NULL);
+
 	//If the window couldn't be created
 	if (!m_window)
 	{

@@ -26,16 +26,17 @@ void CSound::Music()
 	music = engine->play2D("Sounds//Music.mp3", true);
 }
 
-void CSound::Footsteps(double dt)
+void CSound::Footsteps()
 {
 	ISound* footsteps = NULL;
 	footsteps = engine->play2D("Sounds//Footstep.mp3");
+	//engine->setListenerPosition();
 }
 
 void CSound::Alert()
 {
 	ISound* alert = NULL;
-	alert = engine->play2D("Sounds//Alert.wav");
+	alert = engine->play2D("Sounds//Alert.mp3");
 }
 void CSound::Lose()
 {
@@ -45,7 +46,7 @@ void CSound::Lose()
 void CSound::Rainfall()
 {
 	ISound* rain;
-	rain = engine->play2D("Sounds//Rain.wav");
+	rain = engine->play2D("Sounds//Rain.mp3");
 }
 void CSound::Win()
 {
