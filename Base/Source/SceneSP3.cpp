@@ -1408,8 +1408,7 @@ void SceneSP3::UpdateSounds()
 	switch(m_Current_Level)
 	{
 		case 1:
-		
-			soundEngine.Level1();
+			//soundEngine->Level1();
 			break;
 		case 2:
 			break;
