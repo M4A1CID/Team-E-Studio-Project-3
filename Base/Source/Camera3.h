@@ -3,6 +3,7 @@
 
 #include "Camera.h"
 #include "LoadHmap.h"
+#include "Sound.h"
 
 class Camera3 : public Camera
 {
@@ -84,6 +85,8 @@ private:
 	//float CrouchHeight;
 	float CrouchSpeed;
 	float CrouchOff;
+	CSound* soundEngine;
+	float m_fSoundTimer;
 };
 
 #endif

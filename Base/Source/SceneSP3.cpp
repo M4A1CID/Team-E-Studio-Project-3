@@ -10,6 +10,8 @@
 
 #include <sstream>
 
+
+
 SceneSP3::SceneSP3()
 	: m_cMinimap(NULL)
 	, thePlayer(NULL)
@@ -921,6 +923,7 @@ void SceneSP3::checkWin(void)
 
 	}
 }
+
 void SceneSP3::checkPickUpItem()
 {
 	float magnitudeFromTarget = 0.f;
@@ -1347,6 +1350,7 @@ void SceneSP3::UpdatePlay(double dt)
 	glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
 	m_fFps = (float)(1.f / dt);
 }
+
 void SceneSP3::Update(double dt)
 {
 	//when restart button is triggered

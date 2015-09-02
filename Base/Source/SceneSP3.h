@@ -29,13 +29,12 @@
 #include "Doll.h"
 #include "Invisibility.h"
 #include "Peeing.h"
+#include "Sound.h"
 #include <vector>
 #include <fstream>
 
 //Modify this to load your level via string
 const static string m_fileBuffer[5] = {"Level Sandbox","Level Glenn","Level Edmund", "Level Gerald", "Level Troy"};
-using namespace irrklang;
-#pragma comment(lib, "irrKlang.lib")
 
 class SceneSP3 : public Scene
 {
@@ -493,6 +492,8 @@ private:
 	CPhysics physicsEngine;
 	
 	CPeeing* m_cPeeing;
+
+	CSound* soundEngine;
 
 	//Light Depth Buffer
 	unsigned m_gPassShaderID;

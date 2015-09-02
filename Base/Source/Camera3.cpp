@@ -340,6 +340,9 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up,
 	//CrouchHeight = tScale.y * ReadHeightMap(heightmap, position.x / tScale.x, position.z /tScale.z) - CrouchOff;
 	CrouchSpeed = 15.f;
 
+	// Sound timer
+	m_fSoundTimer = 0.f;
+
 	//Initialise the camera movement flags
 	for(int i = 0; i < 255; i++)
 	{
@@ -396,20 +399,38 @@ void Camera3::Update(double dt)
 	
 	Crouch(dt);
 	Prone(dt);*/
+
+	m_fSoundTimer += dt;
+
 	if(myKeys['w'] == true)
 	{
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
+			if (m_fSoundTimer > 0.2f)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_SHIFT] = false;
 		}
 		if(myKeys[VK_CONTROL] == true)
 		{
 			Crouch(dt);
 			CAMERA_SPEED = crouchWalkSpeed;
+			if (m_fSoundTimer > 1.f && m_bCrouching == true)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveForward(dt);
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		{
+			soundEngine->Footsteps(dt);
+			m_fSoundTimer = 0.f;
+		}
 		myKeys['w'] = false;
 	}
 
@@ -419,9 +440,19 @@ void Camera3::Update(double dt)
 		{
 			Crouch(dt);
 			CAMERA_SPEED = crouchWalkSpeed;
+			if (m_fSoundTimer > 1.f && m_bCrouching == true)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveBackward(dt);
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		{
+			soundEngine->Footsteps(dt);
+			m_fSoundTimer = 0.f;
+		}
 		myKeys['s'] = false;
 	}
 
@@ -430,15 +461,30 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
+			if (m_fSoundTimer > 0.2f)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_SHIFT] = false;
 		}
 		if(myKeys[VK_CONTROL] == true)
 		{
 			Crouch(dt);
 			CAMERA_SPEED = crouchWalkSpeed;
+			if (m_fSoundTimer > 1.f && m_bCrouching == true)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveLeft(dt);
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		{
+			soundEngine->Footsteps(dt);
+			m_fSoundTimer = 0.f;
+		}
 		myKeys['a'] = false;
 	}
 
@@ -447,15 +493,30 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
+			if (m_fSoundTimer > 0.2f)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_SHIFT] = false;
 		}
 		if(myKeys[VK_CONTROL] == true)
 		{
 			Crouch(dt);
 			CAMERA_SPEED = crouchWalkSpeed;
+			if (m_fSoundTimer > 1.f && m_bCrouching == true)
+			{
+				soundEngine->Footsteps(dt);
+				m_fSoundTimer = 0.f;
+			}
 			myKeys[VK_CONTROL] = false;
 		}
 		MoveRight(dt);
+		if (m_fSoundTimer > 0.5f && m_bCrouching == false)
+		{
+			soundEngine->Footsteps(dt);
+			m_fSoundTimer = 0.f;
+		}
 		myKeys['d'] = false;
 	}
 

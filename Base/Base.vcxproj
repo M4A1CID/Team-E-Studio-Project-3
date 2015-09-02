@@ -43,6 +43,7 @@
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SceneSP3.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\Sound.cpp" />
     <ClCompile Include="Source\SpriteAnimation.cpp" />
     <ClCompile Include="Source\Strategy.cpp" />
     <ClCompile Include="Source\Strategy_IDLE.cpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneSP3.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\Sound.h" />
     <ClInclude Include="Source\SpriteAnimation.h" />
     <ClInclude Include="Source\Strategy.h" />
     <ClInclude Include="Source\Strategy_IDLE.h" />
