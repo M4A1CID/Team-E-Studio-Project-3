@@ -1,2 +1,2 @@
-1		-1000	10	-1000	5	5	5	2048
+1		0	10	600	5	5	5	2048
 //Active,	PosX,	PosY,	PosZ,	ScaleX,	ScaleY,	ScaleZ, MapSize
