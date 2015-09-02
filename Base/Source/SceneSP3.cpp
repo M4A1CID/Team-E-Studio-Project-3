@@ -171,7 +171,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 1;
+	m_Current_Level = 3;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	initMenu();
@@ -893,8 +893,6 @@ void SceneSP3::checkWin(void)
 			{
 				if(myDoorList[i]->getGeoType() == 17 && !myDoorList[i]->GetLocked())
 				{
-					m_cStates->SetWin(true);
-					m_cStates->SetGameState(m_cStates->WIN_MENU);
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
@@ -3284,6 +3282,7 @@ void SceneSP3::Exit()
 	//if(fire)
 	//	fire->drop();
 	//engine->drop(); // delete engine
+	
 
 	glDeleteProgram(m_programID);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
