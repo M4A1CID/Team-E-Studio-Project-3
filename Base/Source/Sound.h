@@ -1,6 +1,5 @@
 #pragma once
 #include <irrKlang.h>
-#include "Vector3.h"
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 class CSound
