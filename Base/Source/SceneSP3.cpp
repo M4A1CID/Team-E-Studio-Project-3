@@ -161,7 +161,7 @@ void SceneSP3::initTokenForEnemyPathfinding()
 }
 void SceneSP3::initMap()
 {
-	initTokenForEnemyPathfinding();
+	//initTokenForEnemyPathfinding();
 
 	//Base on the Enemy path finding, load the map
 	m_cMap = new CMap();
@@ -171,9 +171,10 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 1;
+	m_Current_Level = 2;
 	Math::InitRNG();
 	m_bLightEnabled = true;
+	debug = false;
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
 
@@ -893,8 +894,6 @@ void SceneSP3::checkWin(void)
 			{
 				if(myDoorList[i]->getGeoType() == 17 && !myDoorList[i]->GetLocked())
 				{
-					m_cStates->SetWin(true);
-					m_cStates->SetGameState(m_cStates->WIN_MENU);
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
@@ -1603,21 +1602,21 @@ void SceneSP3::UpdateSceneControls()
 
 	static bool bPButton2 = false;
 
-	//if(!bPButton2 && Application::IsKeyPressed('P')) // if ESC pressed and not in pause - make sure only when pressed then update
-	//{
-	//	bPButton2 = true;
-	//	if(debug)
-	//		debug = false;
-	//	else
-	//		debug = true;
-	//}
-	////if key release
-	//else if(bPButton2 && !Application::IsKeyPressed('P')) // when release , prevent holding down bug
-	//{
-	//	//update to pause menu here
-	//	bPButton2 = false;
+	if(!bPButton2 && Application::IsKeyPressed('P')) // if ESC pressed and not in pause - make sure only when pressed then update
+	{
+		bPButton2 = true;
+		if(debug)
+			debug = false;
+		else
+			debug = true;
+	}
+	//if key release
+	else if(bPButton2 && !Application::IsKeyPressed('P')) // when release , prevent holding down bug
+	{
+		//update to pause menu here
+		bPButton2 = false;
 
-	//}
+	}
 }
 CObj* SceneSP3::FetchOBJ()
 {
@@ -2725,8 +2724,33 @@ void SceneSP3::RenderGamePlay()
 		}
 	}
 
+	if(debug)
+	{
 		RenderDebugWireframe();
-		//RenderWayPoints();
+		RenderWayPoints();
+		std::ostringstream ss;
+		ss.precision(3);
+		ss << "FPS: " << m_fFps;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 57.f);
+
+		ss.str(std::string());
+		ss.precision(3);
+		ss << "X: " << camera.position.x;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 54.f);
+
+		ss.str(std::string());
+		ss.precision(3);
+		ss << "Z: " << camera.position.z;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 51.f);
+
+		ss.str(std::string());
+		ss << "Time: " << physicsEngine.GetHourTime() << ":" << physicsEngine.GetMinuteTime();
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
+
+		ss.str(std::string());
+		ss << "Speed: " << m_speed;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
+	}
 	RenderUI();
 }
 void SceneSP3::Render()
@@ -3284,6 +3308,7 @@ void SceneSP3::Exit()
 	//if(fire)
 	//	fire->drop();
 	//engine->drop(); // delete engine
+	
 
 	glDeleteProgram(m_programID);
 	glDeleteVertexArrays(1, &m_vertexArrayID);

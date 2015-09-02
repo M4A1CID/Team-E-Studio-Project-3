@@ -407,12 +407,12 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
-			if (m_fSoundTimer > 0.2f && m_bJumping == false)
+			if (m_fSoundTimer > 0.3f && m_bJumping == false)
 			{
 				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
-			else if (m_fSoundTimer > 0.2f * 1 / 0.25f && m_bJumping == true)
+			else if (m_fSoundTimer > 0.3f * 1 / 0.25f && m_bJumping == true)
 			{
 				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
@@ -476,12 +476,12 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
-			if (m_fSoundTimer > 0.2f && m_bJumping == false)
+			if (m_fSoundTimer > 0.3f && m_bJumping == false)
 			{
 				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
-			else if (m_fSoundTimer > 0.2f * 1 / 0.25f && m_bJumping == true)
+			else if (m_fSoundTimer > 0.3f * 1 / 0.25f && m_bJumping == true)
 			{
 				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
@@ -518,12 +518,12 @@ void Camera3::Update(double dt)
 		if(myKeys[VK_SHIFT] == true)
 		{
 			CAMERA_SPEED = sprintSpeed;
-			if (m_fSoundTimer > 0.2f && m_bJumping == false)
+			if (m_fSoundTimer > 0.3f && m_bJumping == false)
 			{
 				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;
 			}
-			else if (m_fSoundTimer > 0.2f * 1 / 0.25f && m_bJumping == true)
+			else if (m_fSoundTimer > 0.3f * 1 / 0.25f && m_bJumping == true)
 			{
 				soundEngine->Footsteps();
 				m_fSoundTimer = 0.f;

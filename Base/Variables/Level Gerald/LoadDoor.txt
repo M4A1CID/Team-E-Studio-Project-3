@@ -1,9 +1,7 @@
-0		90		-170		15		15		15		30	30		30		1		15		1
-20		90		-150		15		15		15		30	30		30		1		16		1
-40		90		-150		15		15		15		30	30		30		1		17		1
+880			70			1600		0			0			1			0			10			15			15			1			30			30			1			17			1
+//-15			75			260			90			0			1			0			10			20			22			1			40			44			1			17			1		
 
-//PosX,		PosY,   	PosZ,		ScaleX, 	ScaleY, 	ScaleZ,	    OffsetX,	OffsetY,	OffsetZ,	LockBool,	GeoType,  	Active
-
+//PosX,		PosY,   	PosZ,		Angle,		RotationX,	RotationY,	RotationZ,	ScaleX, 	ScaleY, 	ScaleZ,	    OffsetX,	OffsetY,	OffsetZ,	LockBool,	GeoType,  	Active
 //Geotype 15	= MIN_SEC_DOOR
 //Geotype 16	= MED_SEC_DOOR
 //Geotype 17	= MAX_SEC_DOOR
