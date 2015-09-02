@@ -1189,7 +1189,7 @@ void SceneSP3::UpdateCooldown(double dt)
 	if(NVM == false && Cooldown == true && NVGet == true)
 	{
 		RechargeTime += dt;
-		if(RechargeTime < 0)
+		if(RechargeTime > 0)
 		{
 			Cooldown = false;
 			RechargeTime = -20;
