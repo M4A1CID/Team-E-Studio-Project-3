@@ -171,7 +171,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 2;
+	m_Current_Level = 1;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	debug = false;
@@ -866,6 +866,7 @@ void SceneSP3::checkLose(void)
 			{
 				m_cStates->SetLose(true);
 				m_cStates->SetGameState(m_cStates->LOSE_MENU);
+				m_cStates->SetWinLoseButtonState(m_cStates->STATE_RESTART);
 			}
 		}
 	}
@@ -902,6 +903,8 @@ void SceneSP3::checkWin(void)
 			{
 				if(myDoorList[i]->getGeoType() == 17 && !myDoorList[i]->GetLocked())
 				{
+					m_cStates->SetWin(true);
+					m_cStates->SetGameState(m_cStates->WIN_MENU);
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
@@ -924,7 +927,7 @@ void SceneSP3::checkWin(void)
 				if(myObjList[i]->getGeoType() == 68 && !myObjList[i]->getActive())
 				{
 					m_cStates->SetWin(true);
-					m_cStates->SetGameState(m_cStates->WIN_MENU);
+					m_cStates->SetGameState(m_cStates->WIN_MENU);				
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
@@ -943,6 +946,10 @@ void SceneSP3::checkWin(void)
 		{
 			if(thePlayer->GetPositionX() < -11 && thePlayer->GetPositionX() > -431 && thePlayer->GetPositionZ() < -1061 && thePlayer->GetPositionZ() > - 1481)
 			{
+				
+				m_cStates->SetWin(true);
+				m_cStates->SetGameState(m_cStates->WIN_MENU);
+				m_cStates->SetWinLoseButtonState(m_cStates->STATE_RETURN);	//pre-empt the return to menu button
 				cout << "You win!" << endl;
 				//m_Current_Level = 0;
 				//cleanUp();
@@ -951,6 +958,18 @@ void SceneSP3::checkWin(void)
 				//initPeeing();
 				//initVariables();
 			}
+			//bring back to main menu
+			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_RETURN && Application::IsKeyPressed(VK_RETURN))
+			{
+				m_Current_Level = 1;
+				cleanUp();
+				camera.position.Set(-900, 40, -1120);
+				camera.target.Set(0, 40, 0);
+				camera.up.Set(0,1,0);
+				initPeeing();
+				initVariables();
+			}
+
 		}
 		break;
 
@@ -2574,25 +2593,31 @@ void SceneSP3::RenderWinLose()
 		modelStack.PopMatrix();
 	}
 
-	//handle the win situation
-	if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWin())
+	//handle the win situation, allow player to proceed so long as current level isn't 4
+	if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWin() && m_Current_Level != 4)
 	{
 		if(m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Continue", Color(1, 1, 1), 8, 10, 20);
 		else
 			RenderTextOnScreen(meshList[GEO_TEXT], "Continue", Color(1, 0, 0), 7, 10, 20);
-		
+
 		if(m_cStates->GetWinLoseButtonState() == m_cStates->STATE_RESTART)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 1, 1), 8, 15, 15);
 		else
 			RenderTextOnScreen(meshList[GEO_TEXT], "Restart", Color(1, 0, 0), 7, 15, 15);
 
 		if(m_cStates->GetWinLoseButtonState() == m_cStates->STATE_RETURN)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Main Menu", Color(1, 1, 1), 8, 20, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Main Menu", Color(1, 1, 1), 6, 20, 10);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Main Menu", Color(1, 0, 0), 7, 20, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Main Menu", Color(1, 0, 0), 5, 20, 10);
 	}
-
+	else if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWin() && m_Current_Level == 4)
+	{
+		if(m_cStates->GetWinLoseButtonState() == m_cStates->STATE_RETURN)
+			RenderTextOnScreen(meshList[GEO_TEXT], "Main Menu", Color(1, 1, 1), 6, 20, 10);
+		else
+			RenderTextOnScreen(meshList[GEO_TEXT], "Main Menu", Color(1, 0, 0), 5, 20, 10);
+	}
 	//handle the lose situation
 	if(m_cStates->GetGameState() == m_cStates->LOSE_MENU && m_cStates->GetLose())
 	{
