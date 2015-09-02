@@ -460,7 +460,7 @@ void SceneSP3::initMeshlist()
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("GEO_CUBE",Color(1,0,0),1.f);
 	meshList[GEO_DEBUG_AI] = MeshBuilder::GenerateCube("GEO_DEBUG_AI",Color(1,1,0),1.f);
 	// Terrain & Skyplane
-	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 10.f, 10.f); 
+	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 1000.f, 2500.f, 1.f, 1.f); 
 	meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky1.tga"); 
 	
 	meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("GEO_TERRAIN2",  "Image//prison_terrain.raw", m_heightMap);  
@@ -2322,10 +2322,36 @@ void SceneSP3::RenderWatch()
 }
 void SceneSP3::RenderCompass()
 {
+	
 	RenderMeshIn2D(meshList[GEO_COMPASS_UI],20,60,10);
-	Vector3 temp = camera.position-camera.target ;
-	float theta = Math::RadianToDegree(atan2(temp.x,temp.z));
-	RenderMeshIn2D(meshList[GEO_COMPASS_NEEDLE_UI],20,60,10,true,-theta);
+	float theta1 = 0, theta2 = 0;
+	Vector3 temp;
+	for(unsigned int i = 0; i < myKeyList.size(); ++i)
+	{
+
+		if(!MinCollected && myKeyList[i]->getGeoType() == 20)
+		{
+			temp =  camera.position - myKeyList[i]->getPosition();
+		}
+		else if(!MedCollected && myKeyList[i]->getGeoType() == 21)
+		{
+			temp =  camera.position - myKeyList[i]->getPosition();
+		}
+		else if(!MaxCollected && myKeyList[i]->getGeoType() == 22)
+		{
+			temp =  camera.position - myKeyList[i]->getPosition();
+		}
+		else
+		{
+			temp.SetZero();
+		} 
+
+	}
+	Vector3 temp2 = camera.position-camera.target;
+	theta1= -Math::RadianToDegree(atan2(temp.x,temp.z));
+	theta2 = -Math::RadianToDegree(atan2(temp2.x,temp2.z));
+
+	RenderMeshIn2D(meshList[GEO_COMPASS_NEEDLE_UI],20,60,10,true,theta2 - theta1);
 }
 void SceneSP3::RenderRain(CParticle* go)
 {
