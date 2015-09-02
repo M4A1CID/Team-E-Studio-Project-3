@@ -103,6 +103,6 @@ private:
 	float m_fRainTimer;
 	float m_fRainRate;
 
-	CSound* soundEngine;
+	CSound soundEngine;
 	float m_fSoundTimer;
 };

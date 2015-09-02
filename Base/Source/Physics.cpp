@@ -494,7 +494,7 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<
 
 	if (m_fSoundTimer > 2.f && m_bEnableWeather == true)
 	{
-		soundEngine->Rainfall();
+		soundEngine.Rainfall();
 		m_fSoundTimer = 0.f;
 	}
 }

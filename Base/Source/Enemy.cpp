@@ -259,7 +259,7 @@ void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
 			cout << "Player detected!" << endl;
 			if (m_fSoundTimer> 1.f)
 			{
-				soundEngine->Alert();
+				soundEngine.Alert();
 				m_fSoundTimer = 0.f;
 			}
 			currentState = STATE_CHASE;

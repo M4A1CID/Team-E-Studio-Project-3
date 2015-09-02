@@ -213,6 +213,6 @@ private:
 
 	//CStrategy* theStrategy;	// Enemy's strategy
 
-	CSound* soundEngine;
+	CSound soundEngine;
 	float m_fSoundTimer;
 };
