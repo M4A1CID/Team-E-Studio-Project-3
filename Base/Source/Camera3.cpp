@@ -545,10 +545,6 @@ void Camera3::Update(double dt)
 		Yaw(dt);
 	if(Application::m_sdCamera_pitch != 0)
 		Pitch(dt);
-	if(Application::IsKeyPressed('P'))
-	{
-		Reset();
-	}
 }
 
 void Camera3::Reset()

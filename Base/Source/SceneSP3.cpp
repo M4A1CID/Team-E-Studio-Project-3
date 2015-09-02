@@ -31,6 +31,7 @@ SceneSP3::SceneSP3()
 	, m_RainCount(0)
 	, win(false)
 	, lose(false)
+	, debug(false)
 {
 }
 
@@ -1552,6 +1553,24 @@ void SceneSP3::UpdateSceneControls()
 	{
 		m_bLightEnabled = false;
 	}
+
+	static bool bPButton2 = false;
+
+	if(!bPButton2 && Application::IsKeyPressed('P')) // if ESC pressed and not in pause - make sure only when pressed then update
+	{
+		bPButton2 = true;
+		if(debug)
+			debug = false;
+		else
+			debug = true;
+	}
+	//if key release
+	else if(bPButton2 && !Application::IsKeyPressed('P')) // when release , prevent holding down bug
+	{
+		//update to pause menu here
+		bPButton2 = false;
+
+	}
 }
 CObj* SceneSP3::FetchOBJ()
 {
@@ -2029,6 +2048,28 @@ void SceneSP3::RenderDebugWireframe()
 			}
 		}
 	}
+
+	for(std::vector<CObj *>::iterator it = myObjList.begin(); it != myObjList.end(); ++it)
+	{
+		CObj *go = (CObj *)*it;
+
+		if(CubeInFrustumBool(go->getPosition().x,go->getPosition().y,go->getPosition().z,go->getScale().Length()))
+		{
+			if(go->getActive() == true)
+			{
+
+				Vector3 testVector = go->getScale() + go->getOffset();
+				modelStack.PushMatrix();
+				modelStack.Translate(go->getPosition().x,go->getPosition().y,go->getPosition().z);
+				/*modelStack.Scale(go->getScale().x + go->getOffset().x +thePlayer->GetScale().x,
+				go->getScale().y + go->getOffset().y +thePlayer->GetScale().y,
+				go->getScale().z + go->getOffset().z +thePlayer->GetScale().z);*/
+				modelStack.Scale(testVector.x,testVector.y,testVector.z);
+				RenderMesh(meshList[GEO_CUBE],false);
+				modelStack.PopMatrix();
+			}
+		}
+	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 void SceneSP3::RenderTerrain()
@@ -2220,7 +2261,7 @@ void SceneSP3::RenderWarning()
 }
 void SceneSP3::RenderWatch()
 {
-	RenderMeshIn2D(meshList[GEO_WATCH_UI], 40, -60, 10);
+	RenderMeshIn2D(meshList[GEO_WATCH_UI], 40, 60, -30);
 
 	float hour;
 	float min;
@@ -2229,8 +2270,8 @@ void SceneSP3::RenderWatch()
 	min =  (float)(((int)physicsEngine.GetWorldTime())%60) * 6;		//get the remainder of dividends of 60 to get minutes
 
 	//float theta = Math::RadianToDegree(atan2(min, hour));
-	RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, -60, 10, true, -hour);
-	RenderMeshIn2D(meshList[GEO_WATCH_MIN_HAND_UI], 40, -60, 10, true, -min);
+	RenderMeshIn2D(meshList[GEO_WATCH_HOUR_HAND_UI], 40, 60, -30, true, -hour);
+	RenderMeshIn2D(meshList[GEO_WATCH_MIN_HAND_UI], 40, 60, -30, true, -min);
 }
 void SceneSP3::RenderCompass()
 {
@@ -2391,28 +2432,27 @@ void SceneSP3::RenderUI()
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
 	}
 
-	std::ostringstream ss;
-	ss.precision(3);
-	ss << "FPS: " << m_fFps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 57.f);
+	switch(m_Current_Level)
+	{
+	case 0:
+		RenderTextOnScreen(meshList[GEO_TEXT], "Sandbox", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		break;
 
-	ss.str(std::string());
-	ss.precision(3);
-	ss << "X: " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 54.f);
+	case 1:
+		RenderTextOnScreen(meshList[GEO_TEXT], "Cell Block A", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		break;
+	case 2:
+		RenderTextOnScreen(meshList[GEO_TEXT], "Cell Block B", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		break;
+	case 3:
+		RenderTextOnScreen(meshList[GEO_TEXT], "Security Block", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		break;
+	case 4:
+		RenderTextOnScreen(meshList[GEO_TEXT], "The Final Moment", Color(0, 1, 0), 3.f, 0.9f, 55.f);
+		break;
+	}
 
-	ss.str(std::string());
-	ss.precision(3);
-	ss << "Z: " << camera.position.z;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 51.f);
-
-	ss.str(std::string());
-	ss << "Time: " << physicsEngine.GetHourTime() << ":" << physicsEngine.GetMinuteTime();
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
-
-	ss.str(std::string());
-	ss << "Speed: " << m_speed;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
+	
 	
 	SetHUD(false);
 	
@@ -2604,9 +2644,34 @@ void SceneSP3::RenderGamePlay()
 			}
 		}
 	}
-	RenderDebugWireframe();
-	//RenderWayPoints();
-	
+
+	if(debug)
+	{
+		RenderDebugWireframe();
+		RenderWayPoints();
+		std::ostringstream ss;
+		ss.precision(3);
+		ss << "FPS: " << m_fFps;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 57.f);
+
+		ss.str(std::string());
+		ss.precision(3);
+		ss << "X: " << camera.position.x;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 54.f);
+
+		ss.str(std::string());
+		ss.precision(3);
+		ss << "Z: " << camera.position.z;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 51.f);
+
+		ss.str(std::string());
+		ss << "Time: " << physicsEngine.GetHourTime() << ":" << physicsEngine.GetMinuteTime();
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 45.f);
+
+		ss.str(std::string());
+		ss << "Speed: " << m_speed;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 48.f);
+	}
 	RenderUI();
 }
 void SceneSP3::Render()
@@ -2711,10 +2776,8 @@ void SceneSP3::RenderWorld()
 
 
 	//RenderTileMap();
-	RenderWayPoints();
 	//RenderMesh(meshList[GEO_AXES], false);
 
-	RenderMesh(meshList[GEO_AXES], false);
 
 	RenderTerrain();
 

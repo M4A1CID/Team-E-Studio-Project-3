@@ -468,6 +468,7 @@ private:
 
 	bool win;
 	bool lose;
+	bool debug;
 
 	ISoundEngine* engine;
 	ISound* music ;
