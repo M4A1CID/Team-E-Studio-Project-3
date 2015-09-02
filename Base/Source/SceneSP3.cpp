@@ -26,7 +26,7 @@ SceneSP3::SceneSP3()
 	, Invis(false)
 	, InvisTime(10)
 	, Cooldown(false)
-	, RechargeTime(20)
+	, RechargeTime(-20)
 	, m_speed(1)
 	, m_RainCount(0)
 {
@@ -1167,11 +1167,11 @@ void SceneSP3::UpdateCooldown(double dt)
 {
 	if(NVM == false && Cooldown == true && NVGet == true)
 	{
-		RechargeTime -= dt;
+		RechargeTime += dt;
 		if(RechargeTime < 0)
 		{
 			Cooldown = false;
-			RechargeTime = 20;
+			RechargeTime = -20;
 		}
 	}
 }
