@@ -377,6 +377,7 @@ public:
 	void UpdateNVM(double dt);
 	void UpdateCooldown(double dt);
 	void UpdatePeeingStatus(double dt);	
+	void UpdateSounds();
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);

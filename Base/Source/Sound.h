@@ -15,6 +15,7 @@ public:
 	void Rainfall();
 	void Win();
 	void Lose();
+	void Level1();
 
 private:
 

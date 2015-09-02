@@ -182,6 +182,8 @@ void SceneSP3::Init()
 	initMeshlist();
 	initVariables();
 
+
+
 	//camera.Init(Vector3(0, 40, 10), Vector3(0, 40, 0), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
 	camera.Init(Vector3(-900, 30, -1120), Vector3(-900, 30, -1130), Vector3(0, 1, 0), m_heightMap, TERRAIN_SCALE);
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
@@ -1382,7 +1384,21 @@ void SceneSP3::UpdatePlay(double dt)
 	glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
 	m_fFps = (float)(1.f / dt);
 }
-
+void SceneSP3::UpdateSounds()
+{
+	switch(m_Current_Level)
+	{
+		case 1:
+			soundEngine->Level1();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+	}
+}
 void SceneSP3::Update(double dt)
 {
 	//when restart button is triggered
@@ -1475,6 +1491,8 @@ void SceneSP3::Update(double dt)
 
 		m_cStates->SetReturnToMainMenuState(false);
 	}
+
+	UpdateSounds();
 
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
 	{
@@ -2546,13 +2564,13 @@ void SceneSP3::RenderWinLose()
 	if(m_cStates->GetWin())
 	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_WIN], 140.f, 0, 0);
+		RenderMeshIn2D(meshList[GEO_WIN], 160.f, 0, 0);
 		modelStack.PopMatrix();
 	}
 	if(m_cStates->GetLose())
 	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_LOSE], 140.f, 0, 0);
+		RenderMeshIn2D(meshList[GEO_LOSE], 160.f, 0, 0);
 		modelStack.PopMatrix();
 	}
 
@@ -2601,25 +2619,25 @@ void SceneSP3::RenderInstructions()
 	if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_1)
 	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_1], 140.f, 0, 0);
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_1], 160.f, 0, 0);
 		modelStack.PopMatrix();
 	}
 	else if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_2)
 	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_2], 140.f, 0, 0);
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_2], 160.f, 0, 0);
 		modelStack.PopMatrix();
 	}
 	else if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_3)
 	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_3], 140.f, 0, 0);
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_3], 160.f, 0, 0);
 		modelStack.PopMatrix();
 	}
 	else if(m_cStates->GetInstructionsState() == m_cStates->INSTRUCTIONS_4)
 	{
 		modelStack.PushMatrix();
-		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_4], 140.f, 0, 0);
+		RenderMeshIn2D(meshList[GEO_INSTRUCTIONS_4], 160.f, 0, 0);
 		modelStack.PopMatrix();
 	}
 	
@@ -2647,7 +2665,7 @@ void SceneSP3::RenderMainMenu()
 	SetHUD(true);
 	
 	modelStack.PushMatrix();
-	RenderMeshIn2D(meshList[GEO_MENU_BACKGROUND], 140.f, 0, 0);
+	RenderMeshIn2D(meshList[GEO_MENU_BACKGROUND], 160.f, 0, 0);
 	modelStack.PopMatrix();
 
 	/*modelStack.PushMatrix();
@@ -2658,14 +2676,14 @@ void SceneSP3::RenderMainMenu()
 	{
 		//State penitentiary 3 'escape'
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_PLAY)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 1), 6, 5, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 1, 1), 8, 5, 20);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 0), 5, 5, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Play", Color(1, 0, 0), 7, 5, 20);
 		
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_INSTRUCTIONS)
-			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 1, 1), 6, 10, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 1, 1), 6, 10, 10);
 		else
-			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 0, 0), 5, 10, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Instructions", Color(1, 0, 0), 5, 10, 10);
 		if(m_cStates->GetMenuButtonState() == m_cStates->MENU_EXIT)
 			RenderTextOnScreen(meshList[GEO_TEXT], "Exit", Color(1, 1, 1), 7, 28, 1);
 		else

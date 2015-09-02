@@ -41,7 +41,7 @@ void CSound::Alert()
 void CSound::Lose()
 {
 	ISound* lose;
-	lose = engine->play2D("Sounds//Lose.wav");
+	lose = engine->play2D("Sounds//Lose.mp3");
 }
 void CSound::Rainfall()
 {
@@ -51,5 +51,10 @@ void CSound::Rainfall()
 void CSound::Win()
 {
 	ISound* win;
-	win = engine->play2D("Sounds//Win.wav");
+	win = engine->play2D("Sounds//Win.mp3");
+}
+void CSound::Level1()
+{
+	ISound* level1;
+	level1 = engine->play2D("Sounds//Kouyou.mp3", false, true);
 }

@@ -257,7 +257,6 @@ void CMenu_States::UpdateWin(double& dt)
 	}
 
 	//Handle the win condition
-	cout << dTimer << endl;
 	if(m_bWinButtonPressed)
 	{
 		dTimer -= dt;
@@ -366,7 +365,6 @@ void CMenu_States::UpdateInstructions(double &dt)
 		{
 			if(m_Instructions_State == INSTRUCTIONS_1)
 			{
-				cout << "Instructions 1" << endl;
 				//assuming that the player triggers enter while back button state is active, return to game menu
 				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
 				{
@@ -381,7 +379,6 @@ void CMenu_States::UpdateInstructions(double &dt)
 			}
 			else if(m_Instructions_State == INSTRUCTIONS_2)
 			{
-				cout << "Instructions 2" << endl;
 				//if the player wants to go back, return to screen 1
 				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
 				{
@@ -397,7 +394,6 @@ void CMenu_States::UpdateInstructions(double &dt)
 			}
 			else if(m_Instructions_State == INSTRUCTIONS_3)
 			{
-				cout << "Instructions 3" << endl;
 				//if the player wants to go back, return to screen 2
 				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
 				{
@@ -413,7 +409,6 @@ void CMenu_States::UpdateInstructions(double &dt)
 			}
 			else if(m_Instructions_State == INSTRUCTIONS_4)
 			{
-				cout << "Instructions 3" << endl;
 				//if the player wants to go back, return to screen 3
 				if(m_Instructions_Button_State == INSTRUCTIONS_BACK)
 				{
@@ -591,8 +586,6 @@ void CMenu_States::UpdateMenu(double &dt)
 	{
 		bUpButton = false;
 	}
-
-	cout << m_Menu_State << endl;
 
 	//Handle the Enter Button
 	static bool bEnterButton = false;
