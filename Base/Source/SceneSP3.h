@@ -378,6 +378,7 @@ public:
 	void UpdateCooldown(double dt);
 	void UpdatePeeingStatus(double dt);	
 	void UpdateSounds();
+	void UpdateRestart();	//centralize the restart function
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);

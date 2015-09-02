@@ -171,7 +171,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 4;
+	m_Current_Level = 1;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	debug = false;
@@ -862,11 +862,73 @@ void SceneSP3::checkLose(void)
 		//consider that the enemy is actively chasing the player
 		if(myEnemyList[i]->getCurrentState() == myEnemyList[i]->STATE_CHASE)
 		{
+			//the length between player and enemy should be < 15 before player is caught
 			if((myEnemyList[i]->getPosition()-thePlayer->GetPosition()).Length() < 15)
 			{
 				m_cStates->SetLose(true);
-				m_cStates->SetGameState(m_cStates->LOSE_MENU);
 				m_cStates->SetWinLoseButtonState(m_cStates->STATE_RESTART);
+				m_cStates->SetGameState(m_cStates->LOSE_MENU);
+
+				//reinitialize beforehand
+				switch(m_Current_Level)
+				{
+					case 1:
+						{
+							m_Current_Level = 1;
+							cleanUp();
+							camera.position.Set(-900, 40, -1120);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+					case 2:
+						{
+							m_Current_Level = 2;
+							cleanUp();
+							camera.position.Set(0, 40, 10);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+					case 3:
+						{
+							m_Current_Level = 3;
+							cleanUp();
+							camera.position.Set(-1300, 40, 1750);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+					case 4:
+						{
+							m_Current_Level = 4;
+							cleanUp();
+							camera.position.Set(0, 40, 800);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+				}
 			}
 		}
 	}
@@ -1430,9 +1492,9 @@ void SceneSP3::UpdateSounds()
 			break;
 	}
 }
-void SceneSP3::Update(double dt)
+void SceneSP3::UpdateRestart()
 {
-	//when restart button is triggered
+	//when restart button is triggered or when the lose menu is triggered
 	if(m_cStates->GetRestartState())
 	{
 		switch(m_Current_Level)
@@ -1497,13 +1559,13 @@ void SceneSP3::Update(double dt)
 			break;
 
 		}
-
-
-
-		//initGameData();
 		m_cStates->SetRestartState(false);
 		m_cStates->SetPauseActive(false);
 	}
+}
+void SceneSP3::Update(double dt)
+{
+	UpdateRestart();
 	checkSpeech();
 
 	//should the player decide to return to main menu, reset all progress.
@@ -1522,8 +1584,6 @@ void SceneSP3::Update(double dt)
 
 		m_cStates->SetReturnToMainMenuState(false);
 	}
-
-	UpdateSounds();
 
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
 	{

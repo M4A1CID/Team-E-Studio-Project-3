@@ -187,10 +187,11 @@ void CMenu_States::UpdateLose(double& dt)
 
 			if(m_Win_Lose_Button_State == STATE_RESTART)
 			{
-				//restart the level
+				//restart the level.
+				//this is handled already on the checkLose() in SP3.cpp
+				//since there will be a tiny bit of lag before the level is ready
 				m_Current_Game_State = PLAY_GAME;
 				m_Win_Lose_Button_State = STATE_CONTINUE;
-				m_bRestart = true;
 				m_bWin = false;
 				m_bLose = false;
 			}
