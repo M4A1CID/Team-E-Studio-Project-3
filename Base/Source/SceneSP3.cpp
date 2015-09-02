@@ -883,17 +883,21 @@ void SceneSP3::checkWin(void)
 				{
 					m_cStates->SetWin(true);
 					m_cStates->SetGameState(m_cStates->WIN_MENU);
+
+					cout << "You win!" << endl;
+
+					m_Current_Level = 2;
+					cleanUp();
+					camera.position.Set(0, 40, 0);
+					camera.target.Set(0, 40, 1);
+					initPeeing();
+					initVariables();
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
 			{
-				cout << "You win!" << endl;
-				m_Current_Level = 2;
-				cleanUp();
-				camera.position.Set(0, 40, 0);
-				camera.target.Set(0, 40, 10);
-				initPeeing();
-				initVariables();
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->PLAY_GAME);
 			}
 		}
 		break;
@@ -905,18 +909,20 @@ void SceneSP3::checkWin(void)
 				{
 					m_cStates->SetWin(true);
 					m_cStates->SetGameState(m_cStates->WIN_MENU);
+
+					cout << "You win!" << endl;
+					m_Current_Level = 3;
+					cleanUp();
+					camera.position.Set(-1300, 40, 1750);
+					camera.target.Set(0, 40, 10);
+					initPeeing();
+					initVariables();
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
 			{		
-				cout << "You win!" << endl;
-				//win = true;
-				m_Current_Level = 3;
-				cleanUp();
-				camera.position.Set(-1300, 40, 1750);
-				camera.target.Set(0, 40, 10);
-				initPeeing();
-				initVariables();
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->PLAY_GAME);
 			}
 		}
 		break;
@@ -939,6 +945,9 @@ void SceneSP3::checkWin(void)
 				camera.target.Set(0, 40, 10);
 				initPeeing();
 				initVariables();
+
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->PLAY_GAME);
 			}
 		}
 		break;
@@ -968,6 +977,9 @@ void SceneSP3::checkWin(void)
 				camera.up.Set(0,1,0);
 				initPeeing();
 				initVariables();
+
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->GAME_MENU);
 			}
 
 		}
