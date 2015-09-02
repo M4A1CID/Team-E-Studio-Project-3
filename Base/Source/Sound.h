@@ -6,7 +6,9 @@ class CSound
 {
 public:
 	CSound(void);
-	~CSound(void);
+	virtual ~CSound(void);
+
+	ISoundEngine* getEngine(void);
 
 	void Footsteps();
 	void Alert();
@@ -14,10 +16,14 @@ public:
 	void Rainfall();
 	void Win();
 	void Lose();
-	void Level1();
 
 private:
 	ISoundEngine* engine;
-	ISound* level1;
+	ISound* music;
+	ISound* footsteps;
+	ISound* alert;
+	ISound* lose;
+	ISound* rain;
+	ISound* win;
 };
 

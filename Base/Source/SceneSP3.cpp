@@ -18,6 +18,7 @@ SceneSP3::SceneSP3()
 	, m_cMap(NULL)
 	, m_cStates(NULL)
 	, m_cPeeing(NULL)
+	, TheSound(NULL)
 	, MinCollected(false)
 	, MedCollected(false)
 	, MaxCollected(false)
@@ -29,11 +30,17 @@ SceneSP3::SceneSP3()
 	, RechargeTime(-20)
 	, m_speed(1)
 	, m_RainCount(0)
+	, m_fSoundTimer(0)
 {
 }
 
 SceneSP3::~SceneSP3()
 {
+	if(TheSound)
+	{
+		delete TheSound;
+		TheSound = NULL;
+	}
 	if(m_cMinimap)
 	{
 		delete m_cMinimap;
@@ -171,10 +178,16 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 4;
+	m_Current_Level = 1;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	debug = false;
+
+	if(TheSound == NULL)
+	{
+		TheSound = new CSound();
+	}
+
 	initMenu();
 	initUniforms(); // Init the standard Uniforms
 
@@ -862,11 +875,73 @@ void SceneSP3::checkLose(void)
 		//consider that the enemy is actively chasing the player
 		if(myEnemyList[i]->getCurrentState() == myEnemyList[i]->STATE_CHASE)
 		{
+			//the length between player and enemy should be < 15 before player is caught
 			if((myEnemyList[i]->getPosition()-thePlayer->GetPosition()).Length() < 15)
 			{
 				m_cStates->SetLose(true);
-				m_cStates->SetGameState(m_cStates->LOSE_MENU);
 				m_cStates->SetWinLoseButtonState(m_cStates->STATE_RESTART);
+				m_cStates->SetGameState(m_cStates->LOSE_MENU);
+
+				//reinitialize beforehand
+				switch(m_Current_Level)
+				{
+					case 1:
+						{
+							m_Current_Level = 1;
+							cleanUp();
+							camera.position.Set(-900, 40, -1120);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+					case 2:
+						{
+							m_Current_Level = 2;
+							cleanUp();
+							camera.position.Set(0, 40, 10);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+					case 3:
+						{
+							m_Current_Level = 3;
+							cleanUp();
+							camera.position.Set(-1300, 40, 1750);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+					case 4:
+						{
+							m_Current_Level = 4;
+							cleanUp();
+							camera.position.Set(0, 40, 800);
+							camera.target.Set(0, 40, 0);
+							camera.up.Set(0,1,0);
+							initPeeing();
+							initVariables();
+							physicsEngine.setCurrent(Vector3(0.164f,0.145f,0.207f));
+							glUniform3fv(m_uiParameters[U_LIGHT0_COLOR], 1, &lights[0].color.r);
+							glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
+						}
+						break;
+				}
 			}
 		}
 	}
@@ -883,17 +958,21 @@ void SceneSP3::checkWin(void)
 				{
 					m_cStates->SetWin(true);
 					m_cStates->SetGameState(m_cStates->WIN_MENU);
+
+					cout << "You win!" << endl;
+
+					m_Current_Level = 2;
+					cleanUp();
+					camera.position.Set(0, 40, 0);
+					camera.target.Set(0, 40, 1);
+					initPeeing();
+					initVariables();
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
 			{
-				cout << "You win!" << endl;
-				m_Current_Level = 2;
-				cleanUp();
-				camera.position.Set(0, 40, 0);
-				camera.target.Set(0, 40, 10);
-				initPeeing();
-				initVariables();
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->PLAY_GAME);
 			}
 		}
 		break;
@@ -905,18 +984,20 @@ void SceneSP3::checkWin(void)
 				{
 					m_cStates->SetWin(true);
 					m_cStates->SetGameState(m_cStates->WIN_MENU);
+
+					cout << "You win!" << endl;
+					m_Current_Level = 3;
+					cleanUp();
+					camera.position.Set(-1300, 40, 1750);
+					camera.target.Set(0, 40, 10);
+					initPeeing();
+					initVariables();
 				}
 			}
 			if(m_cStates->GetGameState() == m_cStates->WIN_MENU && m_cStates->GetWinLoseButtonState() == m_cStates->STATE_CONTINUE && Application::IsKeyPressed(VK_RETURN))
 			{		
-				cout << "You win!" << endl;
-				//win = true;
-				m_Current_Level = 3;
-				cleanUp();
-				camera.position.Set(-1300, 40, 1750);
-				camera.target.Set(0, 40, 10);
-				initPeeing();
-				initVariables();
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->PLAY_GAME);
 			}
 		}
 		break;
@@ -939,6 +1020,9 @@ void SceneSP3::checkWin(void)
 				camera.target.Set(0, 40, 10);
 				initPeeing();
 				initVariables();
+
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->PLAY_GAME);
 			}
 		}
 		break;
@@ -968,6 +1052,9 @@ void SceneSP3::checkWin(void)
 				camera.up.Set(0,1,0);
 				initPeeing();
 				initVariables();
+
+				m_cStates->SetWin(false);
+				m_cStates->SetGameState(m_cStates->GAME_MENU);
 			}
 
 		}
@@ -1270,6 +1357,8 @@ void SceneSP3::UpdateEnemies(double dt)
 				break;
 			case CEnemy::STATE_CHASE:
 				{
+					//trigger the alert sound
+					TheSound->Alert();
 
 					//Check booleans
 					if(enemy->getRotationLeftArm() > 45)
@@ -1403,24 +1492,9 @@ void SceneSP3::UpdatePlay(double dt)
 	glUniform1f(m_uiParameters[U_LIGHT0_POWER], lights[0].power);
 	m_fFps = (float)(1.f / dt);
 }
-void SceneSP3::UpdateSounds()
+void SceneSP3::UpdateRestart()
 {
-	switch(m_Current_Level)
-	{
-		case 1:
-			//soundEngine->Level1();
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-	}
-}
-void SceneSP3::Update(double dt)
-{
-	//when restart button is triggered
+	//when restart button is triggered or when the lose menu is triggered
 	if(m_cStates->GetRestartState())
 	{
 		switch(m_Current_Level)
@@ -1485,13 +1559,13 @@ void SceneSP3::Update(double dt)
 			break;
 
 		}
-
-
-
-		//initGameData();
 		m_cStates->SetRestartState(false);
 		m_cStates->SetPauseActive(false);
 	}
+}
+void SceneSP3::Update(double dt)
+{
+	UpdateRestart();
 	checkSpeech();
 
 	//should the player decide to return to main menu, reset all progress.
@@ -1510,8 +1584,6 @@ void SceneSP3::Update(double dt)
 
 		m_cStates->SetReturnToMainMenuState(false);
 	}
-
-	UpdateSounds();
 
 	switch(m_cStates->GetGameState())//m_Current_Game_State)
 	{
@@ -1532,7 +1604,10 @@ void SceneSP3::Update(double dt)
 		m_cStates->UpdateLose(dt);
 		break;
 	default:
-		m_cStates->UpdateMenu(dt);
+		{
+			TheSound->Music();
+			m_cStates->UpdateMenu(dt);
+		}
 		break;
 	}
 }
@@ -3359,7 +3434,12 @@ void SceneSP3::Exit()
 	}
 	
 	
-	
+	if(TheSound != NULL)
+	{
+		delete TheSound;
+		TheSound = NULL;
+	}
+
 	if(m_cStates != NULL)
 	{
 		delete m_cStates;

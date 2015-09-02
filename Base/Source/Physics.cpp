@@ -18,7 +18,6 @@ CPhysics::CPhysics(void)
 
 CPhysics::~CPhysics(void)
 {
-
 }
 
 // Get the gravity

@@ -128,6 +128,12 @@ bool CMenu_States::GetLose(void)
 }
 void CMenu_States::UpdateLose(double& dt)
 {
+	//Handle the other keys. Ensure that it doesn't trigger anything apart from what the UI is showing
+	if(Application::IsKeyPressed(VK_ESCAPE) || Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+	{
+		//do nothing
+	}
+
 	//Using the down button
 	static bool bDownButton = false;
 	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
@@ -181,10 +187,11 @@ void CMenu_States::UpdateLose(double& dt)
 
 			if(m_Win_Lose_Button_State == STATE_RESTART)
 			{
-				//restart the level
+				//restart the level.
+				//this is handled already on the checkLose() in SP3.cpp
+				//since there will be a tiny bit of lag before the level is ready
 				m_Current_Game_State = PLAY_GAME;
 				m_Win_Lose_Button_State = STATE_CONTINUE;
-				m_bRestart = true;
 				m_bWin = false;
 				m_bLose = false;
 			}
@@ -209,6 +216,12 @@ void CMenu_States::UpdateLose(double& dt)
 }
 void CMenu_States::UpdateWin(double& dt)
 {
+	//Handle the other keys. Ensure that it doesn't trigger anything apart from what the UI is showing
+	if(Application::IsKeyPressed(VK_ESCAPE) || Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+	{
+		//do nothing
+	}
+
 	//Using the down button
 	static bool bDownButton = false;
 	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
@@ -311,6 +324,11 @@ void CMenu_States::UpdateWin(double& dt)
 
 void CMenu_States::UpdateInstructions(double &dt)
 {
+	//Handle the other keys. Ensure that it doesn't trigger anything apart from what the UI is showing
+	if(Application::IsKeyPressed(VK_ESCAPE) || Application::IsKeyPressed(VK_UP) || Application::IsKeyPressed(VK_DOWN))
+	{
+		//do nothing
+	}
 	//Using the left button
 	static bool bLeftButton = false;
 	if(!bLeftButton && Application::IsKeyPressed(VK_LEFT))
@@ -443,6 +461,12 @@ void CMenu_States::UpdateInstructions(double &dt)
 }
 void CMenu_States::UpdatePauseMenu(double &dt)
 {
+	//Handle the other keys. Ensure that it doesn't trigger anything apart from what the UI is showing
+	if(Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+	{
+		//do nothing
+	}
+
 	//Using the down button
 	static bool bDownButton = false;
 	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
@@ -543,6 +567,11 @@ void CMenu_States::UpdatePauseMenu(double &dt)
 }
 void CMenu_States::UpdateMenu(double &dt)
 {
+	//Handle the other keys. Ensure that it doesn't trigger anything apart from what the UI is showing
+	if(Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT) || Application::IsKeyPressed(VK_ESCAPE))
+	{
+		//do nothing
+	}
 	//Using the down button
 	static bool bDownButton = false;
 	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
@@ -628,11 +657,5 @@ void CMenu_States::UpdateMenu(double &dt)
 	if(dTimer < 0)
 	{
 		m_bInstructionsButtonPressed = false;
-	}
-
-	//Handle the escape key. Ensure that it doesn't trigger pause menu
-	if(Application::IsKeyPressed(VK_ESCAPE))
-	{
-		//do nothing
 	}
 }

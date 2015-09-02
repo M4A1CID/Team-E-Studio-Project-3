@@ -378,6 +378,7 @@ public:
 	void UpdateCooldown(double dt);
 	void UpdatePeeingStatus(double dt);	
 	void UpdateSounds();
+	void UpdateRestart();	//centralize the restart function
 
 	const float GetCameraCurrentY(void);
 	const float GetHeightMapY(float x, float z);
@@ -470,9 +471,10 @@ private:
 	double NVTime;
 	double InvisTime;
 
-	ISoundEngine* engine;
-	ISound* music ;
-	ISound* fire;
+	float m_fSoundTimer;
+
+	//Handle the sounds
+	CSound* TheSound;
 
 	// Rain Count
 	int m_RainCount;
@@ -496,8 +498,6 @@ private:
 	CPhysics physicsEngine;
 	
 	CPeeing* m_cPeeing;
-
-	CSound soundEngine;
 
 	//Light Depth Buffer
 	unsigned m_gPassShaderID;
