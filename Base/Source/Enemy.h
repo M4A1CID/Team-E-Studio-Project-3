@@ -71,7 +71,6 @@ public:
 	void setIsAlert(bool);
 	bool getIsAlert(void);
 	
-
 	// Animations
 	void Walking();
 	void Idle();
@@ -161,6 +160,9 @@ public:
 	// Get visibility range
 	float getVisibility(void);
 
+	// Get state of enemy
+	CEnemy::CURRENT_STATE getEnemyState(void);
+
 private:
 	Vector3 Pos;			// Enemy's position
 	Vector3 Scale;			// Enemy's scale
@@ -171,6 +173,7 @@ private:
 	bool isAlerted;			// Enemy's detection of the player
 	int currentState;		// Enemy's current state
 	bool rotateForward;
+	CEnemy::CURRENT_STATE m_Enemy_Current_State;		//check the current enemy state
 
 	/**************************
 		GeoTypes values

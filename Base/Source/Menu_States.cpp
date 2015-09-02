@@ -7,26 +7,20 @@ CMenu_States::CMenu_States(void)
 	, m_Pause_State(PAUSE_PLAY)
 	, m_Instructions_Button_State(INSTRUCTIONS_BACK)
 	, m_Instructions_State(INSTRUCTIONS_1)
-	, m_Credits_State(CREDITS_BACK)
+	, m_Win_Lose_Button_State(STATE_RESTART)
 	, m_bQuit(false)
 	, m_bRestart(false)
+	, m_bReturnToMainMenu(false)
 	, m_bInstructionsButtonPressed(false)
-	, m_bCreditsState(false)
+	, m_bWinButtonPressed(false)
 	, m_bPauseActive(false)
+	, m_bWin(false)
+	, m_bLose(false)
 	, dTimer(0.5)
-	, dTimer2(0.5)
 {
 }
 CMenu_States::~CMenu_States(void)
 {
-}
-void CMenu_States::SetCreditsState(CMenu_States::CREDITS_STATES m_Credits_State)
-{
-	this->m_Credits_State = m_Credits_State;
-}
-CMenu_States::CREDITS_STATES CMenu_States::GetCreditsState(void)
-{
-	return m_Credits_State;
 }
 void CMenu_States::SetInstructionsState(CMenu_States::INSTRUCTIONS_STATES m_Instructions_State)
 {
@@ -68,6 +62,14 @@ CMenu_States::PAUSE_BUTTONS CMenu_States::GetPauseState(void)
 {
 	return m_Pause_State;
 }
+void CMenu_States::SetWinLoseButtonState(CMenu_States::WIN_LOSE_BUTTONS m_Win_Lose_Button_State)
+{
+	this->m_Win_Lose_Button_State = m_Win_Lose_Button_State;
+}
+CMenu_States::WIN_LOSE_BUTTONS CMenu_States::GetWinLoseButtonState(void)
+{
+	return m_Win_Lose_Button_State;
+}
 void CMenu_States::SetQuitState(bool m_bQuit)
 {
 	this->m_bQuit = m_bQuit;
@@ -75,6 +77,14 @@ void CMenu_States::SetQuitState(bool m_bQuit)
 bool CMenu_States::GetQuitState(void)
 {
 	return m_bQuit;
+}
+void CMenu_States::SetReturnToMainMenuState(bool m_bReturnToMainMenu)
+{
+	this->m_bReturnToMainMenu = m_bReturnToMainMenu;
+}
+bool CMenu_States::GetReturnToMainMenuState(void)
+{
+	return m_bReturnToMainMenu;
 }
 void CMenu_States::SetRestartState(bool m_bRestart)
 {
@@ -100,79 +110,157 @@ double CMenu_States::GetTimer(void)
 {
 	return dTimer;
 }
-void CMenu_States::UpdateCredits(double &dt)
+void CMenu_States::SetWin(bool m_bWin)
 {
-	//Using the left button
-	static bool bLeftButton = false;
-	if(!bLeftButton && Application::IsKeyPressed(VK_LEFT))
+	this->m_bWin = m_bWin;
+}
+bool CMenu_States::GetWin(void)
+{
+	return m_bWin;
+}
+void CMenu_States::SetLose(bool m_bLose)
+{
+	this->m_bLose = m_bLose;
+}
+bool CMenu_States::GetLose(void)
+{
+	return m_bLose;
+}
+void CMenu_States::UpdateLose(double& dt)
+{
+	//Using the down button
+	static bool bDownButton = false;
+	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
 	{
-		bLeftButton = true;
+		bDownButton = true;
+		//Check if player is at win/lose menu
+		if(m_Current_Game_State == LOSE_MENU)
 		{
-			//check that the player is already inside instructions menu
-			if(m_Current_Game_State == CREDITS)
-			{
-				//check the instructions button state
-				if(m_Credits_State == CREDITS_BACK)
-					m_Credits_State = CREDITS_EXIT;
-				else
-					m_Credits_State = CREDITS_BACK;
-			}
+			if(m_Win_Lose_Button_State == STATE_RESTART)
+				m_Win_Lose_Button_State = STATE_RETURN;
+			//reset the pointer
+			else if(m_Win_Lose_Button_State == STATE_RETURN)
+				m_Win_Lose_Button_State = STATE_RESTART;
 		}
 	}
-	else if(bLeftButton && !Application::IsKeyPressed(VK_LEFT))
+	else if(bDownButton && !Application::IsKeyPressed(VK_DOWN))
 	{
-		bLeftButton = false;
+		bDownButton = false;
 	}
-	//Using the right button. It doesn't really matter anyway since there are only 2 options
-	static bool bRightButton = false;
-	if(!bRightButton && Application::IsKeyPressed(VK_RIGHT))
+
+	//Using the Up button
+	static bool bUpButton = false;
+	if(!bUpButton && Application::IsKeyPressed(VK_UP))
 	{
-		bRightButton = true;
+		bUpButton = true;
+		//Check if player is at win/lose menu
+		if(m_Current_Game_State == LOSE_MENU)
 		{
-			//check that the player is already inside instructions menu
-			if(m_Current_Game_State == CREDITS)
-			{
-				//check the instructions button state
-				if(m_Credits_State == CREDITS_EXIT)
-					m_Credits_State = CREDITS_BACK;
-				else
-					m_Credits_State = CREDITS_EXIT;
-			}
+			if(m_Win_Lose_Button_State == STATE_RESTART)
+				m_Win_Lose_Button_State = STATE_RETURN;
+			//reset the pointer
+			else if(m_Win_Lose_Button_State == STATE_RETURN)
+				m_Win_Lose_Button_State = STATE_RESTART;
 		}
 	}
-	else if(bRightButton && !Application::IsKeyPressed(VK_RIGHT))
+	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
 	{
-		bRightButton = false;
+		bUpButton = false;
 	}
 
-	static bool bEnterButton = false;
-	//Handle the Enter Button
-	if(Application::IsKeyPressed(VK_RETURN) && !bEnterButton && !m_bCreditsState) // if ESC pressed and not in pause - make sure only when pressed then update
-	{
-		bEnterButton = true;
-		m_bCreditsState = true;
+	//Handle the win condition
+	dTimer -= dt;
 
-		if(dTimer == 0.5)
+	if(dTimer < 0)
+	{
+		//Handle the Enter Button
+		static bool bEnterButton = false;
+		if(!bEnterButton && Application::IsKeyPressed(VK_RETURN))
 		{
-			if(m_Credits_State == CREDITS_BACK)
+			bEnterButton = true;
+
+			if(m_Win_Lose_Button_State == STATE_RESTART)
 			{
-				cout << "Credits" << endl;
-				m_Current_Game_State = GAME_MENU;
+				//restart the level
+				m_Current_Game_State = PLAY_GAME;
+				m_Win_Lose_Button_State = STATE_CONTINUE;
+				m_bRestart = true;
+				m_bWin = false;
+				m_bLose = false;
 			}
-			else if(m_Credits_State == CREDITS_EXIT)
+			else if(m_Win_Lose_Button_State == STATE_RETURN)
 			{
-				cout << "Credits" << endl;
 				m_Current_Game_State = GAME_MENU;
+				m_Win_Lose_Button_State = STATE_CONTINUE;
+				m_bReturnToMainMenu = true;
+				m_bWin = false;
+				m_bLose = false;
 			}
-		}	
+		}
+		else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+		{
+			bEnterButton = false;
+		}
 	}
-	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	if(!m_bLose)
 	{
-		bEnterButton = false;
+		dTimer = 0.5;
 	}
-	if(m_bCreditsState)
+}
+void CMenu_States::UpdateWin(double& dt)
+{
+	//Using the down button
+	static bool bDownButton = false;
+	if(!bDownButton && Application::IsKeyPressed(VK_DOWN))
 	{
-		dTimer -= dt;	//countdown timer
+		bDownButton = true;
+		//Check if player is at win/lose menu
+		if(m_Current_Game_State == WIN_MENU)
+		{
+
+			//check the pause state
+			if(m_Win_Lose_Button_State == STATE_CONTINUE)
+				m_Win_Lose_Button_State = STATE_RESTART;
+			else if(m_Win_Lose_Button_State == STATE_RESTART)
+				m_Win_Lose_Button_State = STATE_RETURN;
+			//reset the pointer
+			else if(m_Win_Lose_Button_State == STATE_RETURN)
+				m_Win_Lose_Button_State = STATE_CONTINUE;
+		}
+	}
+	else if(bDownButton && !Application::IsKeyPressed(VK_DOWN))
+	{
+		bDownButton = false;
+	}
+
+	//Using the Up button
+	static bool bUpButton = false;
+	if(!bUpButton && Application::IsKeyPressed(VK_UP))
+	{
+		bUpButton = true;
+		//Check if player is at win/lose menu
+		if(m_Current_Game_State == WIN_MENU)
+		{
+			//check the  state
+			if(m_Win_Lose_Button_State == STATE_CONTINUE)
+				m_Win_Lose_Button_State = STATE_RETURN;
+			else if(m_Win_Lose_Button_State == STATE_RESTART)
+				m_Win_Lose_Button_State = STATE_CONTINUE;
+			//reset the pointer
+			else if(m_Win_Lose_Button_State == STATE_RETURN)
+				m_Win_Lose_Button_State = STATE_RESTART;
+		}
+	}
+	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
+	{
+		bUpButton = false;
+	}
+
+	//Handle the win condition
+	cout << dTimer << endl;
+	if(m_bWinButtonPressed)
+	{
+		dTimer -= dt;
 	}
 	else
 	{
@@ -180,9 +268,48 @@ void CMenu_States::UpdateCredits(double &dt)
 	}
 	if(dTimer < 0)
 	{
-		m_bCreditsState = false;
+		m_bWinButtonPressed = false;
+	}
+	//Handle the Enter Button
+	static bool bEnterButton = false;
+	if(!bEnterButton && Application::IsKeyPressed(VK_RETURN) && dTimer == 0.5 && !m_bWinButtonPressed)
+	{
+		bEnterButton = true;
+		m_bWinButtonPressed = true;
+		if(m_Win_Lose_Button_State == STATE_CONTINUE)
+		{
+			//let the player continue playing the game as it is
+			m_Current_Game_State = PLAY_GAME;
+			m_bWinButtonPressed = true;
+			m_bWin = false;
+			m_bLose = false;
+		}
+		else if(m_Win_Lose_Button_State == STATE_RESTART)
+		{
+			//restart the level
+			m_Current_Game_State = PLAY_GAME;
+			m_Win_Lose_Button_State = STATE_CONTINUE;
+			m_bWinButtonPressed = true;
+			m_bRestart = true;
+			m_bWin = false;
+			m_bLose = false;
+		}
+		else if(m_Win_Lose_Button_State == STATE_RETURN)
+		{
+			m_Current_Game_State = GAME_MENU;
+			m_Win_Lose_Button_State = STATE_CONTINUE;
+			m_bReturnToMainMenu = true;
+			m_bWinButtonPressed = true;
+			m_bWin = false;
+			m_bLose = false;
+		}
+	}
+	else if(bEnterButton && Application::IsKeyPressed(VK_RETURN))
+	{
+		bEnterButton = false;
 	}
 }
+
 void CMenu_States::UpdateInstructions(double &dt)
 {
 	//Using the left button
@@ -433,8 +560,6 @@ void CMenu_States::UpdateMenu(double &dt)
 			if(m_Menu_State == MENU_PLAY)
 				m_Menu_State = MENU_INSTRUCTIONS;
 			else if(m_Menu_State == MENU_INSTRUCTIONS)
-				m_Menu_State = MENU_CREDITS;
-			else if(m_Menu_State == MENU_CREDITS)
 				m_Menu_State = MENU_EXIT;
 			else if(m_Menu_State == MENU_EXIT)
 				m_Menu_State = MENU_PLAY;
@@ -458,16 +583,16 @@ void CMenu_States::UpdateMenu(double &dt)
 				m_Menu_State = MENU_EXIT;
 			else if(m_Menu_State == MENU_INSTRUCTIONS)
 				m_Menu_State = MENU_PLAY;
-			else if(m_Menu_State == MENU_CREDITS)
-				m_Menu_State = MENU_INSTRUCTIONS;
 			else if(m_Menu_State == MENU_EXIT)
-				m_Menu_State = MENU_CREDITS;
+				m_Menu_State = MENU_INSTRUCTIONS;
 		}
 	}
 	else if(bUpButton && !Application::IsKeyPressed(VK_UP))
 	{
 		bUpButton = false;
 	}
+
+	cout << m_Menu_State << endl;
 
 	//Handle the Enter Button
 	static bool bEnterButton = false;
@@ -484,10 +609,6 @@ void CMenu_States::UpdateMenu(double &dt)
 		{
 			m_Current_Game_State = INSTRUCTIONS;
 			m_bInstructionsButtonPressed = true;
-		}
-		else if(m_Menu_State == MENU_CREDITS && !m_bCreditsState)
-		{
-			m_Current_Game_State = CREDITS;
 		}
 		else if(m_Menu_State == MENU_EXIT)
 		{
@@ -514,19 +635,6 @@ void CMenu_States::UpdateMenu(double &dt)
 	if(dTimer < 0)
 	{
 		m_bInstructionsButtonPressed = false;
-	}
-
-	if(m_bCreditsState)
-	{
-		dTimer2 -= dt;
-	}
-	else
-	{
-		dTimer2 = 0.5;
-	}
-	if(dTimer2 < 0)
-	{
-		m_bCreditsState = false;
 	}
 
 	//Handle the escape key. Ensure that it doesn't trigger pause menu

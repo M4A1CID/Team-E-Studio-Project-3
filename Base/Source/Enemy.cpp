@@ -589,3 +589,8 @@ float CEnemy::getVisibility(void)
 {
 	return VisibilityRange;
 }
+//check the current enemy state
+CEnemy::CURRENT_STATE CEnemy::getEnemyState(void)
+{
+	return m_Enemy_Current_State;
+}

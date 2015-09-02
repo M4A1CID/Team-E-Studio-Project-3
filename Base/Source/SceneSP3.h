@@ -303,6 +303,7 @@ public:
 	void checkDollFlip();
 	void checkSpeech();
 	void checkWin();
+	void checkLose();
 	void checkButtonPushed();
 
 	//Loading of stuff
@@ -465,10 +466,6 @@ private:
 	double RechargeTime;
 	double NVTime;
 	double InvisTime;
-
-	bool win;
-	bool lose;
-	bool debug;
 
 	ISoundEngine* engine;
 	ISound* music ;
