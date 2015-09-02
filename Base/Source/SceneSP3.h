@@ -497,7 +497,7 @@ private:
 	
 	CPeeing* m_cPeeing;
 
-	CSound* soundEngine;
+	CSound soundEngine;
 
 	//Light Depth Buffer
 	unsigned m_gPassShaderID;

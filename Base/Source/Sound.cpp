@@ -1,17 +1,19 @@
 #include "Sound.h"
 
-ISoundEngine* engine = createIrrKlangDevice(ESOD_AUTO_DETECT, ESEO_MULTI_THREADED | ESEO_LOAD_PLUGINS | ESEO_USE_3D_BUFFERS);
+
 CSound::CSound(void)
 {
+	engine = createIrrKlangDevice();
+	level1 = NULL;
 }
 
 
 CSound::~CSound(void)
 {
-	if (engine)
+	
+	if(level1)
 	{
-		delete engine;
-		engine = NULL;
+		level1->drop();
 	}
 }
 
@@ -55,6 +57,6 @@ void CSound::Win()
 }
 void CSound::Level1()
 {
-	ISound* level1;
-	level1 = engine->play2D("Sounds//Kouyou.mp3", false, true);
+	if(!level1)
+		level1 = engine->play2D("Sounds//Kouyou.mp3", false,false,true);
 }

@@ -17,7 +17,7 @@ public:
 	void Level1();
 
 private:
-
-
+	ISoundEngine* engine;
+	ISound* level1;
 };
 

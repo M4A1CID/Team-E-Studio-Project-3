@@ -85,7 +85,7 @@ private:
 	//float CrouchHeight;
 	float CrouchSpeed;
 	float CrouchOff;
-	CSound* soundEngine;
+	CSound soundEngine;
 	float m_fSoundTimer;
 };
 

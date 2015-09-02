@@ -1408,7 +1408,8 @@ void SceneSP3::UpdateSounds()
 	switch(m_Current_Level)
 	{
 		case 1:
-			soundEngine->Level1();
+		
+			soundEngine.Level1();
 			break;
 		case 2:
 			break;
@@ -1809,9 +1810,8 @@ bool SceneSP3::LoadFromTextFileOBJ(const string mapString)
 			obj->setGeoType(geotype);
 			obj->setScale(Scale);
 			obj->setOffset(Offset);
-			cout << "Objs Loaded: SUCCESS!" << endl;
-			
 		}
+		cout << "Objs Loaded: SUCCESS!" << endl;
 		myfile.close();
 		return true;
 	}
@@ -1846,8 +1846,9 @@ bool SceneSP3::LoadFromTextFileDoor(const string mapString)
 			door->SetLocked(LockBool);
 			door->setOffset(Offset);
 			door->setScale(Scale);
-			cout << "Doors Loaded: SUCCESS!" << endl;
+			
 		}
+		cout << "Doors Loaded: SUCCESS!" << endl;
 		myfile.close();
 		return true;
 	}
@@ -1875,8 +1876,9 @@ bool SceneSP3::LoadFromTextFileLaser(const string mapString)
 			laser->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			laser->setGeoType(geotype);
 			laser->setScale(Scale);
-			cout << "Laser Loaded: SUCCESS!" << endl;
+			
 		}
+		cout << "Laser Loaded: SUCCESS!" << endl;
 		myfile.close();
 		
 		return true;
@@ -1905,8 +1907,9 @@ bool SceneSP3::LoadFromTextFileItem(const string mapString)
 			Key->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			Key->setGeoType(geotype);
 			Key->setScale(Scale);
-			cout << "Items Loaded: SUCCESS!" << endl;
+			
 		}
+		cout << "Items Loaded: SUCCESS!" << endl;
 		myfile.close();
 		
 		return true;
@@ -2024,9 +2027,10 @@ bool SceneSP3::LoadFromTextFileDoll(const string mapString)
 			doll->setPosition_Y(TERRAIN_SCALE.y *ReadHeightMap(m_heightMap,Pos.x,Pos.z) + Pos.y);
 			doll->setGeoType(geotype);
 			doll->setScale(Scale);
-			cout << "Doll Loaded: SUCCESS!" << endl;
+			
 			
 		}
+		cout << "Doll Loaded: SUCCESS!" << endl;
 		myfile.close();
 		return true;
 	}
@@ -2428,10 +2432,15 @@ void SceneSP3::RenderUI()
 
 	if(NVM == true)
 		{
+			m_bLightEnabled = false;
 			modelStack.PushMatrix();
 			RenderMeshUI(meshList[GEO_GREEN], 190,150,150,1,1);
 			modelStack.PopMatrix();
 		}
+	else
+	{
+		m_bLightEnabled = true;
+	}
 	RenderWatch();
 	RenderCompass();
 	RenderWarning();
