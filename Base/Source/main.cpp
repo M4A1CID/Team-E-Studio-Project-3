@@ -3,7 +3,7 @@
 #include "Application.h"
 
 
-#include <vld.h> 
+//#include <vld.h> 
 
 
 int main( void )
