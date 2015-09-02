@@ -483,6 +483,9 @@ private:
 	//Fog
 	Color fogColor;
 
+	// Debug
+	bool debug;
+
 	//Physics stuff
 	float m_speed;
 	//int m_objectCount;
