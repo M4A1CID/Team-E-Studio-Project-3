@@ -120,6 +120,6 @@ private:
 	CMenu_States::PAUSE_BUTTONS PauseState;
 	CMenu_States::GAME_STATES GameState;
 
-	CSound* soundEngine;
+	CSound soundEngine;
 };
 

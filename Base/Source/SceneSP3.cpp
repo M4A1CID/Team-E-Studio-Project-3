@@ -171,7 +171,7 @@ void SceneSP3::initMap()
 }
 void SceneSP3::Init()
 {
-	m_Current_Level = 1;
+	m_Current_Level = 4;
 	Math::InitRNG();
 	m_bLightEnabled = true;
 	debug = false;
@@ -1634,7 +1634,7 @@ void SceneSP3::UpdateSceneControls()
 		m_speed += 0.1f;
 	}
 
-	if(Application::IsKeyPressed('8'))// || NVM == false)
+	if(Application::IsKeyPressed('8')) //|| NVM == false)
 	{
 		m_bLightEnabled = false;
 	}
@@ -3271,7 +3271,7 @@ void SceneSP3::cleanUp(void)
 	NVGet = false;
 	NVM = false;
 	Cooldown = false;
-	RechargeTime = 20;
+	RechargeTime = -20;
 	NVTime = 10;
 	Invis = false;
 	InvisTime = 10;
