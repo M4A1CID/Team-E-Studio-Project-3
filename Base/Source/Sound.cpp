@@ -57,6 +57,6 @@ void CSound::Win()
 }
 void CSound::Level1()
 {
-	//if(!level1)
-	//	level1 = engine->play2D("Sounds//Kouyou.mp3", false,false,true);
+	if(!level1)
+		level1 = engine->play2D("Sounds//Kouyou.mp3", false,false,true);
 }
