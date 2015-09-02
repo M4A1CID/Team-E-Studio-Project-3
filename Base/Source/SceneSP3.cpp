@@ -1601,21 +1601,21 @@ void SceneSP3::UpdateSceneControls()
 
 	static bool bPButton2 = false;
 
-	if(!bPButton2 && Application::IsKeyPressed('P')) // if ESC pressed and not in pause - make sure only when pressed then update
-	{
-		bPButton2 = true;
-		if(debug)
-			debug = false;
-		else
-			debug = true;
-	}
-	//if key release
-	else if(bPButton2 && !Application::IsKeyPressed('P')) // when release , prevent holding down bug
-	{
-		//update to pause menu here
-		bPButton2 = false;
+	//if(!bPButton2 && Application::IsKeyPressed('P')) // if ESC pressed and not in pause - make sure only when pressed then update
+	//{
+	//	bPButton2 = true;
+	//	if(debug)
+	//		debug = false;
+	//	else
+	//		debug = true;
+	//}
+	////if key release
+	//else if(bPButton2 && !Application::IsKeyPressed('P')) // when release , prevent holding down bug
+	//{
+	//	//update to pause menu here
+	//	bPButton2 = false;
 
-	}
+	//}
 }
 CObj* SceneSP3::FetchOBJ()
 {
