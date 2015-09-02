@@ -2480,7 +2480,7 @@ void SceneSP3::RenderUI()
 		std::ostringstream ss;
 		ss.precision(3);
 		ss << "Invis Time: " << InvisTime;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 42.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 49.f);
 	}
 
 	if(NVM == true)
@@ -2488,21 +2488,21 @@ void SceneSP3::RenderUI()
 		std::ostringstream ss;
 		ss.precision(3);
 		ss << "Night Vision Time: " << NVTime;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 52.f);
 	}
 	if(Cooldown == true)
 	{
 		std::ostringstream ss;
 		ss.precision(3);
 		ss << "Cooldown Time: " << RechargeTime;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 52.f);
 	}
 	if(Cooldown == false && NVM == false && NVGet == true)
 	{
 		std::ostringstream ss;
 		ss.precision(3);
 		ss << "Ready to use!";
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 22.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2.5f, 0.9f, 52.f);
 	}
 
 	switch(m_Current_Level)
