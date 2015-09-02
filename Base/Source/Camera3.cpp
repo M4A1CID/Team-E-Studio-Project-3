@@ -185,7 +185,7 @@ void Camera3::UpdateJump(const double dt)
 	if(m_bJumping)
 	{
 		//Factor in gravity
-		JumpVel += GRAVITY * dt;
+		JumpVel += GRAVITY *(float) dt;
 
 		//Update the camera and target position
 		position.y += JumpVel * (float)dt;
@@ -203,7 +203,7 @@ void Camera3::UpdateJump(const double dt)
 	if(position.y > JumpHeight)
 	{
 		//Factor in gravity
-		JumpVel += GRAVITY * dt;
+		JumpVel += GRAVITY *(float) dt;
 
 		//Update the camera and target position
 		position.y += JumpVel * (float)dt;
@@ -288,16 +288,16 @@ void Camera3::UpdateProne(const double dt)
 	{
 		if(position.y > 15)
 		{
-			position.y -= dt * 100;
-			target.y -= dt * 100;
+			position.y -= (float)dt * 100;
+			target.y -= (float)dt * 100;
 		}
 	}
 	else
 	{
 		if(position.y <40 && !m_bCrouching)
 		{
-			position.y += dt * 100;
-			target.y += dt * 100;
+			position.y += (float)dt * 100;
+			target.y += (float)dt * 100;
 		}
 	}
 }
@@ -401,7 +401,7 @@ void Camera3::Update(double dt)
 	Crouch(dt);
 	Prone(dt);*/
 
-	m_fSoundTimer += dt;
+	m_fSoundTimer += (float)dt;
 
 	if(myKeys['w'] == true)
 	{

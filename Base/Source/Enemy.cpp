@@ -161,80 +161,80 @@ void CEnemy::Idle()
 
 }
 //A* Update
-void CEnemy::Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z)
-{
-	//Update the enemy
-	int checkAIPosition_X = this->getPosition().x/m_cMap->GetTileSize() + AI_PATH_OFFSET_X;
-	int checkAIPosition_Z = this->getPosition().z/m_cMap->GetTileSize() + AI_PATH_OFFSET_Z;
-
-	int checkPlayerPosition_X = thePlayer->GetPositionX()/m_cMap->GetTileSize() + AI_PATH_OFFSET_X;
-	int checkPlayerPosition_Z = thePlayer->GetPositionZ()/m_cMap->GetTileSize() + AI_PATH_OFFSET_Z;
-
-	// If facing towards Positive X axis
-	if(this->getDirectionalVector().x == 1)
-	{
-		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
-			|| (checkAIPosition_X + 1 == checkPlayerPosition_X && checkAIPosition_Z  == checkPlayerPosition_Z))
-		{
-			cout << "Player is detected!" << endl;
-		}
-		else
-		{
-			//cout << "Player is not detected!" << endl;
-		}
-	}
-	// If facing towards Negative X axis
-	else if(this->getDirectionalVector().x == -1)
-	{
-		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
-			|| (checkAIPosition_X - 1 == checkPlayerPosition_X && checkAIPosition_Z  == checkPlayerPosition_Z))
-		{
-			cout << "Player is detected!" << endl;
-		}
-		else
-		{
-			//cout << "Player is not detected!" << endl;
-		}
-	}
-	// If facing towards Positive Z axis
-	if(this->getDirectionalVector().z == 1)
-	{
-		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
-			|| (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z +1  == checkPlayerPosition_Z))
-		{
-			cout << "Player is detected!" << endl;
-		}
-		else
-		{
-			//cout << "Player is not detected!" << endl;
-		}
-	}
-	// If facing towards Negative Z axis
-	if(this->getDirectionalVector().z == -1)
-	{
-		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
-			|| (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z -1  == checkPlayerPosition_Z))
-		{
-			cout << "Player is detected!" << endl;
-		}
-		else
-		{
-			//cout << "Player is not detected!" << endl;
-		}
-	}
-
-	//if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z)  // Checks AI standing box
-	//	|| (checkAIPosition_X + enemy->getDirectionalVector().x == checkPlayerPosition_X &&  // Checks 1 infront of X axis
-	//	((checkAIPosition_Z -1 == checkPlayerPosition_Z) || 	// Check -1 Z relative to the enemy view axis
-	//	(checkAIPosition_Z +1 == checkPlayerPosition_Z))  ))	// Check +1 Z relative to the enemy view axis
-	//{
-	//	cout << "Player is detected!" << endl;
-	//}
-	//else
-	//{
-	//	cout << "Player is not detected!" << endl;
-	//}
-}
+//void CEnemy::Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z)
+//{
+//	//Update the enemy
+//	int checkAIPosition_X = this->getPosition().x/m_cMap->GetTileSize() + AI_PATH_OFFSET_X;
+//	int checkAIPosition_Z = this->getPosition().z/m_cMap->GetTileSize() + AI_PATH_OFFSET_Z;
+//
+//	int checkPlayerPosition_X = thePlayer->GetPositionX()/m_cMap->GetTileSize() + AI_PATH_OFFSET_X;
+//	int checkPlayerPosition_Z = thePlayer->GetPositionZ()/m_cMap->GetTileSize() + AI_PATH_OFFSET_Z;
+//
+//	// If facing towards Positive X axis
+//	if(this->getDirectionalVector().x == 1)
+//	{
+//		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
+//			|| (checkAIPosition_X + 1 == checkPlayerPosition_X && checkAIPosition_Z  == checkPlayerPosition_Z))
+//		{
+//			cout << "Player is detected!" << endl;
+//		}
+//		else
+//		{
+//			//cout << "Player is not detected!" << endl;
+//		}
+//	}
+//	// If facing towards Negative X axis
+//	else if(this->getDirectionalVector().x == -1)
+//	{
+//		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
+//			|| (checkAIPosition_X - 1 == checkPlayerPosition_X && checkAIPosition_Z  == checkPlayerPosition_Z))
+//		{
+//			cout << "Player is detected!" << endl;
+//		}
+//		else
+//		{
+//			//cout << "Player is not detected!" << endl;
+//		}
+//	}
+//	// If facing towards Positive Z axis
+//	if(this->getDirectionalVector().z == 1)
+//	{
+//		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
+//			|| (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z +1  == checkPlayerPosition_Z))
+//		{
+//			cout << "Player is detected!" << endl;
+//		}
+//		else
+//		{
+//			//cout << "Player is not detected!" << endl;
+//		}
+//	}
+//	// If facing towards Negative Z axis
+//	if(this->getDirectionalVector().z == -1)
+//	{
+//		if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z) 
+//			|| (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z -1  == checkPlayerPosition_Z))
+//		{
+//			cout << "Player is detected!" << endl;
+//		}
+//		else
+//		{
+//			//cout << "Player is not detected!" << endl;
+//		}
+//	}
+//
+//	//if( (checkAIPosition_X == checkPlayerPosition_X && checkAIPosition_Z == checkPlayerPosition_Z)  // Checks AI standing box
+//	//	|| (checkAIPosition_X + enemy->getDirectionalVector().x == checkPlayerPosition_X &&  // Checks 1 infront of X axis
+//	//	((checkAIPosition_Z -1 == checkPlayerPosition_Z) || 	// Check -1 Z relative to the enemy view axis
+//	//	(checkAIPosition_Z +1 == checkPlayerPosition_Z))  ))	// Check +1 Z relative to the enemy view axis
+//	//{
+//	//	cout << "Player is detected!" << endl;
+//	//}
+//	//else
+//	//{
+//	//	cout << "Player is not detected!" << endl;
+//	//}
+//}
 void CEnemy::checkWithinLineOfSight(CPlayer* thePlayer)
 {
 	Vector3 LeftView = RotateByDegree(-45); // 45 + 45 = 90 degree detection
@@ -284,7 +284,7 @@ Vector3 CEnemy::RotateByDegree(int degree)
 //Waypoint update
 void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double & dt,CMap* m_cMap)
 {
-	m_fSoundTimer += dt;
+	m_fSoundTimer += (float)dt;
 
 	switch(currentState)
 	{
@@ -297,7 +297,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 			if(test.Length() < 2) // If the AI reached it's destination
 			{
 
-				for(int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
+				for(unsigned int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
 				{
 					Vector3 temp = waypoints[i] - Pos;
 					if(temp.Length() <= m_cMap->GetTileSize() * 1.5)
@@ -325,7 +325,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 				DirectionFacing = destination - Pos;
 				if(DirectionFacing.Length() != 0)
 				DirectionFacing.Normalize();
-				Pos += DirectionFacing *dt * ENEMY_MOVE_SPEED;
+				Pos += DirectionFacing *(float)dt * ENEMY_MOVE_SPEED;
 			}
 
 		}
@@ -351,14 +351,14 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 				DirectionFacing = destination - Pos;
 				if(DirectionFacing.Length() != 0)
 				DirectionFacing.Normalize();
-				Pos += DirectionFacing *dt * ENEMY_MOVE_SPEED;
+				Pos += DirectionFacing *(float)dt * ENEMY_MOVE_SPEED;
 			}
 			else
 			{
 				vector<Vector3> tempList;
 				if( (destination - Pos).Length() < 2)
 				{
-					for(int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
+					for(unsigned int i = 0; i < waypoints.size(); ++i) // Get a new possible destination
 					{
 						Vector3 temp = waypoints[i] - Pos;
 						if(temp.Length() <= 192)
@@ -397,7 +397,7 @@ void CEnemy::Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, doubl
 				DirectionFacing = destination - Pos;
 				if(DirectionFacing.Length() != 0)
 				DirectionFacing.Normalize();
-				Pos += DirectionFacing * dt * ENEMY_MOVE_SPEED;
+				Pos += DirectionFacing *(float) dt * ENEMY_MOVE_SPEED;
 			}
 
 			}

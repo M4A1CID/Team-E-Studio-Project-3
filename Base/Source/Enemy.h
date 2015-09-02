@@ -76,7 +76,7 @@ public:
 	void Idle();
 
 	//Update the enemy
-	void Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z);
+	//void Update(CMap* m_cMap,CPlayer* thePlayer,const int AI_PATH_OFFSET_X, const int AI_PATH_OFFSET_Z);
 	void Update(const vector<Vector3> & waypoints, CPlayer* thePlayer, double &,CMap* m_cMap);
 	Vector3 RotateByDegree(int degree);
 	void checkWithinLineOfSight(CPlayer* thePlayer);

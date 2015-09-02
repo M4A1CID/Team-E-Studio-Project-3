@@ -412,8 +412,8 @@ void CPhysics::UpdatePeeing(std::vector<CParticle*>myParticleList, std::vector<u
 
 		if(go->type == CParticle::PARTICLE_PEE)
 		{
-			go->vel += getGravity() * dt;
-			go->pos += go->vel * dt;
+			go->vel += getGravity() * (float)dt;
+			go->pos += go->vel * (float)dt;
 		}
 		if(go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightMap, terrainSize))
 		{
@@ -424,8 +424,8 @@ void CPhysics::UpdatePeeing(std::vector<CParticle*>myParticleList, std::vector<u
 void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<unsigned char> &heightmap, const Vector3& terrainSize, double& dt, std::vector<CEnemy *> myEnemyList)
 {
 	float offset = 20.f;
-	WindTimer += dt;
-	m_fSoundTimer += dt;
+	WindTimer += (float)dt;
+	m_fSoundTimer += (float)dt;
 	m_spawnRateTimer += (float)dt;
 	m_fRainTimer += (float)dt;
 	
@@ -462,8 +462,8 @@ void CPhysics::UpdateWeather(std::vector<CParticle*>myParticleList, std::vector<
 			//{
 			difference = WindDirection + m_Gravity;
 			//}
-			go->vel += difference * dt;
-			go->pos += go->vel * dt;
+			go->vel += difference * (float)dt;
+			go->pos += go->vel * (float)dt;
 		}
 		if (go->pos.y <= GetHeightMapY(go->pos.x, go->pos.z, heightmap, terrainSize) - offset)
 		{
